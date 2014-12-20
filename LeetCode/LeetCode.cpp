@@ -9,8 +9,7 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Solution16 SU16;
-	SU16.uniquePaths(3, 7);
+
 	return 0;
 }
 
