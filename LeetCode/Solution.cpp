@@ -2,6 +2,79 @@
 #include "DataStructure.h"
 
 /*-------------------------------------------------------------------------------------*/
+/*Unique Paths */
+class Solution16 {
+public:
+	int uniquePaths(int m, int n) {
+		int num = 0;
+		if (m==1||n==1)
+		{
+			num = 1;
+		}
+		if (m>1&&n>1)
+		{
+			vector<vector<int> > vecResult;
+			for (int i = 0; i < n; i++)
+			{
+				vecResult.push_back(vector<int>(m,1));
+			}
+			GetPaths(n, m, vecResult);
+			num = vecResult[n-1][m - 1];
+		}
+		return num;
+	}
+	void GetPaths(int n, int m, vector<vector<int> >& vecResult)
+	{
+		for (int i = 1; i < n; i++)
+		{
+			for (int j = 1; j < m; j++)
+			{
+				vecResult[i][j] = vecResult[i][j-1] + vecResult[i-1][j];
+			}
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Pascal's Triangle*/
+class Solution15 {
+public:
+	vector<vector<int> > result;
+	vector<vector<int> > generate(int numRows) {
+		if (numRows > 0)
+		{
+			if (numRows>=1)
+			{
+				result.push_back(vector<int>(1, 1));
+			}
+			if (numRows >= 2)
+			{
+				result.push_back(vector<int>(2, 1));
+			}
+			if (numRows >= 3)
+			{
+				for (int j = 3; j <= numRows; j++)
+				{
+					vector<int> tmp;
+					tmp.push_back(1);
+					vector<int> resultLast = result.back();
+					int resultLastVecSize = resultLast.size();
+					for (int i = 0; i < resultLastVecSize - 1; i++)
+					{
+						tmp.push_back(resultLast[i] + resultLast[i + 1]);
+					}
+					tmp.push_back(1);
+					result.push_back(tmp);
+				}
+			}
+		}
+		return result;
+	}
+};
+/*
+Solution15 SU15;
+SU15.generate(10);
+*/
+/*-------------------------------------------------------------------------------------*/
 class Solution14 {
 public:
 	vector<vector<int> > result;
@@ -56,6 +129,10 @@ public:
 	}
 
 };
+/*	
+Solution14 SU14;
+SU14.generateMatrix(5);
+*/
 /*-------------------------------------------------------------------------------------*/
 class Solution13 {
 public:
