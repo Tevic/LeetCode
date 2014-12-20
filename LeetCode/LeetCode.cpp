@@ -9,9 +9,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	int A[10] = { 0, 0, 0, 1, 0, 1, 1, 0, 2, 1 };
-	Solution13 SU13;
-	SU13.sortColors(A, 10);
+	Solution14 SU14;
+	SU14.generateMatrix(5);
 	return 0;
 }
 

@@ -1,10 +1,66 @@
 #include "stdafx.h"
 #include "DataStructure.h"
+
+/*-------------------------------------------------------------------------------------*/
+class Solution14 {
+public:
+	vector<vector<int> > result;
+	vector<vector<int> > generateMatrix(int n) {
+		if (n > 0)
+		{
+			for (size_t i = 0; i < n; i++)
+			{
+				result.push_back(vector<int>(n, 0));
+			}
+		}
+		int index = 1;
+		int indexIJ = 0;
+		int lenght = n;
+		while (index<=n*n)
+		{
+			Fill(indexIJ, lenght, index);
+			lenght -= 2;
+			indexIJ++;
+		}
+		return result;
+	}
+
+	void Fill(int indexIJ, int n, int &index)
+	{
+		if (n==1)
+		{
+			result[indexIJ][indexIJ] = index;
+			index++;
+			return;
+		}
+		for (int i = 0; i < n - 1; i++)
+		{
+			result[indexIJ][indexIJ + i] = index;
+			index++;
+		}
+		for (int i = 0; i < n - 1; i++)
+		{
+			result[indexIJ + i][indexIJ + n - 1] = index;
+			index++;
+		}
+		for (int i = 0; i < n - 1; i++)
+		{
+			result[indexIJ + n - 1][indexIJ + n - 1 - i] = index;
+			index++;
+		}
+		for (int i = 0; i < n - 1; i++)
+		{
+			result[indexIJ + n - 1 - i][indexIJ] = index;
+			index++;
+		}
+	}
+
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution13 {
 public:
 	void sortColors(int A[], int n) {
-		if (n!=0)
+		if (n != 0)
 		{
 			int colorArray[3] = { 0 };
 			for (int i = 0; i < n; i++)
@@ -24,15 +80,20 @@ public:
 		}
 	}
 };
+/*
+int A[10] = { 0, 0, 0, 1, 0, 1, 1, 0, 2, 1 };
+Solution13 SU13;
+SU13.sortColors(A, 10);
+*/
 /*-------------------------------------------------------------------------------------*/
 class Solution12 {
 public:
 	bool isBalanced(TreeNode *root) {
-		if (root==NULL)
+		if (root == NULL)
 		{
 			return true;
 		}
-		if (abs(Depth(root->left)-Depth(root->right))>1)
+		if (abs(Depth(root->left) - Depth(root->right)) > 1)
 		{
 			return false;
 		}
@@ -41,7 +102,7 @@ public:
 
 	int Depth(TreeNode* root)
 	{
-		if (root==NULL)
+		if (root == NULL)
 		{
 			return 0;
 		}
@@ -60,9 +121,9 @@ SU.isBalanced(root);
 /*-------------------------------------------------------------------------------------*/
 class Solution11 {
 public:
-	int max=INT_MIN;
+	int max = INT_MIN;
 	int maxPathSum(TreeNode *root) {
-		if (root==NULL)
+		if (root == NULL)
 		{
 			return 0;
 		}
@@ -75,25 +136,25 @@ public:
 		{
 			return 0;
 		}
-		int lMax=0, rMax = 0;
+		int lMax = 0, rMax = 0;
 		int value = root->val;
-		if (root->left!=NULL)
+		if (root->left != NULL)
 		{
-			lMax=GetMax(root->left);
-			if (lMax>0)
+			lMax = GetMax(root->left);
+			if (lMax > 0)
 			{
 				value += lMax;
 			}
 		}
 		if (root->right != NULL)
 		{
-			rMax=GetMax(root->right);
-			if (rMax>0)
+			rMax = GetMax(root->right);
+			if (rMax > 0)
 			{
 				value += rMax;
 			}
 		}
-		if (value>max)
+		if (value > max)
 		{
 			max = value;
 		}
@@ -133,7 +194,7 @@ public:
 	int search(int A[], int n, int target) {
 		for (int i = 0; i < n; i++)
 		{
-			if (A[i]==target)
+			if (A[i] == target)
 			{
 				return i;
 			}
@@ -145,7 +206,7 @@ public:
 class Solution8 {
 public:
 	ListNode *deleteDuplicates(ListNode *head) {
-		if (head==NULL)
+		if (head == NULL)
 		{
 			return head;
 		}
@@ -153,8 +214,8 @@ public:
 		ListNode* pNewHead = NULL;
 		ListNode* pNewCur = NULL;
 		map<int, int> mpRep;
-		while (pCur!=NULL)
-		{	
+		while (pCur != NULL)
+		{
 			mpRep[pCur->val]++;
 			pCur = pCur->next;
 		}
@@ -162,7 +223,7 @@ public:
 		pCur = head;
 		while (pCur != NULL)
 		{
-			if (mpRep[pCur->val]==1)
+			if (mpRep[pCur->val] == 1)
 			{
 				if (flagFirst)
 				{
@@ -178,7 +239,7 @@ public:
 			}
 			pCur = pCur->next;
 		}
-		if (pNewCur!=NULL)
+		if (pNewCur != NULL)
 		{
 			pNewCur->next = NULL;
 		}
@@ -202,12 +263,12 @@ class Solution7 {
 public:
 	int reverse(int x) {
 		long long sum = 0;
-		while (x!=0)
+		while (x != 0)
 		{
 			sum = sum * 10 + x % 10;
 			x /= 10;
 		}
-		if (sum>INT_MAX||sum<INT_MIN)
+		if (sum > INT_MAX || sum < INT_MIN)
 		{
 			sum = 0;
 		}
@@ -218,13 +279,13 @@ public:
 class Solution6 {
 public:
 	int firstMissingPositive(int A[], int n) {
-		if (n==0)
+		if (n == 0)
 		{
 			return 1;
 		}
-		if (n==1)
+		if (n == 1)
 		{
-			if (A[0]==1)
+			if (A[0] == 1)
 			{
 				return 2;
 			}
@@ -234,16 +295,16 @@ public:
 			}
 		}
 		int i = 0;
-		while (i<n)
+		while (i < n)
 		{
-			while ((A[i] - 1 != i) && (A[i]>0) && (A[i]<n+1) && (A[i] != A[A[i] - 1]))
+			while ((A[i] - 1 != i) && (A[i] > 0) && (A[i] < n + 1) && (A[i] != A[A[i] - 1]))
 			{
 				swap(A[i], A[A[i] - 1]);
 			}
 			i++;
 		}
 		i = 0;
-		while (i<n)
+		while (i < n)
 		{
 			if (A[i] != i + 1)
 			{
