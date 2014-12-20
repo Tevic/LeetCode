@@ -2,4 +2,5 @@ Debug/
 Release/
 LeetCode/Debug/
 LeetCode/Release/
+ipch/
 *.sdf
