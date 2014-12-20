@@ -9,13 +9,9 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	TreeNode* root = new TreeNode(1);
-	TreeNode* left = new TreeNode(2);
-	TreeNode* right = new TreeNode(2);
-	root->left = left;
-	left->left = right;
-	Solution12 SU;
-	SU.isBalanced(root);
+	int A[10] = { 0, 0, 0, 1, 0, 1, 1, 0, 2, 1 };
+	Solution13 SU13;
+	SU13.sortColors(A, 10);
 	return 0;
 }
 

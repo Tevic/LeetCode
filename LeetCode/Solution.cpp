@@ -1,6 +1,29 @@
 #include "stdafx.h"
 #include "DataStructure.h"
-
+/*-------------------------------------------------------------------------------------*/
+class Solution13 {
+public:
+	void sortColors(int A[], int n) {
+		if (n!=0)
+		{
+			int colorArray[3] = { 0 };
+			for (int i = 0; i < n; i++)
+			{
+				colorArray[A[i]]++;
+			}
+			int index = 0;
+			for (int i = 0; i < 3; i++)
+			{
+				while (colorArray[i] != 0)
+				{
+					A[index] = i;
+					index++;
+					colorArray[i]--;
+				}
+			}
+		}
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution12 {
 public:
@@ -25,6 +48,15 @@ public:
 		return 1 + max(Depth(root->left), Depth(root->right));
 	}
 };
+/*
+TreeNode* root = new TreeNode(1);
+TreeNode* left = new TreeNode(2);
+TreeNode* right = new TreeNode(2);
+root->left = left;
+left->left = right;
+Solution12 SU;
+SU.isBalanced(root);
+*/
 /*-------------------------------------------------------------------------------------*/
 class Solution11 {
 public:
