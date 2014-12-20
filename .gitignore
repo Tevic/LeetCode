@@ -1,0 +1,5 @@
+Debug/
+Release/
+LeetCode/Debug/
+LeetCode/Release/
+*.sdf
