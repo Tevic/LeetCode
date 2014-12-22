@@ -1,6 +1,72 @@
 #include "stdafx.h"
 #include "DataStructure.h"
+/*-------------------------------------------------------------------------------------*/
+/*Excel Sheet Column Title*/
+class Solution19 {
+public:
+	string convertToTitle(int n) {
+		string result;
+		if (n>0)
+		{
+			while (n!=0)
+			{
+				result.push_back('A'+(n-1)%26);
+				n = (n-1)/26;
+			}
+			reverse(result.begin(), result.end());
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Majority Element*/
+class Solution18 {
+public:
+	int majorityElement(vector<int> &num) {
+		map<int, int> mp;
+		int length = num.size();
+		int result=0;
+		for (int i = 0; i < length; i++)
+		{
+			mp[num[i]]++;
+		}
+		int lenghtMP = mp.size();
+		for (auto& m:mp)
+		{
+			if (m.second > length / 2)
+			{
+				result = m.first;
+				break;
 
+			}
+		}
+		return result;
+	}
+};
+/*
+vector<int> num = { 1 };
+Solution18 SU18;
+SU18.majorityElement(num);
+*/
+/*-------------------------------------------------------------------------------------*/
+/*Regular Expression Matching*/
+class Solution17 {
+public:
+	bool isMatch(const char *s, const char *p) {
+		regex pattern(p);
+		return regex_match(s, pattern);
+	}
+};
+/*
+Solution17 SU17;
+bool result = SU17.isMatch("aa", "a");
+result=SU17.isMatch("aa", "aa");
+result=SU17.isMatch("aaa", "aa");
+result=SU17.isMatch("aa", "a*");
+result=SU17.isMatch("aa", ".*");
+result=SU17.isMatch("ab", ".*");
+result=SU17.isMatch("aab", "c*a*b");
+*/
 /*-------------------------------------------------------------------------------------*/
 /*Unique Paths */
 class Solution16 {
