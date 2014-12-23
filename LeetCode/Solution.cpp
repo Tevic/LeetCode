@@ -1,6 +1,355 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Find Peak Element */
+class Solution26 {
+public:
+	int findPeakElement(const vector<int> &num) {
+		int result=-1;
+		int length = num.size();
+		if (length>0)
+		{
+			if (length==1)
+			{
+				return 0;
+			}
+			if (length==2)
+			{
+				if (num[0]>num[1])
+				{
+					return 0;
+				}
+				else
+				{
+					return 1;
+				}
+			}
+			for (int i = 0; i < length; i++)
+			{
+				if (i==0)
+				{
+					if (num[i]>num[i+1])
+					{
+						return 0;
+					}
+					continue;
+				}
+				if (i==length-1)
+				{
+					if (num[i]>num[i - 1])
+					{
+						return i;
+					}
+					continue;
+				}
+				if (num[i]>num[i - 1] && num[i]>num[i + 1])
+				{
+					return i;
+				}
+			}
+		}
+		return result;
+	}
+};
+/*
+vector<int> num;
+num.push_back(1);
+num.push_back(2);
+num.push_back(3);
+Solution26 SU26;
+int result=SU26.findPeakElement(num);
+*/
+/*-------------------------------------------------------------------------------------*/
+/*Validate Binary Search Tree*/
+class Solution25 {
+public:
+	vector<int> inOrderVec;
+	bool isValidBST(TreeNode *root) {
+		bool isBST = true;
+		if (root!=NULL)
+		{
+			InOrder(root);
+			isBST = IsSorted(inOrderVec);
+		}
+		return isBST;
+	}
+	void InOrder(TreeNode *root)
+	{
+		if (root!=NULL)
+		{
+			if (root->left!=NULL)
+			{
+				InOrder(root->left);
+			}
+			inOrderVec.push_back(root->val);
+			if (root->right != NULL)
+			{
+				InOrder(root->right);
+			}
+		}
+	}
+	bool IsSorted(vector<int>& vec)
+	{
+		int length = vec.size();
+		if (length == 1)
+		{
+			return true;
+		}
+		else
+		{
+			for (int i = 0; i < length-1; i++)
+			{
+				if (vec[i]>=vec[i+1])
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+	}
+};
+/*
+TreeNode* root = new TreeNode(0);
+TreeNode* node1 = new TreeNode(-1);
+TreeNode* node2 = new TreeNode(3);
+TreeNode* node3 = new TreeNode(4);
+TreeNode* node4 = new TreeNode(5);
+TreeNode* node5 = new TreeNode(6);
+root->left = node1;
+//root->right = node2;
+//node1->left = node3;
+//node3->right = node4;
+//node4->left = node5;
+Solution25 SU25;
+SU25.isValidBST(root);
+*/
+/*-------------------------------------------------------------------------------------*/
+/*Compare Version Numbers*/
+class Solution24 {
+public:
+	int compareVersion(string version1, string version2) {
+		vector<string> strVer1 = Split(version1, ".");
+		vector<string> strVer2 = Split(version2, ".");
+		int countVer1 = strVer1.size();
+		int countVer2 = strVer2.size();
+		int countVer = countVer1;
+		if (countVer1<countVer2)
+		{
+			countVer = countVer2;
+			for (size_t i = countVer1; i < countVer2; i++)
+			{
+				strVer1.push_back("0");
+			}
+		}
+		if (countVer1>countVer2)
+		{
+			countVer = countVer1;
+			for (size_t i = countVer2; i < countVer1; i++)
+			{
+				strVer2.push_back("0");
+			}
+		}
+		int index = 0;
+		while (index<countVer)
+		{
+			int ver1 = StringToInt(strVer1[index]);
+			int ver2 = StringToInt(strVer2[index]);
+			if (ver1<ver2)
+			{
+				return -1;
+			}
+			else if (ver1>ver2)
+			{
+				return 1;
+			}
+			else
+			{
+				index++;
+			}
+		}
+		return 0;
+	}
+
+	int StringToInt(string str)
+	{
+		stringstream ss;
+		ss << str;
+		int result;
+		ss >> result;
+		return result;
+	}
+
+	vector<string> Split(string str, string pattern)
+	{
+		std::string::size_type pos;
+		std::vector<std::string> result;
+		str += pattern;
+		int size = str.size();
+
+		for (int i = 0; i<size; i++)
+		{
+			pos = str.find(pattern, i);
+			if (pos<size)
+			{
+				std::string s = str.substr(i, pos - i);
+				result.push_back(s);
+				i = pos + pattern.size() - 1;
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*strStr*/
+class Solution23 {
+public:
+	int strStr(char *haystack, char *needle) {
+		string str1(haystack);
+		string str2(needle);
+		size_t pos=str1.find(str2);
+		if (pos!=string::npos)
+		{
+			return (int)pos;
+		}
+		else
+		{
+			return -1;
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Distinct Subsequences */
+class Solution22 {
+public:
+	int numDistinct(string S, string T) {
+
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Maximum Depth of Binary Tree*/
+class Solution21 {
+public:
+	int MaxDepth = 0;
+	int maxDepth(TreeNode *root) {
+		if (root!=NULL)
+		{
+			GetMaxDepth(root, 1);
+		}
+		return MaxDepth;
+	}
+	int GetMaxDepth(TreeNode *root,int depth)
+	{
+		if (root==NULL)
+		{
+			return 0;
+		}
+		int lMax = 0;
+		int rMax = 0;
+		if (root->left!=NULL)
+		{
+			lMax = GetMaxDepth(root->left,depth + 1);
+		}
+		if (root->right != NULL)
+		{
+			rMax = GetMaxDepth(root->right, depth + 1);
+		}
+		depth=1+max(lMax,rMax);
+		if (depth>MaxDepth)
+		{
+			MaxDepth = depth;
+		}
+		return depth;
+	}
+};
+/*
+TreeNode* root = new TreeNode(1);
+TreeNode* node1 = new TreeNode(2);
+TreeNode* node2 = new TreeNode(3);
+TreeNode* node3 = new TreeNode(4);
+TreeNode* node4 = new TreeNode(4);
+TreeNode* node5 = new TreeNode(4);
+root->left = node1;
+root->right = node2;
+node1->left = node3;
+node3->right = node4;
+node4->left = node5;
+Solution21 SU21;
+SU21.maxDepth(root);
+*/
+/*-------------------------------------------------------------------------------------*/
+/*Merge Intervals*/
+class Solution20 {
+public:
+	//class SortIntervals
+	//{
+	//	public:
+	//		bool operator ()(Interval& int1, Interval& int2)
+	//		{
+	//			return int1.start < int2.start;
+	//		}
+	//};
+
+	// [](Interval& int1, Interval& int2){return int1.start < int2.start; }
+
+	static bool SortIntervals(Interval& int1, Interval& int2)
+	{
+		return int1.start < int2.start;
+	}
+
+	vector<Interval> merge(vector<Interval> &intervals) {
+		int intervalsCount = intervals.size();
+		if (intervalsCount>0)
+		{
+			if (intervalsCount==1)
+			{
+				return intervals;
+			}
+			std::sort(intervals.begin(), intervals.end(),Solution20::SortIntervals);
+			auto iter = intervals.begin();
+			while (iter != intervals.end() && (iter+1) != intervals.end())
+			{
+				if (MergeIntervals(*iter,*(iter+1)))
+				{
+					intervals.erase(iter+1);
+				}
+				else
+				{
+					iter++;
+				}
+			}
+		}
+		return intervals;
+	}
+
+	bool MergeIntervals(Interval& int1, Interval& int2)
+	{
+		if (int1.end>=int2.start)
+		{
+			if (int1.end<int2.end)
+			{
+				int1.end = int2.end;
+			}
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+};
+/*
+vector<Interval> vec;
+vec.push_back(Interval(1, 3));
+vec.push_back(Interval(1, 3));
+vec.push_back(Interval(1, 3));
+vec.push_back(Interval(1, 3));
+vec.push_back(Interval(2, 6));
+vec.push_back(Interval(15, 18));
+vec.push_back(Interval(8, 10));
+Solution20 SU20;
+SU20.merge(vec);
+*/
+/*-------------------------------------------------------------------------------------*/
 /*Excel Sheet Column Title*/
 class Solution19 {
 public:
@@ -18,6 +367,10 @@ public:
 		return result;
 	}
 };
+/*
+Solution19 SU19;
+SU19.convertToTitle(28);
+*/
 /*-------------------------------------------------------------------------------------*/
 /*Majority Element*/
 class Solution18 {
