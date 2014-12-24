@@ -1,6 +1,127 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Interleaving String*/
+class Solution27 {
+public:
+	string str1;
+	string str2;
+	string str3;
+	bool isInterleave(string s1, string s2, string s3) {
+		int len1 = s1.size();
+		int len2 = s2.size();
+		int len3 = s3.size();
+		if (len1==0||len2==0)
+		{
+			if (s1+s2==s3)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		if (len1+len2==len3)
+		{
+			str1 = s1;
+			str2 = s2;
+			str3 = s3;
+			return IsInter(0,len1-1,0,len2-1,0,len3-1);
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	bool IsInter(int s1,int e1,int s2,int e2,int s3,int e3)
+	{
+		if (s1==e1)
+		{
+			vector<int> vec;
+			for (int i = s3; i <= e3; i++)
+			{
+				if (str1[s1]==str3[i])
+				{
+					vec.push_back(i);
+					break;
+				}
+			}
+			string ss1;
+			string ss2;
+			for (int i = s2; i <= e2; i++)
+			{
+				ss1.push_back(str2[i]);
+			}
+			for (int i = s3; i <= e3; i++)
+			{
+				if (i!=vec[0])
+				{
+					ss2.push_back(str3[i]);
+				}
+			}
+			if (ss1==ss2)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		if (s2==e2)
+		{
+			vector<int> vec;
+			for (int i = s3; i <= e3; i++)
+			{
+				if (str2[s2] == str3[i])
+				{
+					vec.push_back(i);
+					break;
+				}
+			}
+			string ss1;
+			string ss2;
+			for (int i = s1; i <= e1; i++)
+			{
+				ss1.push_back(str1[i]);
+			}
+			for (int i = s3; i <= e3; i++)
+			{
+				if (i != vec[0])
+				{
+					ss2.push_back(str3[i]);
+				}
+			}
+			if (ss1 == ss2)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		if (str1[s1]==str3[s3]&&str2[s2]==str3[s3])
+		{
+			return IsInter(s1 + 1, e1,  s2,  e2,  s3 + 1,  e3) | IsInter( s1,  e1,  s2+1,  e2,  s3+1,  e3);
+		}
+		else if (str1[s1] == str3[s3])
+		{
+			return IsInter(s1 + 1, e1, s2, e2, s3 + 1, e3);
+		}
+		else if (str2[s2] == str3[s3])
+		{
+			return IsInter(s1, e1, s2 + 1, e2, s3 + 1, e3);
+		}
+		else
+		{
+			return false;
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 /*Find Peak Element */
 class Solution26 {
 public:
