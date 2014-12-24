@@ -49,6 +49,14 @@ public:
 	}
 };
 /*
+Solution27 SU27;
+bool result = SU27.isInterleave("aabcc", "dbbca", "aadbbcbcac");//true
+result = SU27.isInterleave("aabcc", "dbbca", "aadbcbbcac");//true
+result = SU27.isInterleave("aabcc", "dbbca", "aadbbbaccc");//false
+result = SU27.isInterleave("aa", "ab", "aaba");//true
+result = SU27.isInterleave("abbbbbbcabbacaacccababaabcccabcacbcaabbbacccaaaaaababbbacbb", "ccaacabbacaccacababbbbabbcacccacccccaabaababacbbacabbbbabc", "cacbabbacbbbabcbaacbbaccacaacaacccabababbbababcccbabcabbaccabcccacccaabbcbcaccccaaaaabaaaaababbbbacbbabacbbacabbbbabc");
+*/
+/*
 class Solution27 {
 public:
 string str1;
