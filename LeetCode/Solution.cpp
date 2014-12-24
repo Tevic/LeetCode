@@ -4,139 +4,163 @@
 /*Interleaving String*/
 class Solution27 {
 public:
-	string str1;
-	string str2;
-	string str3;
 	bool isInterleave(string s1, string s2, string s3) {
-		int len1 = s1.size();
-		int len2 = s2.size();
-		int len3 = s3.size();
-		if (len1==0||len2==0)
-		{
-			if (s1+s2==s3)
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
-		if (len1+len2==len3)
-		{
-			str1 = s1;
-			str2 = s2;
-			str3 = s3;
-			return IsInter(0,len1-1,0,len2-1,0,len3-1);
-		}
-		else
-		{
+		if (s3.size() != s1.size() + s2.size())
 			return false;
-		}
-	}
-
-	bool IsInter(int s1,int e1,int s2,int e2,int s3,int e3)
-	{
-		if (s1==e1)
-		{
-			vector<int> vec;
-			for (int i = s3; i <= e3; i++)
-			{
-				if (str1[s1]==str3[i])
-				{
-					vec.push_back(i);
-					break;
-				}
-			}
-			string ss1;
-			string ss2;
-			for (int i = s2; i <= e2; i++)
-			{
-				ss1.push_back(str2[i]);
-			}
-			for (int i = s3; i <= e3; i++)
-			{
-				if (i!=vec[0])
-				{
-					ss2.push_back(str3[i]);
-				}
-			}
-			if (ss1==ss2)
-			{
-				return true;
+		//create indicator
+		vector<vector<bool> > match(s1.size() + 1, vector<bool>(s2.size() + 1, false));
+		//initialization the first row and the first column
+		match[0][0] = true;
+		for (int l1 = 1; l1 <= s1.size(); ++l1) {
+			char c1 = s1[l1 - 1];
+			char c3 = s3[l1 - 1];
+			if (c1 == c3) {
+				match[l1][0] = true;
 			}
 			else
-			{
-				return false;
-			}
+				break;
 		}
-		if (s2==e2)
-		{
-			vector<int> vec;
-			for (int i = s3; i <= e3; i++)
-			{
-				if (str2[s2] == str3[i])
-				{
-					vec.push_back(i);
-					break;
-				}
-			}
-			string ss1;
-			string ss2;
-			for (int i = s1; i <= e1; i++)
-			{
-				ss1.push_back(str1[i]);
-			}
-			for (int i = s3; i <= e3; i++)
-			{
-				if (i != vec[0])
-				{
-					ss2.push_back(str3[i]);
-				}
-			}
-			if (ss1 == ss2)
-			{
-				return true;
+		for (int l2 = 1; l2 <= s2.size(); ++l2) {
+			char c2 = s2[l2 - 1];
+			char c3 = s3[l2 - 1];
+			if (c2 == c3) {
+				match[0][l2] = true;
 			}
 			else
-			{
-				return false;
+				break;
+		}
+		//work through the rest of matrix using the formula
+		for (int l1 = 1; l1 <= s1.size(); ++l1) {
+			char c1 = s1[l1 - 1];
+			for (int l2 = 1; l2 <= s2.size(); ++l2) {
+				char c2 = s2[l2 - 1];
+				int l3 = l1 + l2;
+				char c3 = s3[l3 - 1];
+				if (c1 == c3) {
+					match[l1][l2] = match[l1 - 1][l2] || match[l1][l2];
+				}
+				if (c2 == c3) {
+					match[l1][l2] = match[l1][l2 - 1] || match[l1][l2];
+				}
 			}
 		}
-		if (str1[s1]==str3[s3]&&str2[s2]==str3[s3])
-		{
-			return IsInter(s1 + 1, e1,  s2,  e2,  s3 + 1,  e3) | IsInter( s1,  e1,  s2+1,  e2,  s3+1,  e3);
-		}
-		else if (str1[s1] == str3[s3])
-		{
-			return IsInter(s1 + 1, e1, s2, e2, s3 + 1, e3);
-		}
-		else if (str2[s2] == str3[s3])
-		{
-			return IsInter(s1, e1, s2 + 1, e2, s3 + 1, e3);
-		}
-		else
-		{
-			return false;
-		}
+		//the last element is the result
+		return match[s1.size()][s2.size()];
 	}
 };
+/*
+class Solution27 {
+public:
+string str1;
+string str2;
+string str3;
+bool isInterleave(string s1, string s2, string s3) {
+int len1 = s1.size();
+int len2 = s2.size();
+int len3 = s3.size();
+if (len1 == 0 || len2 == 0)
+{
+if (s1 + s2 == s3)
+{
+return true;
+}
+else
+{
+return false;
+}
+}
+if (len1 + len2 == len3)
+{
+str1 = s1;
+str2 = s2;
+str3 = s3;
+return IsInter(0, len1 - 1, 0, len2 - 1, 0, len3 - 1);
+}
+else
+{
+return false;
+}
+}
+
+bool IsInter(int s1, int e1, int s2, int e2, int s3, int e3)
+{
+if (s1>e1)
+{
+string ss1;
+string ss2;
+for (int i = s2; i <= e2; i++)
+{
+ss1.push_back(str2[i]);
+}
+for (int i = s3; i <= e3; i++)
+{
+ss2.push_back(str3[i]);
+}
+if (ss1 == ss2)
+{
+return true;
+}
+else
+{
+return false;
+}
+}
+if (s2>e2)
+{
+string ss1;
+string ss2;
+for (int i = s1; i <= e1; i++)
+{
+ss1.push_back(str1[i]);
+}
+for (int i = s3; i <= e3; i++)
+{
+ss2.push_back(str3[i]);
+}
+if (ss1 == ss2)
+{
+return true;
+}
+else
+{
+return false;
+}
+}
+if (str1[s1] == str3[s3] && str2[s2] == str3[s3])
+{
+return IsInter(s1 + 1, e1, s2, e2, s3 + 1, e3) | IsInter(s1, e1, s2 + 1, e2, s3 + 1, e3);
+}
+else if (str1[s1] == str3[s3])
+{
+return IsInter(s1 + 1, e1, s2, e2, s3 + 1, e3);
+}
+else if (str2[s2] == str3[s3])
+{
+return IsInter(s1, e1, s2 + 1, e2, s3 + 1, e3);
+}
+else
+{
+return false;
+}
+}
+};
+*/
 /*-------------------------------------------------------------------------------------*/
 /*Find Peak Element */
 class Solution26 {
 public:
 	int findPeakElement(const vector<int> &num) {
-		int result=-1;
+		int result = -1;
 		int length = num.size();
-		if (length>0)
+		if (length > 0)
 		{
-			if (length==1)
+			if (length == 1)
 			{
 				return 0;
 			}
-			if (length==2)
+			if (length == 2)
 			{
-				if (num[0]>num[1])
+				if (num[0] > num[1])
 				{
 					return 0;
 				}
@@ -147,23 +171,23 @@ public:
 			}
 			for (int i = 0; i < length; i++)
 			{
-				if (i==0)
+				if (i == 0)
 				{
-					if (num[i]>num[i+1])
+					if (num[i]>num[i + 1])
 					{
 						return 0;
 					}
 					continue;
 				}
-				if (i==length-1)
+				if (i == length - 1)
 				{
-					if (num[i]>num[i - 1])
+					if (num[i] > num[i - 1])
 					{
 						return i;
 					}
 					continue;
 				}
-				if (num[i]>num[i - 1] && num[i]>num[i + 1])
+				if (num[i] > num[i - 1] && num[i] > num[i + 1])
 				{
 					return i;
 				}
@@ -187,7 +211,7 @@ public:
 	vector<int> inOrderVec;
 	bool isValidBST(TreeNode *root) {
 		bool isBST = true;
-		if (root!=NULL)
+		if (root != NULL)
 		{
 			InOrder(root);
 			isBST = IsSorted(inOrderVec);
@@ -196,9 +220,9 @@ public:
 	}
 	void InOrder(TreeNode *root)
 	{
-		if (root!=NULL)
+		if (root != NULL)
 		{
-			if (root->left!=NULL)
+			if (root->left != NULL)
 			{
 				InOrder(root->left);
 			}
@@ -218,9 +242,9 @@ public:
 		}
 		else
 		{
-			for (int i = 0; i < length-1; i++)
+			for (int i = 0; i < length - 1; i++)
 			{
-				if (vec[i]>=vec[i+1])
+				if (vec[i] >= vec[i + 1])
 				{
 					return false;
 				}
@@ -254,7 +278,7 @@ public:
 		int countVer1 = strVer1.size();
 		int countVer2 = strVer2.size();
 		int countVer = countVer1;
-		if (countVer1<countVer2)
+		if (countVer1 < countVer2)
 		{
 			countVer = countVer2;
 			for (size_t i = countVer1; i < countVer2; i++)
@@ -262,7 +286,7 @@ public:
 				strVer1.push_back("0");
 			}
 		}
-		if (countVer1>countVer2)
+		if (countVer1 > countVer2)
 		{
 			countVer = countVer1;
 			for (size_t i = countVer2; i < countVer1; i++)
@@ -271,15 +295,15 @@ public:
 			}
 		}
 		int index = 0;
-		while (index<countVer)
+		while (index < countVer)
 		{
 			int ver1 = StringToInt(strVer1[index]);
 			int ver2 = StringToInt(strVer2[index]);
-			if (ver1<ver2)
+			if (ver1 < ver2)
 			{
 				return -1;
 			}
-			else if (ver1>ver2)
+			else if (ver1 > ver2)
 			{
 				return 1;
 			}
@@ -307,10 +331,10 @@ public:
 		str += pattern;
 		int size = str.size();
 
-		for (int i = 0; i<size; i++)
+		for (int i = 0; i < size; i++)
 		{
 			pos = str.find(pattern, i);
-			if (pos<size)
+			if (pos < size)
 			{
 				std::string s = str.substr(i, pos - i);
 				result.push_back(s);
@@ -327,8 +351,8 @@ public:
 	int strStr(char *haystack, char *needle) {
 		string str1(haystack);
 		string str2(needle);
-		size_t pos=str1.find(str2);
-		if (pos!=string::npos)
+		size_t pos = str1.find(str2);
+		if (pos != string::npos)
 		{
 			return (int)pos;
 		}
@@ -352,30 +376,30 @@ class Solution21 {
 public:
 	int MaxDepth = 0;
 	int maxDepth(TreeNode *root) {
-		if (root!=NULL)
+		if (root != NULL)
 		{
 			GetMaxDepth(root, 1);
 		}
 		return MaxDepth;
 	}
-	int GetMaxDepth(TreeNode *root,int depth)
+	int GetMaxDepth(TreeNode *root, int depth)
 	{
-		if (root==NULL)
+		if (root == NULL)
 		{
 			return 0;
 		}
 		int lMax = 0;
 		int rMax = 0;
-		if (root->left!=NULL)
+		if (root->left != NULL)
 		{
-			lMax = GetMaxDepth(root->left,depth + 1);
+			lMax = GetMaxDepth(root->left, depth + 1);
 		}
 		if (root->right != NULL)
 		{
 			rMax = GetMaxDepth(root->right, depth + 1);
 		}
-		depth=1+max(lMax,rMax);
-		if (depth>MaxDepth)
+		depth = 1 + max(lMax, rMax);
+		if (depth > MaxDepth)
 		{
 			MaxDepth = depth;
 		}
@@ -421,17 +445,17 @@ public:
 		int intervalsCount = intervals.size();
 		if (intervalsCount>0)
 		{
-			if (intervalsCount==1)
+			if (intervalsCount == 1)
 			{
 				return intervals;
 			}
-			std::sort(intervals.begin(), intervals.end(),Solution20::SortIntervals);
+			std::sort(intervals.begin(), intervals.end(), Solution20::SortIntervals);
 			auto iter = intervals.begin();
-			while (iter != intervals.end() && (iter+1) != intervals.end())
+			while (iter != intervals.end() && (iter + 1) != intervals.end())
 			{
-				if (MergeIntervals(*iter,*(iter+1)))
+				if (MergeIntervals(*iter, *(iter + 1)))
 				{
-					intervals.erase(iter+1);
+					intervals.erase(iter + 1);
 				}
 				else
 				{
@@ -444,9 +468,9 @@ public:
 
 	bool MergeIntervals(Interval& int1, Interval& int2)
 	{
-		if (int1.end>=int2.start)
+		if (int1.end >= int2.start)
 		{
-			if (int1.end<int2.end)
+			if (int1.end < int2.end)
 			{
 				int1.end = int2.end;
 			}
@@ -476,12 +500,12 @@ class Solution19 {
 public:
 	string convertToTitle(int n) {
 		string result;
-		if (n>0)
+		if (n > 0)
 		{
-			while (n!=0)
+			while (n != 0)
 			{
-				result.push_back('A'+(n-1)%26);
-				n = (n-1)/26;
+				result.push_back('A' + (n - 1) % 26);
+				n = (n - 1) / 26;
 			}
 			reverse(result.begin(), result.end());
 		}
@@ -499,13 +523,13 @@ public:
 	int majorityElement(vector<int> &num) {
 		map<int, int> mp;
 		int length = num.size();
-		int result=0;
+		int result = 0;
 		for (int i = 0; i < length; i++)
 		{
 			mp[num[i]]++;
 		}
 		int lenghtMP = mp.size();
-		for (auto& m:mp)
+		for (auto& m : mp)
 		{
 			if (m.second > length / 2)
 			{
@@ -547,19 +571,19 @@ class Solution16 {
 public:
 	int uniquePaths(int m, int n) {
 		int num = 0;
-		if (m==1||n==1)
+		if (m == 1 || n == 1)
 		{
 			num = 1;
 		}
-		if (m>1&&n>1)
+		if (m > 1 && n > 1)
 		{
 			vector<vector<int> > vecResult;
 			for (int i = 0; i < n; i++)
 			{
-				vecResult.push_back(vector<int>(m,1));
+				vecResult.push_back(vector<int>(m, 1));
 			}
 			GetPaths(n, m, vecResult);
-			num = vecResult[n-1][m - 1];
+			num = vecResult[n - 1][m - 1];
 		}
 		return num;
 	}
@@ -569,7 +593,7 @@ public:
 		{
 			for (int j = 1; j < m; j++)
 			{
-				vecResult[i][j] = vecResult[i][j-1] + vecResult[i-1][j];
+				vecResult[i][j] = vecResult[i][j - 1] + vecResult[i - 1][j];
 			}
 		}
 	}
@@ -586,7 +610,7 @@ public:
 	vector<vector<int> > generate(int numRows) {
 		if (numRows > 0)
 		{
-			if (numRows>=1)
+			if (numRows >= 1)
 			{
 				result.push_back(vector<int>(1, 1));
 			}
@@ -633,7 +657,7 @@ public:
 		int index = 1;
 		int indexIJ = 0;
 		int lenght = n;
-		while (index<=n*n)
+		while (index <= n*n)
 		{
 			Fill(indexIJ, lenght, index);
 			lenght -= 2;
@@ -644,7 +668,7 @@ public:
 
 	void Fill(int indexIJ, int n, int &index)
 	{
-		if (n==1)
+		if (n == 1)
 		{
 			result[indexIJ][indexIJ] = index;
 			index++;
@@ -673,7 +697,7 @@ public:
 	}
 
 };
-/*	
+/*
 Solution14 SU14;
 SU14.generateMatrix(5);
 */
