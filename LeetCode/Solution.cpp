@@ -1,5 +1,383 @@
 #include "stdafx.h"
 #include "DataStructure.h"
+
+/*-------------------------------------------------------------------------------------*/
+/*Valid Palindrome*/
+class Solution33 {
+public:
+	bool isPalindrome(string s) {
+		string str;
+		int len = s.size();
+		if (len==0)
+		{
+			return true;
+		}
+		for (int i = 0; i < len; i++)
+		{
+			if (s[i]>='A'&&s[i]<='Z')
+			{
+				str.push_back(tolower(s[i]));
+			}
+			if ((s[i] >= 'a'&&s[i] <= 'z') || (s[i]>='0'&&s[i]<='9'))
+			{
+				str.push_back(s[i]);
+			}
+		}
+		string strReverse = str;
+		reverse(strReverse.begin(), strReverse.end());
+		if (str==strReverse)
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+};
+/*
+Solution33 SU33;
+bool result = SU33.isPalindrome("A man, a plan, a canal: Panama");
+result = SU33.isPalindrome("race a car");
+*/
+/*-------------------------------------------------------------------------------------*/
+/*Longest Valid Parentheses*/
+class Solution32 {
+public:
+	int longestValidParentheses(string s) {
+		stack<int> st;
+		int len = s.size();
+		int maxLength = 0;
+		int index = -1;
+ 		for (int i = 0; i < len; i++)
+		{
+			if (s[i]=='(')
+			{
+				st.push(i);
+			}
+			else
+			{
+				if (!st.empty())
+				{
+					st.pop();
+					if (st.empty())
+					{
+						maxLength = max(i - index, maxLength);
+					}
+					else
+					{
+						maxLength = max(i - st.top(), maxLength);
+					}
+				}
+				else
+				{
+					index = i;
+				}
+
+			}
+		}
+		return maxLength;
+	}
+};
+/*
+Solution32 SU32;
+int result = SU32.longestValidParentheses(")(()())()");
+result = SU32.longestValidParentheses("()(()");
+result = SU32.longestValidParentheses("()(())");
+*/
+/*-------------------------------------------------------------------------------------*/
+/*Median of Two Sorted Arrays*/
+class Solution31 {
+public:
+	double findMedianSortedArrays(int A[], int m, int B[], int n) {
+		if (m==0&&n==0)
+		{
+			return 0;
+		}
+		int indexA = 0;
+		int indexB = 0;
+		vector<int> vecC;
+		while (indexA!=m&&indexB!=n)
+		{
+			if (A[indexA]<B[indexB])
+			{
+				vecC.push_back(A[indexA]);
+				indexA++;
+			}
+			else
+			{
+				vecC.push_back(B[indexB]);
+				indexB++;
+			}
+		}
+		while (indexA!=m)
+		{
+			vecC.push_back(A[indexA]);
+			indexA++;
+		}
+		while (indexB != n)
+		{
+			vecC.push_back(B[indexB]);
+			indexB++;
+		}
+		if ((m+n)%2==0)
+		{
+			return (vecC[(m + n) / 2] + vecC[(m + n) / 2-1])/2.0;
+		}
+		else
+		{
+			return vecC[(m + n) / 2];
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*ZigZag Conversion */
+class Solution30 {
+public:
+	string convert(string s, int nRows) {
+		if (nRows==1)
+		{
+			return s;
+		}
+		int len = s.size();
+		if (len<=nRows)
+		{
+			return s;
+		}
+		vector <string> vecStr(nRows);
+		int index = -1;
+		while (index+1<len)
+		{
+			if (index + nRows < len)
+			{
+				for (int i = 0; i < nRows; i++)
+				{
+					vecStr[i] += s[index + i + 1];
+				}
+				index =index + nRows;
+				int dist = len - index-1;
+				if (dist>=nRows-2)
+				{
+					dist = nRows - 2;
+				}
+				for (int i = 0; i < dist; i++)
+				{
+					vecStr[nRows-i-2] += s[index + 1 + i];
+				}
+				index = index + dist;
+			}
+			else
+			{
+				for (int i = 0; i < len-index-1; i++)
+				{
+					vecStr[i] += s[index +1 + i];
+				}
+				index = len;
+			}
+		}
+		string result;
+		for (int i = 0; i < nRows; i++)
+		{
+			result += vecStr[i];
+		}
+		return result;
+	}
+};
+/*
+Solution30 SU30;
+string result = SU30.convert("PAYPALISHIRING", 3);//"PAHNAPLSIIGYIR"
+result = SU30.convert("ABC", 2);//"ACB"
+result = SU30.convert("A", 2);//"A"
+result = SU30.convert("ABCDE", 4);//"ABCED"
+*/
+/*-------------------------------------------------------------------------------------*/
+/*Intersection of Two Linked Lists*/
+class Solution29 {
+public:
+	ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+		int lenA = 0;
+		int lenB = 0;
+		if (headA==NULL||headB==NULL)
+		{
+			return NULL;
+		}
+		ListNode *pA=headA;
+		ListNode *pB=headB;
+		while (pA!=NULL)
+		{
+			pA = pA->next;
+			lenA++;
+		}
+		while (pB != NULL)
+		{
+			pB = pB->next;
+			lenB++;
+		}
+		pA = headA;
+		pB = headB;
+		if (lenA>lenB)
+		{
+			for (int i = 0; i < lenA-lenB; i++)
+			{
+				pA = pA->next;
+			}
+		}
+		else
+		{
+			for (int i = 0; i < lenB - lenA; i++)
+			{
+				pB = pB->next;
+			}
+		}
+		while (pA&&pB)
+		{
+			if (pA==pB)
+			{
+				return pA;
+			}
+			pA = pA->next;
+			pB = pB->next;
+		}
+		return NULL;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Multiply Strings*/
+class Solution28 {
+public:
+	string multiply(string num1, string num2) {
+		if (num1=="0"||num2=="0")
+		{
+			return "0";
+		}
+		string index = "0";
+		string result = "0";
+		int len1 = num1.size();
+		int len2 = num2.size();
+		vector<string> tmpVec;
+		if (len1<len2)
+		{	
+			for (int i = len1-1; i >=0 ; i--)
+			{
+				string tmp = multi(num2,num1[i]-'0');
+				if (tmp!="0")
+				{
+					for (int j = 0; j < len1 - 1 - i; j++)
+					{
+						tmp += "0";
+					}
+					tmpVec.push_back(tmp);
+				}
+			}
+			for (auto& m:tmpVec)
+			{
+				result = add(result, m);
+			}
+		}
+		else
+		{
+			for (int i = len2 - 1; i >= 0; i--)
+			{
+				string tmp = multi(num1, num2[i] - '0');
+				if (tmp != "0")
+				{
+					for (int j = 0; j < len2 - 1 - i; j++)
+					{
+						tmp += "0";
+					}
+					tmpVec.push_back(tmp);
+				}
+			}
+			for (auto& m : tmpVec)
+			{
+				result = add(result, m);
+			}
+		}
+		return result;
+	}
+
+	string multi(string str, int num)
+	{
+		if (num==0)
+		{
+			return "0";
+		}
+		int len = str.size();
+		string result;
+		int carry = 0;
+		for (int i = len-1; i >=0; i--)
+		{
+			int tmp = (str[i] - '0')*num + carry;
+			carry = tmp / 10;
+			result.push_back(tmp % 10 + '0');
+		}
+		if (carry != 0)
+		{
+			result.push_back(carry + '0');
+		}
+		reverse(result.begin(), result.end());
+		return result;
+	}
+
+	string add(string num1, string num2)
+	{
+		int len1 = num1.size();
+		int len2 = num2.size();
+		string result;
+		int carry = 0;
+		if (len1<len2)
+		{
+			for (int i = len1-1; i >= 0; i--)
+			{
+				int tmp = (num1[i] - '0') + (num2[len2-len1+i] - '0') + carry;
+				carry = tmp / 10;
+				result.push_back(tmp % 10 + '0');
+			}
+			for (int i = len2-len1-1; i >= 0; i--)
+			{
+				int tmp = (num2[i] - '0') + carry;
+				carry = tmp / 10;
+				result.push_back(tmp % 10 + '0');
+			}
+
+		}
+		else if (len1>len2)
+		{
+			for (int i = len2 - 1; i >= 0; i--)
+			{
+				int tmp = (num1[len1 - len2 + i] - '0') + (num2[i] - '0') + carry;
+				carry = tmp / 10;
+				result.push_back(tmp % 10 + '0');
+			}
+			for (int i = len1-len2-1; i >=0; i--)
+			{
+				int tmp = (num1[i] - '0') + carry;
+				carry = tmp / 10;
+				result.push_back(tmp % 10 + '0');
+			}
+		}
+		else
+		{
+			for (int i = len1 - 1; i >= 0; i--)
+			{
+				int tmp = (num1[i] - '0') + (num2[i] - '0') + carry;
+				carry = tmp / 10;
+				result.push_back(tmp % 10 + '0');
+			}
+		}
+		if (carry != 0)
+		{
+			result.push_back(carry + '0');
+		}
+		reverse(result.begin(), result.end());
+		return result;
+	}
+};
+/*
+Solution28 SU28;
+string result = SU28.add("92", "19");
+result = SU28.multiply("508591", "41609063");
+*/
 /*-------------------------------------------------------------------------------------*/
 /*Interleaving String*/
 class Solution27 {
@@ -7,9 +385,7 @@ public:
 	bool isInterleave(string s1, string s2, string s3) {
 		if (s3.size() != s1.size() + s2.size())
 			return false;
-		//create indicator
 		vector<vector<bool> > match(s1.size() + 1, vector<bool>(s2.size() + 1, false));
-		//initialization the first row and the first column
 		match[0][0] = true;
 		for (int l1 = 1; l1 <= s1.size(); ++l1) {
 			char c1 = s1[l1 - 1];
@@ -29,7 +405,6 @@ public:
 			else
 				break;
 		}
-		//work through the rest of matrix using the formula
 		for (int l1 = 1; l1 <= s1.size(); ++l1) {
 			char c1 = s1[l1 - 1];
 			for (int l2 = 1; l2 <= s2.size(); ++l2) {
@@ -44,7 +419,6 @@ public:
 				}
 			}
 		}
-		//the last element is the result
 		return match[s1.size()][s2.size()];
 	}
 };
