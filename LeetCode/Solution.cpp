@@ -1,6 +1,178 @@
 #include "stdafx.h"
 #include "DataStructure.h"
+/*-------------------------------------------------------------------------------------*/
+/*Min Stack*/
+class MinStack {
+public:
+	void push(int x) {
+		elements.push(x);
+		if (mins.empty() || x <= mins.top())
+			mins.push(x);
+	}
 
+	void pop() {
+		if (elements.empty()) return;
+		if (elements.top() == mins.top())
+			mins.pop();
+		elements.pop();
+	}
+
+	int top() {
+		return elements.top();
+	}
+
+	int getMin() {
+		return mins.top();
+	}
+private:
+	stack<int> elements;
+	stack<int> mins;
+};
+/*-------------------------------------------------------------------------------------*/
+/*Count and Say*/
+class Solution35 {
+public:
+	string countAndSay(int n) {
+		string result;
+		string tmp;
+		if (n>0)
+		{
+			int index = 1;
+			while (index<n + 1)
+			{
+				if (index == 1)
+				{
+					tmp = "1";
+					result = tmp+'#';
+					tmp.clear();
+				}
+				else
+				{
+					int len = result.size();
+					char cur='#';
+					int num = 0;
+					for (int i = 0; i < len; i++)
+					{
+						if (cur==result[i])
+						{
+							num++;
+							continue;
+						}
+						else
+						{
+							if (i==0)
+							{
+								cur = result[i];
+								num++;
+								continue;
+							}
+							else
+							{
+								char n = '0' + num;
+								tmp = tmp + n + cur;
+								cur = result[i];
+								num = 1;
+							}
+						}
+					}
+					result = tmp + '#';
+					tmp.clear();
+				}
+				index++;
+			}
+		}
+		result.replace(result.size() - 1, result.size() - 1,"");
+		return result;
+	}
+};
+/*
+Solution35 SU35;
+string res=SU35.countAndSay(6);
+*/
+/*-------------------------------------------------------------------------------------*/
+/*Valid Sudoku */
+class Solution34 {
+public:
+	int validArray[10];
+	bool isValidSudoku(vector<vector<char> > &board) {
+		return validRow(board)&validCol(board)&validBlock(board);
+	}
+
+	bool validBlock(vector<vector<char> > &board)
+	{
+		for (int i = 0; i < 9; i+=3)
+		{
+			for (int j = 0; j < 9; j+=3)
+			{
+				memset(validArray, 0, sizeof(int) * 10);
+				for (int m = i; m < i+3; m++)
+				{
+					for (int n = j; n < j+3; n++)
+					{
+						if (board[m][n] >= '1'&&board[m][n] <= '9')
+						{
+							validArray[board[m][n] - '0']++;
+						}
+					}
+					for (int i = 1; i < 10; i++)
+					{
+						if (validArray[i]>1)
+						{
+							return false;
+						}
+					}
+				}
+			}
+		}
+		return true;
+	}
+
+	bool validRow(vector<vector<char> > &board)
+	{
+		for (int i = 0; i < 9; i++)
+		{
+			memset(validArray, 0, sizeof(int) * 10);
+			for (int j = 0; j < 9; j++)
+			{
+				if (board[i][j] >= '1'&&board[i][j]<='9')
+				{
+					validArray[board[i][j]-'0']++;
+				}
+			}
+			for (int j = 1; j < 10; j++)
+			{
+				if (validArray[j]>1)
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	bool validCol( vector<vector<char> > &board)
+	{
+		for (int i = 0; i < 9; i++)
+		{
+			memset(validArray, 0, sizeof(int) * 10);
+			for (int j = 0; j < 9; j++)
+			{
+				if (board[j][i] >= '1'&&board[j][i] <= '9')
+				{
+					validArray[board[j][i] - '0']++;
+				}
+			}
+			for (int j = 1; j < 10; j++)
+			{
+				if (validArray[j]>1)
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 /*Valid Palindrome*/
 class Solution33 {
