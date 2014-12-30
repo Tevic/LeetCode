@@ -1,6 +1,585 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Remove Duplicates from Sorted List*/
+class Solution52 {
+public:
+	ListNode *deleteDuplicates(ListNode *head) {
+		if (head!=NULL)
+		{
+			ListNode* p = head;
+			int preNum = p->val;;
+			ListNode* q = p->next;
+			while (q)
+			{
+				while (q&&q->val == preNum)
+				{
+					q = q->next;
+				}
+				p->next = q;
+				p = q;
+				if (q!=NULL)
+				{
+					preNum = q->val;
+					q = q->next;
+				}
+			}
+		}
+		return head;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Remove Element*/
+class Solution51 {
+public:
+	int removeElement(int A[], int n, int elem) {
+		int count = 0;
+		if (n>0)
+		{
+			for (int i = 0; i < n; i++)
+			{
+				if (A[i]!=elem)
+				{
+					A[count] = A[i];
+					count++;
+				}
+			}
+		}
+		return count;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Remove Duplicates from Sorted Array */
+class Solution50 {
+public:
+	int removeDuplicates(int A[], int n) {
+		int count = 0;
+		if (n>0)
+		{
+			int preNum = INT_MAX;
+			int index = -1;
+			for (int i = 0; i < n; i++)
+			{
+				if (A[i] == preNum)
+				{
+					continue;
+				}
+				else
+				{
+					if (index==-1)
+					{
+						index = i;
+					}
+					A[index] = A[i];
+					preNum = A[i];
+					count++;
+					index++;
+				}
+			}
+		}
+		return count;
+	}
+};
+/*
+int A[20] = {0,2,4,4,4,5,5,7,8};
+Solution50 SU50;
+SU50.removeDuplicates(A, 9);
+*/
+/*-------------------------------------------------------------------------------------*/
+/*Merge Sorted Array*/
+class Solution49 {
+public:
+	void merge(int A[], int m, int B[], int n) {
+		int index = m + n - 1;
+		if (m==0)
+		{
+			while (n-1 >= 0)
+			{
+				A[index] = B[n-1];
+				n--;
+				index--;
+			}
+		}
+		while (m-1>=0&&n-1>=0)
+		{
+			if (A[m-1]>B[n-1])
+			{
+				A[index] = A[m-1];
+				m--;
+			}
+			else
+			{
+				A[index] = B[n-1];
+				n--;
+			}
+			index--;
+		}
+		while (n-1>=0)
+		{
+			A[index] = B[n-1];
+			n--;
+			index--;
+		}
+	}
+};
+/*
+int A[20] = {0,2,4,5,7,8};
+int B[4] = {1,3,5,7};
+Solution49 SU49;
+SU49.merge(A, 6, B, 4);
+*/
+/*-------------------------------------------------------------------------------------*/
+/*Same Tree*/
+class Solution48 {
+public:
+	bool isSameTree(TreeNode *p, TreeNode *q) {
+		return isSame(p,q);
+	}
+	bool isSame(TreeNode* r1,TreeNode* r2)
+	{
+		if (r1==NULL&&r2==NULL)
+		{
+			return true;
+		}
+		else if (r1==NULL&&r2!=NULL||r1!=NULL&&r2==NULL)
+		{
+			return false;
+		}
+		else
+		{
+			return (r1->val == r2->val)&isSame(r1->left, r2->left)&isSame(r1->right, r2->right);
+		}
+	}
+};
+
+/*-------------------------------------------------------------------------------------*/
+/*Symmetric Tree*/
+class Solution47 {
+public:
+	bool isSymmetric(TreeNode *root) {
+		if (root == NULL) return true;
+		return isSym(root->left, root->right);
+	}
+	bool isSym(TreeNode *left, TreeNode *right)
+	{
+		if (left == NULL)
+			return right == NULL;
+		if (right == NULL)
+			return left == NULL;
+		if (left->val != right->val)
+			return false;
+		if (!isSym(left->left, right->right))
+			return false;
+		if (!isSym(left->right, right->left))
+			return false;
+		return true;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Valid Parentheses*/
+class Solution46 {
+public:
+	bool isValid(string s) {
+		int len = s.size();
+		if (len>0)
+		{
+			stack<char> st;
+			for (int i = 0; i < len; i++)
+			{
+				if (st.empty())
+				{
+					st.push(s[i]);
+				}
+				else
+				{
+					switch (st.top())
+					{
+					case '(':
+					{
+						if (s[i]==')')
+						{
+							st.pop();
+						}
+						else
+						{
+							st.push(s[i]);
+						}
+						break;
+					}
+					case '{':
+					{
+						if (s[i] == '}')
+						{
+							st.pop();
+						}
+						else
+						{
+							st.push(s[i]);
+						}
+						break;
+					}
+					case '[':
+					{
+						if (s[i] == ']')
+						{
+							st.pop();
+						}
+						else
+						{
+							st.push(s[i]);
+						}
+						break;
+					}
+					default:
+						st.push(s[i]);
+						break;
+					}
+				}
+			}
+			return st.empty();
+		}
+		else
+		{
+			return true;
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Remove Nth Node From End of List*/
+class Solution45 {
+public:
+	ListNode *removeNthFromEnd(ListNode *head, int n) {
+		if (!head)
+		{
+			return head;
+		}
+		ListNode* p1 = head;
+		ListNode* p2 = head;
+		while (p1->next&&n!=0)
+		{
+			p1 = p1->next;
+			n--;
+		}
+		if (n==1)
+		{
+			return head->next;
+		}
+		if (n>1)
+		{
+			return head;
+		}
+		while (p1->next)
+		{
+			p1 = p1->next;
+			p2 = p2->next;
+		}
+		p2->next = p2->next->next;
+		return head;
+	}
+};
+/*
+ListNode* head = new ListNode(1);
+head->next = new ListNode(2);
+Solution45 SU45;
+SU45.removeNthFromEnd(head, 1);
+*/
+/*-------------------------------------------------------------------------------------*/
+/*Roman to Integer*/
+class Solution44 {
+public:
+	inline int c2n(char c) {
+		switch (c) {
+		case 'I': return 1;
+		case 'V': return 5;
+		case 'X': return 10;
+		case 'L': return 50;
+		case 'C': return 100;
+		case 'D': return 500;
+		case 'M': return 1000;
+		default: return 0;
+		}
+	}
+
+	int romanToInt(string s) { 
+		int result = 0;
+		for (int i = 0; i< s.size(); i++)
+		{
+			if (i>0 && c2n(s[i]) > c2n(s[i - 1]))
+			{
+				result += (c2n(s[i]) - 2 * c2n(s[i - 1]));
+			}
+			else
+			{
+				result += c2n(s[i]);
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*isPalindrome*/
+class Solution43 {
+public:
+	bool isPalindrome(int x) {
+		if (x<0)
+		{
+			return false;
+		}
+		int count = 0;
+		int tmp = x;
+		while (tmp!=0)
+		{
+			count++;
+			tmp /= 10;
+		}
+		for (int i = count-1; i >0; i-=2)
+		{
+			int left = x / pow(10,i);
+			int right = x % 10;
+			if (left!=right)
+			{
+				return false;
+			}
+			x = x % (int)pow(10, i) / 10;
+		}
+		return true;
+	}
+};
+/*
+Solution43 SU43;
+SU43.isPalindrome(1221);
+*/
+/*-------------------------------------------------------------------------------------*/
+/*String to Integer (atoi) */
+class Solution42 {
+public:
+	int atoi(const char *str) {
+		long long tmpL = atoll(str);
+		if (tmpL>INT_MAX)
+		{
+			return INT_MAX;
+		}
+		if (tmpL<INT_MIN)
+		{
+			return INT_MIN;
+		}
+		return tmpL;
+		//return atoi(str);
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Binary Tree Level Order Traversal */
+class Solution41 {
+public:
+	vector<vector<int> > levelOrder(TreeNode *root) {
+		vector<vector<int> > result;
+		if (root != NULL)
+		{
+			queue<TreeNode*> qu;
+			qu.push(root);
+			int count = 0;
+			while (!qu.empty())
+			{
+				count = qu.size();
+				vector<int> tmpVec;
+				for (int i = 0; i < count; i++)
+				{
+					TreeNode* tmp = qu.front();
+					tmpVec.push_back(tmp->val);
+					qu.pop();
+					if (tmp->left != NULL)
+					{
+						qu.push(tmp->left);
+					}
+					if (tmp->right != NULL)
+					{
+						qu.push(tmp->right);
+					}
+				}
+				result.push_back(tmpVec);
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Minimum Depth of Binary Tree*/
+class Solution40 {
+public:
+	int minDepth(TreeNode *root) {
+		if (root!=NULL)
+		{
+			queue<TreeNode*> qu;
+			qu.push(root);
+			int count = 0;
+			int level = 0;
+			while (!qu.empty())
+			{
+				count = qu.size();
+				level++;
+				for (int i = 0; i < count; i++)
+				{
+					TreeNode* tmp = qu.front();
+					qu.pop();
+					if (tmp->left!=NULL)
+					{
+						qu.push(tmp->left);
+					}
+					if (tmp->right != NULL)
+					{
+						qu.push(tmp->right);
+					}
+					if (tmp->left==NULL&&tmp->right==NULL)
+					{
+						return level;
+					}
+				}
+			}
+
+		}
+		else
+		{
+			return 0;
+		}
+	}
+};
+/*
+TreeNode *root = new TreeNode(5);
+TreeNode *c1 = new TreeNode(4);
+TreeNode *c2 = new TreeNode(8);
+TreeNode *c3 = new TreeNode(11);
+TreeNode *c4 = new TreeNode(13);
+TreeNode *c5 = new TreeNode(4);
+TreeNode *c6 = new TreeNode(7);
+TreeNode *c7 = new TreeNode(2);
+TreeNode *c8 = new TreeNode(1);
+root->left = c1;
+root->right = c2;
+c1->left = c3;
+//c2->left = c4;
+//c2->right = c5;
+c3->left = c6;
+c3->right = c7;
+c4->right = c8;
+Solution40 SU40;
+SU40.minDepth(root);
+*/
+/*-------------------------------------------------------------------------------------*/
+/*Path Sum*/
+class Solution39 {
+public:
+	bool hasPathSum(TreeNode *root, int sum) {
+		if (root!=NULL)
+		{
+			return equalSum(root,0,sum);
+		}
+		else
+		{
+			return false;
+		}
+	}
+	bool equalSum(TreeNode *root, int sum,int target)
+	{
+		if (root->left==NULL&&root->right==NULL)
+		{
+			if (target==root->val+sum)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		bool lHasPath = false;
+		if (root->left!=NULL)
+		{
+			lHasPath = equalSum(root->left,root->val+sum,target);
+		}
+		if (lHasPath)
+		{
+			return true;
+		}
+		bool rHasPath = false;
+		if (root->right != NULL)
+		{
+			rHasPath = equalSum(root->right, root->val + sum, target);
+		}
+		return rHasPath;
+	}
+};
+/*
+Solution39 SU39;
+bool result=SU39.hasPathSum(root, 17);
+*/
+/*-------------------------------------------------------------------------------------*/
+/*Pascal's Triangle II*/
+class Solution38 {
+public:
+	vector<int> getRow(int rowIndex) {
+		if (rowIndex>=0)
+		{
+			vector<int> result(rowIndex+1,0);
+			result[0]=1;
+			int index = 0;
+			while (index<rowIndex)
+			{
+				result[index + 1] = 1;
+				for (int i = index; i >=1; i--)
+				{
+					result[i] = result[i] + result[i - 1];
+				}
+				index++;
+			}
+			return result;
+		}
+	}
+};
+/*
+Solution38 SU38;
+SU38.getRow(3);
+*/
+/*-------------------------------------------------------------------------------------*/
+/*Excel Sheet Column Number */
+class Solution37 {
+public:
+	int titleToNumber(string s) {
+		reverse(s.begin(), s.end());
+		int len = s.size();
+		int times = 1;
+		int result=0;
+		for (int i = 0; i < len; i++)
+		{
+			result = result + (s[i] - 'A' + 1)*times;
+			times *= 26;
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Factorial Trailing Zeroes */
+class Solution36 {
+public:
+	int trailingZeroes(int n) {
+		int count = 0;
+		if (n>=0)
+		{
+			for (int i = 5; i <= n; i+=5)
+			{
+				int j = i;
+				int tmp = j % 5;
+				while (tmp==0)
+				{
+					count++;
+					j /= 5;
+					tmp = j % 5;
+				}
+			}
+		}
+		return count;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 /*Min Stack*/
 class MinStack {
 public:
