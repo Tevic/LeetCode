@@ -23,6 +23,7 @@
 #include <cmath>
 #include <unordered_set>
 #include <regex>
+#include <bitset>
 
 using namespace std;
 

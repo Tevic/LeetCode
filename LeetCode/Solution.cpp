@@ -1,6 +1,202 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Length of Last Word*/
+class Solution57 {
+public:
+	int lengthOfLastWord(const char *s) {
+		int len = strlen(s);
+		if (len==0)
+		{
+			return 0;
+		}
+		int end = len;
+		int start = len;
+		int index = len-1;
+		if (s[index]==' ')
+		{
+			while (s[index]==' '&&index>=0)
+			{
+				end = index;
+				index--;
+			}
+		}
+		if (index<0)
+		{
+			return 0;
+		}
+		while (s[index] != ' '&&index >= 0)
+		{
+			start = index;
+			index--;
+		}
+		return  end - start;
+	}
+};
+/*
+Solution57 SU57;
+int result=SU57.lengthOfLastWord("11");
+*/
+/*-------------------------------------------------------------------------------------*/
+/*Merge Two Sorted Lists*/
+class Solution56 {
+public:
+	ListNode *mergeTwoLists(ListNode *l1, ListNode *l2) {
+		if (l1==NULL)
+		{
+			return l2;
+		}
+		if (l2==NULL)
+		{
+			return l1;
+		}
+		ListNode* head;
+		ListNode* p;
+		ListNode* p1=l1;
+		ListNode* p2=l2;
+		if (p1->val<p2->val)
+		{
+			head = p1;
+			p1 = p1->next;
+		}
+		else
+		{
+			head = p2;
+			p2 = p2->next;
+		}
+		p = head;
+		while (p1&&p2)
+		{
+			if (p1->val<p2->val)
+			{
+				p->next = p1;
+				p = p1;
+				p1 = p1->next;
+			}
+			else
+			{
+				p->next = p2;
+				p = p2;
+				p2 = p2->next;
+			}
+		}
+		if (p1)
+		{
+			p->next = p1;
+		}
+		if (p2)
+		{
+			p->next = p2;
+		}
+		return head;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Add Binary*/
+class Solution55 {
+public:
+	string addBinary(string a, string b) {
+		reverse(a.begin(), a.end());
+		reverse(b.begin(), b.end());
+		int lenA = a.size();
+		int lenB = b.size();
+		int len = lenA;
+		if (lenA>lenB)
+		{
+			len = lenA;
+			for (int i = lenB; i < lenA; i++)
+			{
+				b.push_back('0');
+			}
+		}
+		if (lenA<lenB)
+		{
+			len = lenB;
+			for (int i = lenA; i < lenB; i++)
+			{
+				a.push_back('0');
+			}
+		}
+		int carry = 0;
+		string result;
+		for (int i = 0; i < len; i++)
+		{
+			int tmp = (a[i] - '0') + (b[i] - '0') + carry;
+			carry = tmp / 2;
+			result.push_back(tmp%2+'0');
+		}
+		if (carry!=0)
+		{
+			result.push_back('0' + carry);
+		}
+		reverse(result.begin(), result.end());
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Plus One */
+class Solution54 {
+public:
+	vector<int> plusOne(vector<int> &digits) {
+		reverse(digits.begin(), digits.end());
+		int len = digits.size();
+		if (len > 0)
+		{
+			vector<int> result;
+			result.push_back((digits[0] + 1) % 10);
+			int carry = (digits[0] + 1) / 10;
+			for (int i = 1; i < len; i++)
+			{
+				int tmp = digits[i] + carry;
+				result.push_back(tmp % 10);
+				carry = tmp / 10;
+				if (carry == 0)
+				{
+					for (int j = i + 1; j < len; j++)
+					{
+						result.push_back(digits[j]);
+					}
+					break;
+				}
+			}
+			if (carry != 0)
+			{
+				result.push_back(carry);
+			}
+			reverse(result.begin(), result.end());
+			return result;
+		}
+	}
+};
+/*
+Solution54 SU54;
+vector<int> digits = {9,9};
+SU54.plusOne(digits);
+*/
+/*-------------------------------------------------------------------------------------*/
+/*Climbing Stairs */
+class Solution53 {
+public:
+	int climbStairs(int n) {
+		if (n==1)
+		{
+			return 1;
+		}
+		if (n==2)
+		{
+			return 2;
+		}
+		vector<int> stair(n+1, 0);
+		stair[1] = 1;
+		stair[2] = 2;
+		for (int i = 3; i <= n; i++)
+		{
+			stair[i] = stair[i - 2] + stair[i-1];
+		}
+		return stair[n];
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 /*Remove Duplicates from Sorted List*/
 class Solution52 {
 public:
