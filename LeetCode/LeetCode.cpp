@@ -8,7 +8,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {	
-
+	Solution64 SU64;
+	uint32_t tt = SU64.reverseBits(43261596);
 	return 0;
 }
 

@@ -1,6 +1,269 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Single Number */
+class Solution66 {
+public:
+	int singleNumber(int A[], int n) {
+		sort(A, A + n);
+		
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Single Number II */
+class Solution65 {
+public:
+	int singleNumber(int A[], int n) {
+		map<int, bool> ump_ii;
+		for (int i = 0; i < n; i++)
+		{
+			if (!ump_ii.count(A[i])) ump_ii[A[i]] = true;
+			else ump_ii.erase(A[i]);
+		}
+		return ump_ii.begin()->first;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Reverse Bits*/
+class Solution64 {
+public:
+	uint32_t reverseBits(uint32_t n) {
+		bitset<32> bs(n);
+		for (size_t i = 0; i < 16; i++)
+		{
+			int tmp = bs[i];
+			bs[i] = bs[32 - i - 1];
+			bs[32 - i - 1] = tmp;
+		}
+		return bs.to_ulong();
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Rotate Array*/
+class Solution63 {
+public:
+	void rotate(int nums[], int n, int k) {
+		k = k%n;
+		if (k>0)
+		{
+			RotateAll(nums, 0, n - k - 1);
+			RotateAll(nums, n - k,n-1);
+			RotateAll(nums, 0, n -1);
+		}
+	}
+
+	void RotateAll(int nums[], int start,int end)
+	{
+		int mid = (end+start) / 2;
+		for (int i = start; i <= mid; i++)
+		{
+			int tmp = nums[i];
+			nums[i] = nums[end - i + start];
+			nums[end - i + start] = tmp;
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Number of 1 Bits*/
+class Solution62 {
+public:
+	int hammingWeight(uint32_t n) {
+		int count = 0;
+		while (n>0)
+		{
+			if (n&1==1)
+			{
+				count++;
+			}
+			n >>= 1;
+		}
+		return count;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Letter Combinations of a Phone Number */
+class Solution61 {
+public:
+	vector<string> letterCombinations(string digits) {
+		vector<string> strArray = {" ","","abc","def","ghi","jkl","mno","pqrs","tuv","wxyz"};
+		vector<string> res(1, "");
+		for (int i = 0; i < digits.size(); i++)
+		{
+			vector<string> tmp;
+			for (int j = 0; j < res.size(); j++)
+			{
+				for (int k = 0; k < strArray[digits[i]-'0'].size(); k++)
+				{
+					tmp.push_back(res[j] + strArray[digits[i] - '0'][k]);
+				}
+			}
+			res = tmp;
+		}
+		return res;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Longest Palindromic Substring */
+class Solution60 {
+public:
+	string longestPalindrome(string s) {
+		const int len = s.size();
+		if (len <= 1)return s;
+		int start, maxLen = 0;
+		for (int i = 1; i < len; i++)
+		{
+			//寻找以i-1,i为中点偶数长度的回文
+			int low = i - 1, high = i;
+			while (low >= 0 && high < len && s[low] == s[high])
+			{
+				low--;
+				high++;
+			}
+			if (high - low - 1 > maxLen)
+			{
+				maxLen = high - low - 1;
+				start = low + 1;
+			}
+
+			//寻找以i为中心的奇数长度的回文
+			low = i - 1; high = i + 1;
+			while (low >= 0 && high < len && s[low] == s[high])
+			{
+				low--;
+				high++;
+			}
+			if (high - low - 1 > maxLen)
+			{
+				maxLen = high - low - 1;
+				start = low + 1;
+			}
+		}
+		return s.substr(start, maxLen);
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Sum Root to Leaf Numbers*/
+class Solution59 {
+public:
+	int allSum = 0;
+	int sumNumbers(TreeNode *root) {
+		SumToRoot(root, 0);
+		return allSum;
+	}
+	int SumToRoot(TreeNode* root,int sum)
+	{
+		if (root)
+		{
+			if (root->left==NULL&&root->right==NULL)
+			{
+				sum=sum+root->val;
+				allSum += sum;
+				return sum;
+			}
+			int lSum = 0;
+			int rSum = 0;
+			if (root->left)
+			{
+				lSum = SumToRoot(root->left, (sum + root->val)*10);
+			}
+			if (root->right)
+			{
+				rSum = SumToRoot(root->right, (sum + root->val) * 10);
+			}
+			return lSum + rSum;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+};
+/*
+TreeNode* root = new TreeNode(1);
+TreeNode* t1 = new TreeNode(2);
+TreeNode* t2 = new TreeNode(3);
+TreeNode* t3 = new TreeNode(4);
+TreeNode* t4 = new TreeNode(5);
+TreeNode* t5 = new TreeNode(6);
+TreeNode* t6 = new TreeNode(7);
+root->left = t1;
+root->right = t2;
+t1->left = t3;
+t1->right = t4;
+//t2->left = t5;
+//t2->right = t6;
+Solution59 SU59;
+int result=SU59.sumNumbers(root);
+*/
+/*-------------------------------------------------------------------------------------*/
+/*Add Two Numbers*/
+class Solution58 {
+public:
+	ListNode *addTwoNumbers(ListNode *l1, ListNode *l2) {
+		if (l1==NULL)
+		{
+			return l2;
+		}
+		if (l2==NULL)
+		{
+			return l1;
+		}
+		ListNode* p1=l1;
+		ListNode* p2=l2;
+		int carry = 0;
+		ListNode* head=p1;
+		ListNode* p=head;
+		while (p1&&p2)
+		{
+			int tmp = p1->val + p2->val + carry;
+			p1->val = tmp % 10;
+			carry = tmp / 10;
+			p = p1;
+			p1 = p1->next;
+			p2 = p2->next;
+		}
+		while (p1&&carry)
+		{
+				int tmp = p1->val + carry;
+				p1->val = tmp % 10;
+				carry = tmp / 10;
+				p = p1;
+				p1 = p1->next;
+		}
+		while (p2)
+		{
+			if (carry!=0)
+			{
+				int tmp = p2->val + carry;
+				p2->val = tmp % 10;
+				carry = tmp / 10;
+				p->next = p2;
+				p = p2;
+				p2 = p2->next;
+			}
+			else
+			{
+				p->next = p2;
+				break;
+			}
+
+		}
+		if (carry!=0)
+		{
+			ListNode* last=new ListNode(carry);
+			p->next = last;
+		}
+		return head;
+	}
+};
+/*
+ListNode* l1 = new ListNode(0);
+ListNode* l2 = new ListNode(7);
+l2->next = new ListNode(3);
+Solution58 SU58;
+SU58.addTwoNumbers(l1, l2);
+*/
+/*-------------------------------------------------------------------------------------*/
 /*Length of Last Word*/
 class Solution57 {
 public:
