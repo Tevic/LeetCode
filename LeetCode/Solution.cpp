@@ -1,6 +1,133 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Gas Station*/
+class Solution68 {
+public:
+	int canCompleteCircuit(vector<int> &gas, vector<int> &cost) {
+		int len = gas.size();
+		vector<int> vec;
+		for (int i = 0; i < len; i++)
+		{
+			vec.push_back(gas[i]-cost[i]);
+		}
+		for (int i = 0; i < len; i++)
+		{
+			if (vec[i] < 0)
+			{
+				continue;
+			}
+			int remain = 0;
+			bool flag = true;
+			for (int j = 0; j < len; j++)
+			{
+				int cur = (i + j) % len;
+				remain = remain+vec[cur];
+				if (remain<0)
+				{
+					flag = false;
+					break;
+				}
+			}
+			if (flag)
+			{
+				return i;
+			}
+		}
+		return -1;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*3Sum*/
+class Solution67 {
+public:
+	vector<vector<int> > threeSum(vector<int> &num) {
+		vector<vector<int> > ret;
+		if (num.size() < 3) return ret;
+
+		sort(num.begin(), num.end());
+
+		for (int i = 0; i < num.size() - 2; ++i) {
+			if (i > 0 && num[i] == num[i - 1]) continue;
+			for (int j = i + 1; j < num.size() - 1; ++j) {
+				if (j > i + 1 && num[j] == num[j - 1]) continue;
+				int target = -(num[i] + num[j]);
+				int ks = j + 1;
+				int ke = num.size() - 1;
+				if (target < num[ks] || target > num[ke]) continue;
+				while (ks <= ke) {
+					int km = (ks + ke) / 2;
+					if (num[km] == target) {
+						//found an triplet
+						vector<int> tri(3, target);
+						tri[0] = num[i];
+						tri[1] = num[j];
+						ret.push_back(tri);
+						break;
+					}
+					else if (num[km] > target) {
+						ke = km - 1;
+					}
+					else {
+						ks = km + 1;
+					}
+				}
+			}
+		}
+
+		return ret;
+	}
+};
+/*
+vector<int> num{ -1 ,0 ,1 ,2 ,-1, -4 };
+Solution67 SU67;
+SU67.threeSum(num);
+*/
+/*
+class Solution67 {
+public:
+	vector<vector<int> > threeSum(vector<int> &num) {
+		int length = num.size();
+		vector<vector<int> > result;
+		sort(num.begin(), num.end());
+		if (length>=3)
+		{
+			for (int i = 0; i < length; i++)
+			{
+				for (int j = i + 1; j < length; j++)
+				{
+					int k = j + 1;
+					int target = 0 - num[i] - num[j];
+					int left = k;
+					int right = length - 1;
+					int mid;
+					while (left<=right)
+					{
+						mid = (left + right) / 2;
+						if (num[mid]==target)
+						{
+							result.push_back(vector < int > {num[i] , num[j],target});
+							break;
+						}
+						else if (num[mid]<target)
+						{
+							left = mid+1;
+						}
+						else
+						{
+							right = mid - 1;
+						}
+					}
+				}
+			}
+			sort(result.begin(), result.end());
+			result.erase(unique(result.begin(),result.end()),result.end());
+			return result;
+		}
+	}
+};
+*/
+/*-------------------------------------------------------------------------------------*/
 /*Single Number */
 class Solution66 {
 public:
@@ -38,6 +165,10 @@ public:
 		return bs.to_ulong();
 	}
 };
+/*
+Solution64 SU64;
+uint32_t tt = SU64.reverseBits(43261596);
+*/
 /*-------------------------------------------------------------------------------------*/
 /*Rotate Array*/
 class Solution63 {

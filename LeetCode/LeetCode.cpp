@@ -8,8 +8,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {	
-	Solution64 SU64;
-	uint32_t tt = SU64.reverseBits(43261596);
+	Solution68 SU68;
+	SU68.canCompleteCircuit(vector < int > {2, 4}, vector < int > {3, 4});
 	return 0;
 }
 
