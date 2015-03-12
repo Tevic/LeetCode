@@ -11,30 +11,27 @@ public:
 		{
 			vec.push_back(gas[i]-cost[i]);
 		}
+		int sum = 0;
+		int leftGas = 0;
+		int start = 0;
 		for (int i = 0; i < len; i++)
 		{
-			if (vec[i] < 0)
+			leftGas += vec[i];
+			sum += vec[i];
+			if (sum<0)
 			{
-				continue;
-			}
-			int remain = 0;
-			bool flag = true;
-			for (int j = 0; j < len; j++)
-			{
-				int cur = (i + j) % len;
-				remain = remain+vec[cur];
-				if (remain<0)
-				{
-					flag = false;
-					break;
-				}
-			}
-			if (flag)
-			{
-				return i;
+				sum = 0;
+				start = i + 1;
 			}
 		}
-		return -1;
+		if (leftGas<0)
+		{
+			return -1;
+		}
+		else
+		{
+			return start;
+		}
 	}
 };
 /*-------------------------------------------------------------------------------------*/
