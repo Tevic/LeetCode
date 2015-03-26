@@ -8,8 +8,9 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {	
-	Solution68 SU68;
-	SU68.canCompleteCircuit(vector < int > {2, 4}, vector < int > {3, 4});
+	Solution72 SU72;
+	int A[6] = { 1, 1, 1, 2, 2, 3 };
+	SU72.removeDuplicates(A,6);
 	return 0;
 }
 

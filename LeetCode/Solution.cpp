@@ -1,6 +1,179 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Remove Duplicates from Sorted Array II */
+class Solution72 {
+public:
+	int removeDuplicates(int A[], int n) {
+		int curNum = A[0];
+		int curCount = 1;
+		for (size_t i = 1; i < n; i++)
+		{
+			if (curCount==2)
+			{
+				if (curNum == A[i])
+				{
+					A[i] = INT_MAX;
+				}
+				else
+				{
+					curNum = A[i];
+					curCount = 1;
+				}
+			}
+			else
+			{
+				if (curNum==A[i])
+				{
+					curCount++;
+				}
+				else
+				{
+					curNum = A[i];
+					curCount = 1;
+				}
+			}
+		}
+		int index = 0;
+		int count = n;
+		for (size_t i = 0; i < n; i++)
+		{
+			if (A[i]!=INT_MAX)
+			{
+				A[index]=A[i];
+				index++;
+			}
+			else
+			{
+				count--;
+			}
+		}
+		return count;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Longest Substring Without Repeating Characters*/
+class Solution71 {
+public:
+	int lengthOfLongestSubstring(string s) {
+		int hash[256];
+		for (int i = 0; i < 256; i++) hash[i] = -1;
+		int start = 0, ans = 0;
+		int i;
+		for (i = 0; i < s.size(); i++){
+			if (-1 != hash[s[i]]){
+				if (ans < i - start) ans = i - start;
+				for (int j = start; j<hash[s[i]]; j++) hash[j] = -1;
+				if (hash[s[i]] + 1  > start)
+					start = hash[s[i]] + 1;
+			}
+			hash[s[i]] = i;
+		}
+		if (ans < i - start) ans = i - start;
+		return ans;
+	}
+};
+
+
+/*-------------------------------------------------------------------------------------*/
+/*Surrounded Regions */
+class Solution70 {
+public:
+	vector<int> xIndex;
+	vector<int> yIndex;
+	void solve(vector<vector<char>> &board) {
+		int row = board.size();
+		if (row == 0) return;
+		int col = board[0].size();
+		xIndex.clear();
+		yIndex.clear();
+		for (int i = 0; i < row; i++)
+		{
+			if (board[i][0] == 'O')
+			{
+				xIndex.push_back(i);
+				yIndex.push_back(0);
+			}
+			if (board[i][col - 1] == 'O')
+			{
+				xIndex.push_back(i);
+				yIndex.push_back(col - 1);
+			}
+		}
+		for (int i = 0; i < col; i++)
+		{
+			if (board[0][i] == 'O')
+			{
+				xIndex.push_back(0);
+				yIndex.push_back(i);
+			}
+			if (board[row - 1][i] == 'O')
+			{
+				xIndex.push_back(row - 1);
+				yIndex.push_back(i);
+			}
+		}
+		int k = 0;
+		while (k < xIndex.size())
+		{
+			int x = xIndex[k];
+			int y = yIndex[k];
+			board[x][y] = 'Y';
+			if (x > 0 && board[x - 1][y] == 'O') { xIndex.push_back(x - 1); yIndex.push_back(y); }
+			if (x < row - 1 && board[x + 1][y] == 'O') { xIndex.push_back(x + 1); yIndex.push_back(y); }
+			if (y > 0 && board[x][y - 1] == 'O') { xIndex.push_back(x); yIndex.push_back(y - 1); }
+			if (y < col - 1 && board[x][y + 1] == 'O') { xIndex.push_back(x); yIndex.push_back(y + 1); }
+			k++;
+		}
+		for (int i = 0; i < row; i++)
+		{
+			for (int j = 0; j < col; j++)
+			{
+				if (board[i][j] == 'O') board[i][j] = 'X';
+				if (board[i][j] == 'Y') board[i][j] = 'O';
+			}
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*3Sum Closest*/
+class Solution69 {
+public:
+	int threeSumClosest(vector<int> &num, int target) {
+		sort(num.begin(), num.end());
+		int len = num.size();
+		int distMin = INT_MAX;
+		int ret = 0;
+		for (int i = 0; i < len; i++)
+		{
+			int j = i + 1;
+			int k = len - 1;
+			while (j < k)
+			{
+				int dist = target - num[i] - num[j] - num[k];
+				if (abs(dist) < distMin)
+				{
+					distMin = abs(dist);
+					ret = num[i] + num[j] + num[k];
+				}
+				if (dist > 0)
+				{
+					j++;
+				}
+				else if (dist < 0)
+				{
+					k--;
+				}
+				else
+				{
+					return ret;
+				}
+			}
+		}
+		return ret;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 /*Gas Station*/
 class Solution68 {
 public:
@@ -9,7 +182,7 @@ public:
 		vector<int> vec;
 		for (int i = 0; i < len; i++)
 		{
-			vec.push_back(gas[i]-cost[i]);
+			vec.push_back(gas[i] - cost[i]);
 		}
 		int sum = 0;
 		int leftGas = 0;
@@ -18,13 +191,13 @@ public:
 		{
 			leftGas += vec[i];
 			sum += vec[i];
-			if (sum<0)
+			if (sum < 0)
 			{
 				sum = 0;
 				start = i + 1;
 			}
 		}
-		if (leftGas<0)
+		if (leftGas < 0)
 		{
 			return -1;
 		}
@@ -83,45 +256,45 @@ SU67.threeSum(num);
 /*
 class Solution67 {
 public:
-	vector<vector<int> > threeSum(vector<int> &num) {
-		int length = num.size();
-		vector<vector<int> > result;
-		sort(num.begin(), num.end());
-		if (length>=3)
-		{
-			for (int i = 0; i < length; i++)
-			{
-				for (int j = i + 1; j < length; j++)
-				{
-					int k = j + 1;
-					int target = 0 - num[i] - num[j];
-					int left = k;
-					int right = length - 1;
-					int mid;
-					while (left<=right)
-					{
-						mid = (left + right) / 2;
-						if (num[mid]==target)
-						{
-							result.push_back(vector < int > {num[i] , num[j],target});
-							break;
-						}
-						else if (num[mid]<target)
-						{
-							left = mid+1;
-						}
-						else
-						{
-							right = mid - 1;
-						}
-					}
-				}
-			}
-			sort(result.begin(), result.end());
-			result.erase(unique(result.begin(),result.end()),result.end());
-			return result;
-		}
-	}
+vector<vector<int> > threeSum(vector<int> &num) {
+int length = num.size();
+vector<vector<int> > result;
+sort(num.begin(), num.end());
+if (length>=3)
+{
+for (int i = 0; i < length; i++)
+{
+for (int j = i + 1; j < length; j++)
+{
+int k = j + 1;
+int target = 0 - num[i] - num[j];
+int left = k;
+int right = length - 1;
+int mid;
+while (left<=right)
+{
+mid = (left + right) / 2;
+if (num[mid]==target)
+{
+result.push_back(vector < int > {num[i] , num[j],target});
+break;
+}
+else if (num[mid]<target)
+{
+left = mid+1;
+}
+else
+{
+right = mid - 1;
+}
+}
+}
+}
+sort(result.begin(), result.end());
+result.erase(unique(result.begin(),result.end()),result.end());
+return result;
+}
+}
 };
 */
 /*-------------------------------------------------------------------------------------*/
@@ -130,7 +303,7 @@ class Solution66 {
 public:
 	int singleNumber(int A[], int n) {
 		sort(A, A + n);
-		
+
 	}
 };
 /*-------------------------------------------------------------------------------------*/
@@ -172,17 +345,17 @@ class Solution63 {
 public:
 	void rotate(int nums[], int n, int k) {
 		k = k%n;
-		if (k>0)
+		if (k > 0)
 		{
 			RotateAll(nums, 0, n - k - 1);
-			RotateAll(nums, n - k,n-1);
-			RotateAll(nums, 0, n -1);
+			RotateAll(nums, n - k, n - 1);
+			RotateAll(nums, 0, n - 1);
 		}
 	}
 
-	void RotateAll(int nums[], int start,int end)
+	void RotateAll(int nums[], int start, int end)
 	{
-		int mid = (end+start) / 2;
+		int mid = (end + start) / 2;
 		for (int i = start; i <= mid; i++)
 		{
 			int tmp = nums[i];
@@ -197,9 +370,9 @@ class Solution62 {
 public:
 	int hammingWeight(uint32_t n) {
 		int count = 0;
-		while (n>0)
+		while (n > 0)
 		{
-			if (n&1==1)
+			if (n & 1 == 1)
 			{
 				count++;
 			}
@@ -213,14 +386,14 @@ public:
 class Solution61 {
 public:
 	vector<string> letterCombinations(string digits) {
-		vector<string> strArray = {" ","","abc","def","ghi","jkl","mno","pqrs","tuv","wxyz"};
+		vector<string> strArray = { " ", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz" };
 		vector<string> res(1, "");
 		for (int i = 0; i < digits.size(); i++)
 		{
 			vector<string> tmp;
 			for (int j = 0; j < res.size(); j++)
 			{
-				for (int k = 0; k < strArray[digits[i]-'0'].size(); k++)
+				for (int k = 0; k < strArray[digits[i] - '0'].size(); k++)
 				{
 					tmp.push_back(res[j] + strArray[digits[i] - '0'][k]);
 				}
@@ -278,13 +451,13 @@ public:
 		SumToRoot(root, 0);
 		return allSum;
 	}
-	int SumToRoot(TreeNode* root,int sum)
+	int SumToRoot(TreeNode* root, int sum)
 	{
 		if (root)
 		{
-			if (root->left==NULL&&root->right==NULL)
+			if (root->left == NULL&&root->right == NULL)
 			{
-				sum=sum+root->val;
+				sum = sum + root->val;
 				allSum += sum;
 				return sum;
 			}
@@ -292,7 +465,7 @@ public:
 			int rSum = 0;
 			if (root->left)
 			{
-				lSum = SumToRoot(root->left, (sum + root->val)*10);
+				lSum = SumToRoot(root->left, (sum + root->val) * 10);
 			}
 			if (root->right)
 			{
@@ -328,19 +501,19 @@ int result=SU59.sumNumbers(root);
 class Solution58 {
 public:
 	ListNode *addTwoNumbers(ListNode *l1, ListNode *l2) {
-		if (l1==NULL)
+		if (l1 == NULL)
 		{
 			return l2;
 		}
-		if (l2==NULL)
+		if (l2 == NULL)
 		{
 			return l1;
 		}
-		ListNode* p1=l1;
-		ListNode* p2=l2;
+		ListNode* p1 = l1;
+		ListNode* p2 = l2;
 		int carry = 0;
-		ListNode* head=p1;
-		ListNode* p=head;
+		ListNode* head = p1;
+		ListNode* p = head;
 		while (p1&&p2)
 		{
 			int tmp = p1->val + p2->val + carry;
@@ -352,15 +525,15 @@ public:
 		}
 		while (p1&&carry)
 		{
-				int tmp = p1->val + carry;
-				p1->val = tmp % 10;
-				carry = tmp / 10;
-				p = p1;
-				p1 = p1->next;
+			int tmp = p1->val + carry;
+			p1->val = tmp % 10;
+			carry = tmp / 10;
+			p = p1;
+			p1 = p1->next;
 		}
 		while (p2)
 		{
-			if (carry!=0)
+			if (carry != 0)
 			{
 				int tmp = p2->val + carry;
 				p2->val = tmp % 10;
@@ -376,9 +549,9 @@ public:
 			}
 
 		}
-		if (carry!=0)
+		if (carry != 0)
 		{
-			ListNode* last=new ListNode(carry);
+			ListNode* last = new ListNode(carry);
 			p->next = last;
 		}
 		return head;
@@ -397,22 +570,22 @@ class Solution57 {
 public:
 	int lengthOfLastWord(const char *s) {
 		int len = strlen(s);
-		if (len==0)
+		if (len == 0)
 		{
 			return 0;
 		}
 		int end = len;
 		int start = len;
-		int index = len-1;
-		if (s[index]==' ')
+		int index = len - 1;
+		if (s[index] == ' ')
 		{
-			while (s[index]==' '&&index>=0)
+			while (s[index] == ' '&&index >= 0)
 			{
 				end = index;
 				index--;
 			}
 		}
-		if (index<0)
+		if (index < 0)
 		{
 			return 0;
 		}
@@ -433,19 +606,19 @@ int result=SU57.lengthOfLastWord("11");
 class Solution56 {
 public:
 	ListNode *mergeTwoLists(ListNode *l1, ListNode *l2) {
-		if (l1==NULL)
+		if (l1 == NULL)
 		{
 			return l2;
 		}
-		if (l2==NULL)
+		if (l2 == NULL)
 		{
 			return l1;
 		}
 		ListNode* head;
 		ListNode* p;
-		ListNode* p1=l1;
-		ListNode* p2=l2;
-		if (p1->val<p2->val)
+		ListNode* p1 = l1;
+		ListNode* p2 = l2;
+		if (p1->val < p2->val)
 		{
 			head = p1;
 			p1 = p1->next;
@@ -458,7 +631,7 @@ public:
 		p = head;
 		while (p1&&p2)
 		{
-			if (p1->val<p2->val)
+			if (p1->val < p2->val)
 			{
 				p->next = p1;
 				p = p1;
@@ -492,7 +665,7 @@ public:
 		int lenA = a.size();
 		int lenB = b.size();
 		int len = lenA;
-		if (lenA>lenB)
+		if (lenA > lenB)
 		{
 			len = lenA;
 			for (int i = lenB; i < lenA; i++)
@@ -500,7 +673,7 @@ public:
 				b.push_back('0');
 			}
 		}
-		if (lenA<lenB)
+		if (lenA < lenB)
 		{
 			len = lenB;
 			for (int i = lenA; i < lenB; i++)
@@ -514,9 +687,9 @@ public:
 		{
 			int tmp = (a[i] - '0') + (b[i] - '0') + carry;
 			carry = tmp / 2;
-			result.push_back(tmp%2+'0');
+			result.push_back(tmp % 2 + '0');
 		}
-		if (carry!=0)
+		if (carry != 0)
 		{
 			result.push_back('0' + carry);
 		}
@@ -569,20 +742,20 @@ SU54.plusOne(digits);
 class Solution53 {
 public:
 	int climbStairs(int n) {
-		if (n==1)
+		if (n == 1)
 		{
 			return 1;
 		}
-		if (n==2)
+		if (n == 2)
 		{
 			return 2;
 		}
-		vector<int> stair(n+1, 0);
+		vector<int> stair(n + 1, 0);
 		stair[1] = 1;
 		stair[2] = 2;
 		for (int i = 3; i <= n; i++)
 		{
-			stair[i] = stair[i - 2] + stair[i-1];
+			stair[i] = stair[i - 2] + stair[i - 1];
 		}
 		return stair[n];
 	}
@@ -592,7 +765,7 @@ public:
 class Solution52 {
 public:
 	ListNode *deleteDuplicates(ListNode *head) {
-		if (head!=NULL)
+		if (head != NULL)
 		{
 			ListNode* p = head;
 			int preNum = p->val;;
@@ -605,7 +778,7 @@ public:
 				}
 				p->next = q;
 				p = q;
-				if (q!=NULL)
+				if (q != NULL)
 				{
 					preNum = q->val;
 					q = q->next;
@@ -621,11 +794,11 @@ class Solution51 {
 public:
 	int removeElement(int A[], int n, int elem) {
 		int count = 0;
-		if (n>0)
+		if (n > 0)
 		{
 			for (int i = 0; i < n; i++)
 			{
-				if (A[i]!=elem)
+				if (A[i] != elem)
 				{
 					A[count] = A[i];
 					count++;
@@ -641,7 +814,7 @@ class Solution50 {
 public:
 	int removeDuplicates(int A[], int n) {
 		int count = 0;
-		if (n>0)
+		if (n > 0)
 		{
 			int preNum = INT_MAX;
 			int index = -1;
@@ -653,7 +826,7 @@ public:
 				}
 				else
 				{
-					if (index==-1)
+					if (index == -1)
 					{
 						index = i;
 					}
@@ -678,32 +851,32 @@ class Solution49 {
 public:
 	void merge(int A[], int m, int B[], int n) {
 		int index = m + n - 1;
-		if (m==0)
+		if (m == 0)
 		{
-			while (n-1 >= 0)
+			while (n - 1 >= 0)
 			{
-				A[index] = B[n-1];
+				A[index] = B[n - 1];
 				n--;
 				index--;
 			}
 		}
-		while (m-1>=0&&n-1>=0)
+		while (m - 1 >= 0 && n - 1 >= 0)
 		{
-			if (A[m-1]>B[n-1])
+			if (A[m - 1] > B[n - 1])
 			{
-				A[index] = A[m-1];
+				A[index] = A[m - 1];
 				m--;
 			}
 			else
 			{
-				A[index] = B[n-1];
+				A[index] = B[n - 1];
 				n--;
 			}
 			index--;
 		}
-		while (n-1>=0)
+		while (n - 1 >= 0)
 		{
-			A[index] = B[n-1];
+			A[index] = B[n - 1];
 			n--;
 			index--;
 		}
@@ -720,15 +893,15 @@ SU49.merge(A, 6, B, 4);
 class Solution48 {
 public:
 	bool isSameTree(TreeNode *p, TreeNode *q) {
-		return isSame(p,q);
+		return isSame(p, q);
 	}
-	bool isSame(TreeNode* r1,TreeNode* r2)
+	bool isSame(TreeNode* r1, TreeNode* r2)
 	{
-		if (r1==NULL&&r2==NULL)
+		if (r1 == NULL&&r2 == NULL)
 		{
 			return true;
 		}
-		else if (r1==NULL&&r2!=NULL||r1!=NULL&&r2==NULL)
+		else if (r1 == NULL&&r2 != NULL || r1 != NULL&&r2 == NULL)
 		{
 			return false;
 		}
@@ -768,7 +941,7 @@ class Solution46 {
 public:
 	bool isValid(string s) {
 		int len = s.size();
-		if (len>0)
+		if (len > 0)
 		{
 			stack<char> st;
 			for (int i = 0; i < len; i++)
@@ -783,7 +956,7 @@ public:
 					{
 					case '(':
 					{
-						if (s[i]==')')
+						if (s[i] == ')')
 						{
 							st.pop();
 						}
@@ -842,16 +1015,16 @@ public:
 		}
 		ListNode* p1 = head;
 		ListNode* p2 = head;
-		while (p1->next&&n!=0)
+		while (p1->next&&n != 0)
 		{
 			p1 = p1->next;
 			n--;
 		}
-		if (n==1)
+		if (n == 1)
 		{
 			return head->next;
 		}
-		if (n>1)
+		if (n > 1)
 		{
 			return head;
 		}
@@ -887,9 +1060,9 @@ public:
 		}
 	}
 
-	int romanToInt(string s) { 
+	int romanToInt(string s) {
 		int result = 0;
-		for (int i = 0; i< s.size(); i++)
+		for (int i = 0; i < s.size(); i++)
 		{
 			if (i>0 && c2n(s[i]) > c2n(s[i - 1]))
 			{
@@ -908,22 +1081,22 @@ public:
 class Solution43 {
 public:
 	bool isPalindrome(int x) {
-		if (x<0)
+		if (x < 0)
 		{
 			return false;
 		}
 		int count = 0;
 		int tmp = x;
-		while (tmp!=0)
+		while (tmp != 0)
 		{
 			count++;
 			tmp /= 10;
 		}
-		for (int i = count-1; i >0; i-=2)
+		for (int i = count - 1; i > 0; i -= 2)
 		{
-			int left = x / pow(10,i);
+			int left = x / pow(10, i);
 			int right = x % 10;
-			if (left!=right)
+			if (left != right)
 			{
 				return false;
 			}
@@ -942,11 +1115,11 @@ class Solution42 {
 public:
 	int atoi(const char *str) {
 		long long tmpL = atoll(str);
-		if (tmpL>INT_MAX)
+		if (tmpL > INT_MAX)
 		{
 			return INT_MAX;
 		}
-		if (tmpL<INT_MIN)
+		if (tmpL < INT_MIN)
 		{
 			return INT_MIN;
 		}
@@ -994,7 +1167,7 @@ public:
 class Solution40 {
 public:
 	int minDepth(TreeNode *root) {
-		if (root!=NULL)
+		if (root != NULL)
 		{
 			queue<TreeNode*> qu;
 			qu.push(root);
@@ -1008,7 +1181,7 @@ public:
 				{
 					TreeNode* tmp = qu.front();
 					qu.pop();
-					if (tmp->left!=NULL)
+					if (tmp->left != NULL)
 					{
 						qu.push(tmp->left);
 					}
@@ -1016,7 +1189,7 @@ public:
 					{
 						qu.push(tmp->right);
 					}
-					if (tmp->left==NULL&&tmp->right==NULL)
+					if (tmp->left == NULL&&tmp->right == NULL)
 					{
 						return level;
 					}
@@ -1056,20 +1229,20 @@ SU40.minDepth(root);
 class Solution39 {
 public:
 	bool hasPathSum(TreeNode *root, int sum) {
-		if (root!=NULL)
+		if (root != NULL)
 		{
-			return equalSum(root,0,sum);
+			return equalSum(root, 0, sum);
 		}
 		else
 		{
 			return false;
 		}
 	}
-	bool equalSum(TreeNode *root, int sum,int target)
+	bool equalSum(TreeNode *root, int sum, int target)
 	{
-		if (root->left==NULL&&root->right==NULL)
+		if (root->left == NULL&&root->right == NULL)
 		{
-			if (target==root->val+sum)
+			if (target == root->val + sum)
 			{
 				return true;
 			}
@@ -1079,9 +1252,9 @@ public:
 			}
 		}
 		bool lHasPath = false;
-		if (root->left!=NULL)
+		if (root->left != NULL)
 		{
-			lHasPath = equalSum(root->left,root->val+sum,target);
+			lHasPath = equalSum(root->left, root->val + sum, target);
 		}
 		if (lHasPath)
 		{
@@ -1104,15 +1277,15 @@ bool result=SU39.hasPathSum(root, 17);
 class Solution38 {
 public:
 	vector<int> getRow(int rowIndex) {
-		if (rowIndex>=0)
+		if (rowIndex >= 0)
 		{
-			vector<int> result(rowIndex+1,0);
-			result[0]=1;
+			vector<int> result(rowIndex + 1, 0);
+			result[0] = 1;
 			int index = 0;
-			while (index<rowIndex)
+			while (index < rowIndex)
 			{
 				result[index + 1] = 1;
-				for (int i = index; i >=1; i--)
+				for (int i = index; i >= 1; i--)
 				{
 					result[i] = result[i] + result[i - 1];
 				}
@@ -1134,7 +1307,7 @@ public:
 		reverse(s.begin(), s.end());
 		int len = s.size();
 		int times = 1;
-		int result=0;
+		int result = 0;
 		for (int i = 0; i < len; i++)
 		{
 			result = result + (s[i] - 'A' + 1)*times;
@@ -1149,13 +1322,13 @@ class Solution36 {
 public:
 	int trailingZeroes(int n) {
 		int count = 0;
-		if (n>=0)
+		if (n >= 0)
 		{
-			for (int i = 5; i <= n; i+=5)
+			for (int i = 5; i <= n; i += 5)
 			{
 				int j = i;
 				int tmp = j % 5;
-				while (tmp==0)
+				while (tmp == 0)
 				{
 					count++;
 					j /= 5;
@@ -1201,32 +1374,32 @@ public:
 	string countAndSay(int n) {
 		string result;
 		string tmp;
-		if (n>0)
+		if (n > 0)
 		{
 			int index = 1;
-			while (index<n + 1)
+			while (index < n + 1)
 			{
 				if (index == 1)
 				{
 					tmp = "1";
-					result = tmp+'#';
+					result = tmp + '#';
 					tmp.clear();
 				}
 				else
 				{
 					int len = result.size();
-					char cur='#';
+					char cur = '#';
 					int num = 0;
 					for (int i = 0; i < len; i++)
 					{
-						if (cur==result[i])
+						if (cur == result[i])
 						{
 							num++;
 							continue;
 						}
 						else
 						{
-							if (i==0)
+							if (i == 0)
 							{
 								cur = result[i];
 								num++;
@@ -1247,7 +1420,7 @@ public:
 				index++;
 			}
 		}
-		result.replace(result.size() - 1, result.size() - 1,"");
+		result.replace(result.size() - 1, result.size() - 1, "");
 		return result;
 	}
 };
@@ -1266,14 +1439,14 @@ public:
 
 	bool validBlock(vector<vector<char> > &board)
 	{
-		for (int i = 0; i < 9; i+=3)
+		for (int i = 0; i < 9; i += 3)
 		{
-			for (int j = 0; j < 9; j+=3)
+			for (int j = 0; j < 9; j += 3)
 			{
 				memset(validArray, 0, sizeof(int) * 10);
-				for (int m = i; m < i+3; m++)
+				for (int m = i; m < i + 3; m++)
 				{
-					for (int n = j; n < j+3; n++)
+					for (int n = j; n < j + 3; n++)
 					{
 						if (board[m][n] >= '1'&&board[m][n] <= '9')
 						{
@@ -1300,9 +1473,9 @@ public:
 			memset(validArray, 0, sizeof(int) * 10);
 			for (int j = 0; j < 9; j++)
 			{
-				if (board[i][j] >= '1'&&board[i][j]<='9')
+				if (board[i][j] >= '1'&&board[i][j] <= '9')
 				{
-					validArray[board[i][j]-'0']++;
+					validArray[board[i][j] - '0']++;
 				}
 			}
 			for (int j = 1; j < 10; j++)
@@ -1316,7 +1489,7 @@ public:
 		return true;
 	}
 
-	bool validCol( vector<vector<char> > &board)
+	bool validCol(vector<vector<char> > &board)
 	{
 		for (int i = 0; i < 9; i++)
 		{
@@ -1346,24 +1519,24 @@ public:
 	bool isPalindrome(string s) {
 		string str;
 		int len = s.size();
-		if (len==0)
+		if (len == 0)
 		{
 			return true;
 		}
 		for (int i = 0; i < len; i++)
 		{
-			if (s[i]>='A'&&s[i]<='Z')
+			if (s[i] >= 'A'&&s[i] <= 'Z')
 			{
 				str.push_back(tolower(s[i]));
 			}
-			if ((s[i] >= 'a'&&s[i] <= 'z') || (s[i]>='0'&&s[i]<='9'))
+			if ((s[i] >= 'a'&&s[i] <= 'z') || (s[i] >= '0'&&s[i] <= '9'))
 			{
 				str.push_back(s[i]);
 			}
 		}
 		string strReverse = str;
 		reverse(strReverse.begin(), strReverse.end());
-		if (str==strReverse)
+		if (str == strReverse)
 		{
 			return true;
 		}
@@ -1387,9 +1560,9 @@ public:
 		int len = s.size();
 		int maxLength = 0;
 		int index = -1;
- 		for (int i = 0; i < len; i++)
+		for (int i = 0; i < len; i++)
 		{
-			if (s[i]=='(')
+			if (s[i] == '(')
 			{
 				st.push(i);
 			}
@@ -1428,16 +1601,16 @@ result = SU32.longestValidParentheses("()(())");
 class Solution31 {
 public:
 	double findMedianSortedArrays(int A[], int m, int B[], int n) {
-		if (m==0&&n==0)
+		if (m == 0 && n == 0)
 		{
 			return 0;
 		}
 		int indexA = 0;
 		int indexB = 0;
 		vector<int> vecC;
-		while (indexA!=m&&indexB!=n)
+		while (indexA != m&&indexB != n)
 		{
-			if (A[indexA]<B[indexB])
+			if (A[indexA] < B[indexB])
 			{
 				vecC.push_back(A[indexA]);
 				indexA++;
@@ -1448,7 +1621,7 @@ public:
 				indexB++;
 			}
 		}
-		while (indexA!=m)
+		while (indexA != m)
 		{
 			vecC.push_back(A[indexA]);
 			indexA++;
@@ -1458,9 +1631,9 @@ public:
 			vecC.push_back(B[indexB]);
 			indexB++;
 		}
-		if ((m+n)%2==0)
+		if ((m + n) % 2 == 0)
 		{
-			return (vecC[(m + n) / 2] + vecC[(m + n) / 2-1])/2.0;
+			return (vecC[(m + n) / 2] + vecC[(m + n) / 2 - 1]) / 2.0;
 		}
 		else
 		{
@@ -1473,18 +1646,18 @@ public:
 class Solution30 {
 public:
 	string convert(string s, int nRows) {
-		if (nRows==1)
+		if (nRows == 1)
 		{
 			return s;
 		}
 		int len = s.size();
-		if (len<=nRows)
+		if (len <= nRows)
 		{
 			return s;
 		}
 		vector <string> vecStr(nRows);
 		int index = -1;
-		while (index+1<len)
+		while (index + 1 < len)
 		{
 			if (index + nRows < len)
 			{
@@ -1492,23 +1665,23 @@ public:
 				{
 					vecStr[i] += s[index + i + 1];
 				}
-				index =index + nRows;
-				int dist = len - index-1;
-				if (dist>=nRows-2)
+				index = index + nRows;
+				int dist = len - index - 1;
+				if (dist >= nRows - 2)
 				{
 					dist = nRows - 2;
 				}
 				for (int i = 0; i < dist; i++)
 				{
-					vecStr[nRows-i-2] += s[index + 1 + i];
+					vecStr[nRows - i - 2] += s[index + 1 + i];
 				}
 				index = index + dist;
 			}
 			else
 			{
-				for (int i = 0; i < len-index-1; i++)
+				for (int i = 0; i < len - index - 1; i++)
 				{
-					vecStr[i] += s[index +1 + i];
+					vecStr[i] += s[index + 1 + i];
 				}
 				index = len;
 			}
@@ -1535,13 +1708,13 @@ public:
 	ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
 		int lenA = 0;
 		int lenB = 0;
-		if (headA==NULL||headB==NULL)
+		if (headA == NULL || headB == NULL)
 		{
 			return NULL;
 		}
-		ListNode *pA=headA;
-		ListNode *pB=headB;
-		while (pA!=NULL)
+		ListNode *pA = headA;
+		ListNode *pB = headB;
+		while (pA != NULL)
 		{
 			pA = pA->next;
 			lenA++;
@@ -1553,9 +1726,9 @@ public:
 		}
 		pA = headA;
 		pB = headB;
-		if (lenA>lenB)
+		if (lenA > lenB)
 		{
-			for (int i = 0; i < lenA-lenB; i++)
+			for (int i = 0; i < lenA - lenB; i++)
 			{
 				pA = pA->next;
 			}
@@ -1569,7 +1742,7 @@ public:
 		}
 		while (pA&&pB)
 		{
-			if (pA==pB)
+			if (pA == pB)
 			{
 				return pA;
 			}
@@ -1584,7 +1757,7 @@ public:
 class Solution28 {
 public:
 	string multiply(string num1, string num2) {
-		if (num1=="0"||num2=="0")
+		if (num1 == "0" || num2 == "0")
 		{
 			return "0";
 		}
@@ -1593,12 +1766,12 @@ public:
 		int len1 = num1.size();
 		int len2 = num2.size();
 		vector<string> tmpVec;
-		if (len1<len2)
-		{	
-			for (int i = len1-1; i >=0 ; i--)
+		if (len1 < len2)
+		{
+			for (int i = len1 - 1; i >= 0; i--)
 			{
-				string tmp = multi(num2,num1[i]-'0');
-				if (tmp!="0")
+				string tmp = multi(num2, num1[i] - '0');
+				if (tmp != "0")
 				{
 					for (int j = 0; j < len1 - 1 - i; j++)
 					{
@@ -1607,7 +1780,7 @@ public:
 					tmpVec.push_back(tmp);
 				}
 			}
-			for (auto& m:tmpVec)
+			for (auto& m : tmpVec)
 			{
 				result = add(result, m);
 			}
@@ -1636,14 +1809,14 @@ public:
 
 	string multi(string str, int num)
 	{
-		if (num==0)
+		if (num == 0)
 		{
 			return "0";
 		}
 		int len = str.size();
 		string result;
 		int carry = 0;
-		for (int i = len-1; i >=0; i--)
+		for (int i = len - 1; i >= 0; i--)
 		{
 			int tmp = (str[i] - '0')*num + carry;
 			carry = tmp / 10;
@@ -1663,15 +1836,15 @@ public:
 		int len2 = num2.size();
 		string result;
 		int carry = 0;
-		if (len1<len2)
+		if (len1 < len2)
 		{
-			for (int i = len1-1; i >= 0; i--)
+			for (int i = len1 - 1; i >= 0; i--)
 			{
-				int tmp = (num1[i] - '0') + (num2[len2-len1+i] - '0') + carry;
+				int tmp = (num1[i] - '0') + (num2[len2 - len1 + i] - '0') + carry;
 				carry = tmp / 10;
 				result.push_back(tmp % 10 + '0');
 			}
-			for (int i = len2-len1-1; i >= 0; i--)
+			for (int i = len2 - len1 - 1; i >= 0; i--)
 			{
 				int tmp = (num2[i] - '0') + carry;
 				carry = tmp / 10;
@@ -1679,7 +1852,7 @@ public:
 			}
 
 		}
-		else if (len1>len2)
+		else if (len1 > len2)
 		{
 			for (int i = len2 - 1; i >= 0; i--)
 			{
@@ -1687,7 +1860,7 @@ public:
 				carry = tmp / 10;
 				result.push_back(tmp % 10 + '0');
 			}
-			for (int i = len1-len2-1; i >=0; i--)
+			for (int i = len1 - len2 - 1; i >= 0; i--)
 			{
 				int tmp = (num1[i] - '0') + carry;
 				carry = tmp / 10;
