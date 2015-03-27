@@ -1,6 +1,145 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Triangle*/
+class Solution75 {
+public:
+	int minimumTotal(vector<vector<int> > &triangle) {
+		int row = triangle.size();
+		if (row == 0) return 0;
+		vector<int> minV(triangle[row - 1].size());
+		for (int i = row - 1; i >= 0; i--)
+		{
+			int col = triangle[i].size();
+			for (int j = 0; j<col; j++)
+			{
+				if (i == row - 1)
+				{
+					minV[j] = triangle[i][j];
+					continue;
+				}
+				minV[j] = min(minV[j], minV[j + 1]) + triangle[i][j];
+			}
+		}
+		return minV[0];
+	}
+	/*
+	int minResult=INT_MAX;
+	int minimumTotal(vector<vector<int> > &triangle) {
+		int len = triangle.size();
+		GetSum(triangle, 0, 0, 0);
+		return minResult;
+	}
+	void GetSum(vector<vector<int> > &triangle, int level, int index,int partSum)
+	{
+		if (level == triangle.size()-1)
+		{
+			if (partSum + triangle[level][index]<minResult)
+			{
+				minResult = partSum + triangle[level][index];
+			}
+			if (index + 1 < triangle[level].size())
+			{
+				if (partSum + triangle[level][index+1]<minResult)
+				{
+					minResult = partSum + triangle[level][index+1];
+				}
+			}
+			return;
+		}
+		GetSum(triangle, level + 1, index, partSum + triangle[level][index]);
+		if (index + 1<triangle[level].size())
+		{
+			GetSum(triangle, level + 1, index + 1, partSum + triangle[level][index + 1]);
+		}
+	}
+	*/
+};
+/*-------------------------------------------------------------------------------------*/
+/*Word Ladder */
+class Solution74 {
+public:
+	int ladderLength(string start, string end, unordered_set<string> &dict)
+	{
+		if (start.size() != end.size())
+			return 0;
+		if (start.empty() || end.empty())
+			return 1;
+		if (dict.size() == 0)
+			return 0;
+		int distance = 1; //!!!  
+		queue<string> queToPush, queToPop;
+		queToPop.push(start);
+		while (dict.size() > 0 && !queToPop.empty())
+		{
+			while (!queToPop.empty())
+			{
+				string str(queToPop.front()); //!!!how to initialize the str  
+				queToPop.pop(); //!!! should pop after it is used up  
+				for (int i = 0; i < str.size(); i++)
+				{
+					for (char j = 'a'; j <= 'z'; j++)
+					{
+						if (j == str[i])
+							continue;
+						char temp = str[i];
+						str[i] = j;
+						if (str == end)
+							return distance + 1; //found it  
+						if (dict.count(str) > 0) //exists in dict  
+						{
+							queToPush.push(str); //find all the element that is one edit away  
+							dict.erase(str); //delete corresponding element in dict in case of loop  
+						}
+						str[i] = temp; //  
+					}
+				}
+			}
+			swap(queToPush, queToPop); //!!! how to use swap  
+			distance++;
+		} //end while  
+		return 0; //all the dict words are used up and we do not find dest word  
+	} //end function  
+};
+/*-------------------------------------------------------------------------------------*/
+/*Palindrome Partitioning */
+class Solution73 {
+public:
+	vector<vector<string>> partition(string s) {
+		vector<vector<string>> result;
+		vector<string> output;
+		DFS(s, 0, output, result);
+		return result;
+	}
+	void DFS(string &s, int start, vector<string>& output, vector<vector<string>> &result)
+	{
+		if (start == s.size())
+		{
+			result.push_back(output);
+			return;
+		}
+		for (int i = start; i < s.size(); i++)
+		{
+			if (isPalindrome(s, start, i))
+			{
+				output.push_back(s.substr(start, i - start + 1));
+				DFS(s, i + 1, output, result);
+				output.pop_back();
+			}
+		}
+	}
+	bool isPalindrome(string &s, int start, int end)
+	{
+		while (start < end)
+		{
+			if (s[start] != s[end])
+				return false;
+			start++; end--;
+		}
+		return true;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 /*Remove Duplicates from Sorted Array II */
 class Solution72 {
 public:
@@ -9,7 +148,7 @@ public:
 		int curCount = 1;
 		for (size_t i = 1; i < n; i++)
 		{
-			if (curCount==2)
+			if (curCount == 2)
 			{
 				if (curNum == A[i])
 				{
@@ -23,7 +162,7 @@ public:
 			}
 			else
 			{
-				if (curNum==A[i])
+				if (curNum == A[i])
 				{
 					curCount++;
 				}
@@ -38,9 +177,9 @@ public:
 		int count = n;
 		for (size_t i = 0; i < n; i++)
 		{
-			if (A[i]!=INT_MAX)
+			if (A[i] != INT_MAX)
 			{
-				A[index]=A[i];
+				A[index] = A[i];
 				index++;
 			}
 			else

@@ -8,9 +8,9 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {	
-	Solution72 SU72;
-	int A[6] = { 1, 1, 1, 2, 2, 3 };
-	SU72.removeDuplicates(A,6);
+	Solution75 SU75;
+	vector<vector<int>> triangle = { { 2 }, { 3, 4 }, { 6, 5, 7 }, { 4, 1, 8, 3 } };
+	int result=SU75.minimumTotal(triangle);
 	return 0;
 }
 
