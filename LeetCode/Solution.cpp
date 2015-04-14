@@ -1,6 +1,90 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Number of Islands */
+class Solution77 {
+public:
+	int count = 0;
+	int numIslands(vector<vector<char>> &grid) {
+		int M = grid.size();
+		if (M == 0)
+		{
+			return 0;
+		}
+		int N = grid[0].size();
+		if (N == 0)
+		{
+			return 0;
+		}
+		vector<vector<int> > visited(M, vector<int>(N, 0));
+		for (size_t i = 0; i < M; i++)
+		{
+			for (size_t j = 0; j < N; j++)
+			{
+				if (grid[i][j] == '1'&&visited[i][j] == 0)
+				{
+					dfs(grid, visited, i, j);
+					count++;
+				}
+			}
+		}
+		return count;
+	}
+	void dfs(vector<vector<char>> &grid, vector<vector<int> > &visited, int x, int y)
+	{
+		visited[x][y] = 1;
+		if (y - 1 >= 0 && grid[x][y - 1] == '1'&&visited[x][y - 1] == 0)
+		{
+			dfs(grid, visited, x, y - 1);
+		}
+		if (y + 1 < grid[0].size() && grid[x][y + 1] == '1'&&visited[x][y + 1] == 0)
+		{
+			dfs(grid, visited, x, y + 1);
+		}
+		if (x - 1 >= 0 && grid[x - 1][y] == '1'&&visited[x - 1][y] == 0)
+		{
+			dfs(grid, visited, x - 1, y);
+		}
+		if (x + 1 < grid.size() && grid[x + 1][y] == '1'&&visited[x + 1][y] == 0)
+		{
+			dfs(grid, visited, x + 1, y);
+		}
+	}
+};
+/*
+Solution77 SU77;
+SU77.numIslands(vector < vector<char> > {
+vector < char > {'1', '1', '0', '0', '0'},
+vector < char > {'1', '1', '0', '0', '0'},
+vector < char > {'0', '0', '1', '0', '0'},
+vector < char > {'0', '0', '0', '1', '1'}
+});
+*/
+/*-------------------------------------------------------------------------------------*/
+/*House Robber */
+class Solution76 {
+public:
+	int rob(vector<int> &num) {
+		int length = num.size();
+		if (length <= 0)
+		{
+			return 0;
+		}
+		if (length == 1)
+		{
+			return num[0];
+		}
+		vector<int> dpRob(length, 0);
+		dpRob[0] = num[0];
+		dpRob[1] = num[0] > num[1] ? num[0] : num[1];
+		for (int i = 2; i < length; i++)
+		{
+			dpRob[i] = dpRob[i - 2] + num[i] > dpRob[i - 1] ? dpRob[i - 2] + num[i] : dpRob[i - 1];
+		}
+		return dpRob[length - 1];
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 /*Triangle*/
 class Solution75 {
 public:
@@ -11,7 +95,7 @@ public:
 		for (int i = row - 1; i >= 0; i--)
 		{
 			int col = triangle[i].size();
-			for (int j = 0; j<col; j++)
+			for (int j = 0; j < col; j++)
 			{
 				if (i == row - 1)
 				{
@@ -26,33 +110,38 @@ public:
 	/*
 	int minResult=INT_MAX;
 	int minimumTotal(vector<vector<int> > &triangle) {
-		int len = triangle.size();
-		GetSum(triangle, 0, 0, 0);
-		return minResult;
+	int len = triangle.size();
+	GetSum(triangle, 0, 0, 0);
+	return minResult;
 	}
 	void GetSum(vector<vector<int> > &triangle, int level, int index,int partSum)
 	{
-		if (level == triangle.size()-1)
-		{
-			if (partSum + triangle[level][index]<minResult)
-			{
-				minResult = partSum + triangle[level][index];
-			}
-			if (index + 1 < triangle[level].size())
-			{
-				if (partSum + triangle[level][index+1]<minResult)
-				{
-					minResult = partSum + triangle[level][index+1];
-				}
-			}
-			return;
-		}
-		GetSum(triangle, level + 1, index, partSum + triangle[level][index]);
-		if (index + 1<triangle[level].size())
-		{
-			GetSum(triangle, level + 1, index + 1, partSum + triangle[level][index + 1]);
-		}
+	if (level == triangle.size()-1)
+	{
+	if (partSum + triangle[level][index]<minResult)
+	{
+	minResult = partSum + triangle[level][index];
 	}
+	if (index + 1 < triangle[level].size())
+	{
+	if (partSum + triangle[level][index+1]<minResult)
+	{
+	minResult = partSum + triangle[level][index+1];
+	}
+	}
+	return;
+	}
+	GetSum(triangle, level + 1, index, partSum + triangle[level][index]);
+	if (index + 1<triangle[level].size())
+	{
+	GetSum(triangle, level + 1, index + 1, partSum + triangle[level][index + 1]);
+	}
+	}
+	*/
+	/*
+	Solution75 SU75;
+	vector<vector<int>> triangle = { { 2 }, { 3, 4 }, { 6, 5, 7 }, { 4, 1, 8, 3 } };
+	int result=SU75.minimumTotal(triangle);
 	*/
 };
 /*-------------------------------------------------------------------------------------*/
