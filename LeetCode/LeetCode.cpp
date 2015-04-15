@@ -28,13 +28,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Solution77 SU77;
-	SU77.numIslands(vector < vector<char> > {
-			vector < char > {'1', '1', '0', '0', '0'},
-			vector < char > {'1', '1', '0', '0', '0'},
-			vector < char > {'0', '0', '1', '0', '0'},
-			vector < char > {'0', '0', '0', '1', '1'}
-	});
+	Solution79 SU79;
+	SU79.wordBreak("bb", unordered_set < string > {"a", "b", "bbb", "bbbb"});
 	return 0;
 }
 

@@ -1,6 +1,97 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Word Break*/
+class Solution79 {
+public:
+	bool wordBreak(string s, unordered_set<string>& wordDict) {
+		s = '#' + s;
+		int len = s.size();
+		vector<bool> isOK(len,false);
+		isOK[0] = true;
+		for (size_t i = 1; i < len; i++)
+		{
+			for (size_t j = 0; j < i; j++)
+			{
+				isOK[i] = isOK[j] && (wordDict.find(s.substr(j + 1, i - j)) != wordDict.end());
+				if (isOK[i])
+				{
+					break;
+				}
+			}
+		}
+		return isOK[len-1];
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Binary Tree Right Side View*/
+class Solution78 {
+public:
+	struct MyTreeNode
+	{
+		int level;
+		TreeNode* node;
+	};
+	vector<int> rightSideView(TreeNode *root) {
+		vector<int> result;
+		vector<MyTreeNode*> visitSeq;
+		queue<MyTreeNode*> qT;
+		if (root == NULL)
+		{
+			return result;
+		}
+		MyTreeNode* mtn = new MyTreeNode();
+		mtn->level = 1;
+		mtn->node = root;
+		qT.push(mtn);
+		while (!qT.empty())
+		{
+			visitSeq.push_back(qT.front());
+			if (qT.front()->node->left != NULL)
+			{
+				MyTreeNode* mtnLeft = new MyTreeNode();
+				mtnLeft->level = qT.front()->level + 1;
+				mtnLeft->node = qT.front()->node->left;
+				qT.push(mtnLeft);
+			}
+			if (qT.front()->node->right != NULL)
+			{
+				MyTreeNode* mtnRight = new MyTreeNode();
+				mtnRight->level = qT.front()->level + 1;
+				mtnRight->node = qT.front()->node->right;
+				qT.push(mtnRight);
+			}
+			qT.pop();
+		}
+		result.push_back(visitSeq[0]->node->val);
+		for (size_t i = 1; i < visitSeq.size(); i++)
+		{
+			if (visitSeq[i]->level != visitSeq[i - 1]->level)
+			{
+				result.push_back(visitSeq[i]->node->val);
+			}
+			else
+			{
+				result[result.size() - 1] = visitSeq[i]->node->val;
+			}
+		}
+		return result;
+	}
+};
+/*
+TreeNode* root = new TreeNode(1);
+TreeNode* T1 = new TreeNode(2);
+TreeNode* T2 = new TreeNode(3);
+TreeNode* T3 = new TreeNode(4);
+TreeNode* T4 = new TreeNode(5);
+root->left = T1;
+root->right = T2;
+T1->right = T3;
+T2->right = T4;
+Solution78 SU78;
+SU78.rightSideView(root);
+*/
+/*-------------------------------------------------------------------------------------*/
 /*Number of Islands */
 class Solution77 {
 public:
