@@ -28,8 +28,20 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Solution79 SU79;
-	SU79.wordBreak("bb", unordered_set < string > {"a", "b", "bbb", "bbbb"});
+	ListNode* head = new ListNode(1);
+	ListNode* L1 = new ListNode(2);
+	ListNode* L2 = new ListNode(3);
+	ListNode* L3 = new ListNode(4);
+	ListNode* L4 = new ListNode(5);
+	ListNode* L5 = new ListNode(6);
+	head->next = L1;
+	L1->next = L2;
+	L2->next = L3;
+	L3->next = L4;
+	L4->next = L5;
+	L5->next = L3;
+	Solution81 SU81;
+	SU81.detectCycle(head);
 	return 0;
 }
 

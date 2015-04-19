@@ -1,13 +1,69 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Linked List Cycle II*/
+class Solution81 {
+public:
+	ListNode *detectCycle(ListNode *head) {
+		if (head == NULL)
+		{
+			return NULL;
+		}
+		ListNode* pFast = head;
+		ListNode* pSlow = head;
+		while (pFast&&pFast->next)
+		{
+			pSlow = pSlow->next;
+			pFast = pFast->next->next;
+			if (pFast == pSlow)
+			{
+				break;
+			}
+		}
+		if (pFast==NULL||pFast->next==NULL)
+		{
+			return NULL;
+		}
+		pFast = head;
+		while (pFast!=pSlow)
+		{
+			pFast = pFast->next;
+			pSlow = pSlow->next;
+		}
+		return pSlow;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Linked List Cycle*/
+class Solution80 {
+public:
+	bool hasCycle(ListNode *head) {
+		if (head==NULL)
+		{
+			return false;
+		}
+		ListNode* pFast = head;
+		ListNode* pSlow = head;
+		while (pFast&&pFast->next)
+		{
+			pSlow = pSlow->next;
+			pFast = pFast->next->next;
+			if (pFast==pSlow)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 /*Word Break*/
 class Solution79 {
 public:
 	bool wordBreak(string s, unordered_set<string>& wordDict) {
 		s = '#' + s;
 		int len = s.size();
-		vector<bool> isOK(len,false);
+		vector<bool> isOK(len, false);
 		isOK[0] = true;
 		for (size_t i = 1; i < len; i++)
 		{
@@ -23,6 +79,10 @@ public:
 		return isOK[len-1];
 	}
 };
+/*
+Solution79 SU79;
+SU79.wordBreak("bb", unordered_set < string > {"a", "b", "bbb", "bbbb"});
+*/
 /*-------------------------------------------------------------------------------------*/
 /*Binary Tree Right Side View*/
 class Solution78 {
