@@ -25,6 +25,7 @@
 #include <unordered_map>
 #include <regex>
 #include <bitset>
+#include <cmath>
 
 using namespace std;
 

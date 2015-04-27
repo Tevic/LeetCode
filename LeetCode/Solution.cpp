@@ -1,6 +1,125 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Reverse Words in a String*/
+class Solution85 {
+public:
+	void reverseWords(string &s) {
+		vector<string> vecStr;
+		istringstream ss(s);
+		string str;
+		while (ss>>str)
+		{
+			vecStr.push_back(str);
+		}
+		s = "";
+		reverse(vecStr.begin(), vecStr.end());
+		int len = vecStr.size();
+		for (int i = 0; i < len-1; i++)
+		{
+			s += vecStr[i] + " ";
+		}
+		if (len!=0)
+		{
+			s += vecStr[vecStr.size()-1];
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Happy Number */
+class Solution84 {
+public:
+	bool isHappy(int n) {
+		if (n<=0)
+		{
+			return false;
+		}
+		set<int> allSum;
+		int squareSum = GetSquareSum(n);
+		while (squareSum!=1)
+		{
+			if (allSum.find(squareSum)!=allSum.end())
+			{
+				return false;
+			}
+			allSum.insert(squareSum);
+			squareSum = GetSquareSum(squareSum);
+		}
+		return true;
+	}
+
+	int GetSquareSum(int n)
+	{
+		int sum = 0;
+		while (n)
+		{
+			sum += (n % 10)*(n % 10);
+			n /= 10;
+		}
+		return sum;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Remove Linked List Elements */
+class Solution83 {
+public:
+	ListNode* removeElements(ListNode* head, int val) {
+		vector<ListNode*> newList;
+		if (head!=NULL)
+		{
+			ListNode* pCur = head;
+			while (pCur!=NULL)
+			{
+				if (pCur->val!=val)
+				{
+					newList.push_back(pCur);
+				}
+				pCur = pCur->next;
+			}
+			if (newList.size()==0)
+			{
+				return NULL;
+			}
+			newList[newList.size() - 1]->next = NULL;
+			head = newList[0];
+			pCur = head;
+			for (size_t i = 1; i < newList.size(); i++)
+			{
+				pCur->next = newList[i];
+				pCur = newList[i];
+			}
+		}
+		return head;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Count Primes*/
+class Solution82 {
+public:
+	int countPrimes(int n) {
+		vector<bool> isPrime(n + 1, true);
+		isPrime[0] = false;
+		isPrime[1] = false;
+		int dSqrt = sqrt(n);
+		for (size_t index = 2; index <= dSqrt; index++)
+		{
+			if (isPrime[index])
+			{
+				for (size_t j = index+index; j <= n; j+=index)
+				{
+					isPrime[j] = false;
+				}
+			}
+		}
+		int nCount = 0;
+		for (size_t i = 0; i <= n; i++)
+		{
+			nCount += isPrime[i];
+		}
+		return nCount;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 /*Linked List Cycle II*/
 class Solution81 {
 public:
