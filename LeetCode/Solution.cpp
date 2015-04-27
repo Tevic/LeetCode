@@ -1,6 +1,88 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Word Search*/
+class Solution86 {
+public:
+	bool exist(vector<vector<char> > &board, string word) {
+		int M = board.size();
+		if (M == 0)
+		{
+			return false;
+		}
+		int N = board[0].size();
+		if (N == 0)
+		{
+			return false;
+		}
+		if (word.size() == 0)
+		{
+			return false;
+		}
+		vector<vector<bool> > isVisited(M, vector<bool>(N, false));
+		bool isExist = false;
+		for (size_t i = 0; i < M; i++)
+		{
+			for (size_t j = 0; j < N; j++)
+			{
+				if (DFS(board, word, isVisited, i, j, 0))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	bool DFS(vector<vector<char> > &board, string &word, vector<vector<bool> > &isVisited, int i, int j, int index)
+	{
+		int M = board.size();
+		int N = board[0].size();
+		isVisited[i][j] = true;
+		bool equal = word[index] == board[i][j];
+		if (!equal)
+		{
+			isVisited[i][j] = false;
+			return false;
+		}
+		bool isExist = false;
+		if (index == word.size() - 1 && equal)
+		{
+			return true;
+		}
+		if (i - 1 >= 0 && !isVisited[i - 1][j])
+		{
+			if (DFS(board, word, isVisited, i - 1, j, index + 1))
+			{
+				return true;
+			}
+		}
+		if (j - 1 >= 0 && !isVisited[i][j - 1])
+		{
+			if (DFS(board, word, isVisited, i, j - 1, index + 1))
+			{
+				return true;
+			}
+		}
+		if (i + 1 < M && !isVisited[i + 1][j])
+		{
+			if (DFS(board, word, isVisited, i + 1, j, index + 1))
+			{
+				return true;
+			}
+		}
+		if (j + 1 < N && !isVisited[i][j + 1])
+		{
+			if (DFS(board, word, isVisited, i, j + 1, index + 1))
+			{
+				return true;
+			}
+		}
+		isVisited[i][j] = false;
+		return false;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 /*Reverse Words in a String*/
 class Solution85 {
 public:
@@ -8,20 +90,20 @@ public:
 		vector<string> vecStr;
 		istringstream ss(s);
 		string str;
-		while (ss>>str)
+		while (ss >> str)
 		{
 			vecStr.push_back(str);
 		}
 		s = "";
 		reverse(vecStr.begin(), vecStr.end());
 		int len = vecStr.size();
-		for (int i = 0; i < len-1; i++)
+		for (int i = 0; i < len - 1; i++)
 		{
 			s += vecStr[i] + " ";
 		}
-		if (len!=0)
+		if (len != 0)
 		{
-			s += vecStr[vecStr.size()-1];
+			s += vecStr[vecStr.size() - 1];
 		}
 	}
 };
@@ -30,15 +112,15 @@ public:
 class Solution84 {
 public:
 	bool isHappy(int n) {
-		if (n<=0)
+		if (n <= 0)
 		{
 			return false;
 		}
 		set<int> allSum;
 		int squareSum = GetSquareSum(n);
-		while (squareSum!=1)
+		while (squareSum != 1)
 		{
-			if (allSum.find(squareSum)!=allSum.end())
+			if (allSum.find(squareSum) != allSum.end())
 			{
 				return false;
 			}
@@ -65,18 +147,18 @@ class Solution83 {
 public:
 	ListNode* removeElements(ListNode* head, int val) {
 		vector<ListNode*> newList;
-		if (head!=NULL)
+		if (head != NULL)
 		{
 			ListNode* pCur = head;
-			while (pCur!=NULL)
+			while (pCur != NULL)
 			{
-				if (pCur->val!=val)
+				if (pCur->val != val)
 				{
 					newList.push_back(pCur);
 				}
 				pCur = pCur->next;
 			}
-			if (newList.size()==0)
+			if (newList.size() == 0)
 			{
 				return NULL;
 			}
@@ -105,7 +187,7 @@ public:
 		{
 			if (isPrime[index])
 			{
-				for (size_t j = index+index; j <= n; j+=index)
+				for (size_t j = index + index; j <= n; j += index)
 				{
 					isPrime[j] = false;
 				}
@@ -139,12 +221,12 @@ public:
 				break;
 			}
 		}
-		if (pFast==NULL||pFast->next==NULL)
+		if (pFast == NULL || pFast->next == NULL)
 		{
 			return NULL;
 		}
 		pFast = head;
-		while (pFast!=pSlow)
+		while (pFast != pSlow)
 		{
 			pFast = pFast->next;
 			pSlow = pSlow->next;
@@ -157,7 +239,7 @@ public:
 class Solution80 {
 public:
 	bool hasCycle(ListNode *head) {
-		if (head==NULL)
+		if (head == NULL)
 		{
 			return false;
 		}
@@ -167,7 +249,7 @@ public:
 		{
 			pSlow = pSlow->next;
 			pFast = pFast->next->next;
-			if (pFast==pSlow)
+			if (pFast == pSlow)
 			{
 				return true;
 			}
@@ -195,7 +277,7 @@ public:
 				}
 			}
 		}
-		return isOK[len-1];
+		return isOK[len - 1];
 	}
 };
 /*
