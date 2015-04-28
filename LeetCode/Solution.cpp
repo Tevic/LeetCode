@@ -1,6 +1,176 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Rotate List*/
+class Solution91 {
+public:
+	ListNode* rotateRight(ListNode* head, int k) {
+		if (head==NULL)
+		{
+			return NULL;
+		}
+		int len = 0;
+		ListNode* pCur = head;
+		ListNode* pNewHead=head;
+		while (pCur)
+		{
+			len++;
+			pCur = pCur->next;
+		}
+		pCur = head;
+		k %=len;
+		if (k == 0)
+		{
+			return head;
+		}
+		while (k--)
+		{
+			pCur = pCur->next;
+		}
+		while (pCur->next)
+		{
+			pNewHead = pNewHead->next;
+			pCur = pCur->next;
+		}
+		ListNode* res = pNewHead->next;
+		pNewHead->next = NULL;
+		pCur->next = head;
+		return res;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*SQRT*/
+class Solution90 {
+public:
+	int mySqrt(int x) {
+		long long i = 0;
+		long long j = x / 2 + 1;
+		while (i <= j)
+		{
+			long long mid = (i + j) / 2;
+			long long sq = mid * mid;
+			if (sq == x) return mid;
+			else if (sq < x) i = mid + 1;
+			else j = mid - 1;
+		}
+		return j;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*4Sum*/
+class Solution89 {
+public:
+	vector<vector<int> > fourSum(vector<int> &num, int target) {
+		vector<vector<int> > result;
+		if (num.size() < 4)
+			return result;
+
+		sort(num.begin(), num.end());
+		int lastVi = num[0] - 1;
+		for (int i = 0; i < num.size() - 3; ++i)
+		{
+			int vi = num[i];
+			if (vi == lastVi)
+				continue;
+			lastVi = vi;
+
+			int lastVj = num[i + 1] - 1;
+			for (int j = i + 1; j < num.size() - 2; ++j)
+			{
+				int vj = num[j];
+				if (vj == lastVj)
+					continue;
+				lastVj = vj;
+
+				int lastVk = num[j + 1] - 1;
+				for (int k = j + 1; k < num.size() - 1; ++k)
+				{
+					int vk = num[k];
+					if (vk == lastVk)
+						continue;
+					lastVk = vk;
+
+					int sum3 = vi + vj + vk;
+					int tarVl = target - sum3;//find this for last num
+					int si = k + 1, ei = num.size() - 1;
+					//没有这个判断的话会超时
+					if (num[si] > tarVl || num[ei] < tarVl)
+						continue;
+					while (si <= ei)
+					{
+						int mi = (si + ei) / 2;
+						int vl = num[mi];
+						if (vl == tarVl)
+						{
+							vector<int> quad;
+							quad.push_back(vi);
+							quad.push_back(vj);
+							quad.push_back(vk);
+							quad.push_back(vl);
+							result.push_back(quad);
+							break;
+						}
+						else if (vl > tarVl)
+						{
+							ei = mi - 1;
+						}
+						else
+						{
+							si = mi + 1;
+						}
+					}
+
+				}//end k
+			}//end j
+		}//end i
+		return result;
+
+	}//end function
+};
+/*-------------------------------------------------------------------------------------*/
+/*Largest Number */
+class Solution88 {
+public:
+	string largestNumber(vector<int>& nums) {
+		if (nums.size() > 0)
+		{
+			vector<string> vec;
+			for (size_t i = 0; i < nums.size(); i++)
+			{
+				vec.push_back(to_string(nums[i]));
+			}
+			sort(vec.begin(), vec.end(), MyCmp);
+			string result = "";
+			for (int i = 0; i < vec.size(); i++)
+			{
+				result += vec[i];
+			}
+			if (result[0] == '0'&&result.size() > 0)
+			{
+				result = "0";
+			}
+			return result;
+		}
+		return "0";
+	}
+	static bool MyCmp(string s1, string s2)
+	{
+		return s1 + s2 > s2 + s1;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Bitwise AND of Numbers Range */
+class Solution87 {
+public:
+	int rangeBitwiseAnd(int m, int n) {
+		while (n > m)
+		{
+			n = n&(n - 1);
+		}
+		return m&n;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 /*Word Search*/
 class Solution86 {
 public:
@@ -20,7 +190,6 @@ public:
 			return false;
 		}
 		vector<vector<bool> > isVisited(M, vector<bool>(N, false));
-		bool isExist = false;
 		for (size_t i = 0; i < M; i++)
 		{
 			for (size_t j = 0; j < N; j++)
@@ -39,14 +208,12 @@ public:
 		int M = board.size();
 		int N = board[0].size();
 		isVisited[i][j] = true;
-		bool equal = word[index] == board[i][j];
-		if (!equal)
+		if (!(word[index] == board[i][j]))
 		{
 			isVisited[i][j] = false;
 			return false;
 		}
-		bool isExist = false;
-		if (index == word.size() - 1 && equal)
+		if (index == word.size() - 1)
 		{
 			return true;
 		}
@@ -82,6 +249,17 @@ public:
 		return false;
 	}
 };
+/*
+Solution86 SU86;
+vector<vector<char> > vec = { vector<char>{'A', 'B', 'C', 'E'}, vector<char>{'S', 'F', 'C', 'S'}, vector<char>{'A','D','E','E'}};
+string str1 = "ABCCED";
+string str2 = "SEE";
+string str3 = "ABCB";
+bool result;
+result=SU86.exist(vec, str1);
+result=SU86.exist(vec, str2);
+result=SU86.exist(vec, str3);
+*/
 /*-------------------------------------------------------------------------------------*/
 /*Reverse Words in a String*/
 class Solution85 {

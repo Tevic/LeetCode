@@ -7,17 +7,18 @@
 
 
 int _tmain(int argc, _TCHAR* argv[])
-{
-
-	Solution86 SU86;
-	vector<vector<char> > vec = { vector<char>{'A', 'B', 'C', 'E'}, vector<char>{'S', 'F', 'C', 'S'}, vector<char>{'A','D','E','E'}};
-	string str1 = "ABCCED";
-	string str2 = "SEE";
-	string str3 = "ABCB";
-	bool result;
-	result=SU86.exist(vec, str1);
-	result=SU86.exist(vec, str2);
-	result=SU86.exist(vec, str3);
+{	
+	Solution91 SU88;
+	ListNode* head = new ListNode(1);
+	ListNode* L2 = new ListNode(2);
+	//ListNode* L3 = new ListNode(3);
+	//ListNode* L4 = new ListNode(4);
+	//ListNode* L5 = new ListNode(5);
+	head->next = L2;
+	//L2->next = L3;
+	//L3->next = L4;
+	//L4->next = L5;
+	SU88.rotateRight(head,1);
 	return 0;
 }
 
