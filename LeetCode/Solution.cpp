@@ -1,24 +1,268 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Best Time to Buy and Sell Stock III*/
+class Solution96 {
+public:
+	int maxProfit(vector<int>& prices) {
+		int len = prices.size();
+		if (len <= 1)
+		{
+			return 0;
+		}
+		vector<int> maxFromHead(len, 0);
+		int minprice = prices[0], maxprofit = 0;
+		for (int i = 1; i < len; i++)
+		{
+			minprice = min(prices[i - 1], minprice);
+			if (prices[i] - minprice > maxprofit)
+			{
+				maxprofit = prices[i] - minprice;
+			}
+			maxFromHead[i] = maxprofit;
+		}
+		int maxprice = prices[len - 1];
+		int res = maxFromHead[len - 1];
+		maxprofit = 0;
+		for (int i = len - 2; i >= 0; i--)
+		{
+			maxprice = max(maxprice, prices[i + 1]);
+			if (maxprofit < maxprice - prices[i])
+			{
+				maxprofit = maxprice - prices[i];
+			}
+			if (res < maxFromHead[i] + maxprofit)
+				res = maxFromHead[i] + maxprofit;
+		}
+		return res;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Best Time to Buy and Sell Stock II*/
+class Solution95 {
+public:
+	int maxProfit(vector<int> &prices) {
+		int len = prices.size();
+		if (len <= 1)return 0;
+		int i = 0;
+		int res = 0;
+		while (i < len - 1)
+		{
+			int buy, sell;
+			while (i + 1 < len && prices[i + 1] < prices[i])i++;
+			buy = i;
+			while (i + 1 < len && prices[i + 1] >= prices[i])i++;
+			sell = i;
+			res += prices[sell] - prices[buy];
+		}
+		return res;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Best Time to Buy and Sell Stock */
+class Solution94 {
+public:
+	int maxProfit(vector<int>& prices) {
+		int len = prices.size();
+		int profit;
+		if (len > 0)
+		{
+			int minValue = prices[0];
+			int result = prices[1] - prices[0];
+			for (size_t i = 2; i < len; i++)
+			{
+				minValue = min(prices[i - 1], minValue);
+				if (prices[i] - minValue > result)
+				{
+					result = prices[i] - minValue;
+				}
+			}
+			if (result < 0)
+			{
+				return 0;
+			}
+			return result;
+		}
+		return 0;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Fraction to Recurring Decimal */
+class Solution93 {
+public:
+	string fractionToDecimal(int numerator, int denominator) {
+		if (numerator == 0)
+		{
+			return "0";
+		}
+		vector<long long> integerList;
+		vector<long long> decimalList;
+		vector<long long> remainList;
+		int loopIndex = -1;
+		bool isNeg = false;
+		if (numerator < 0 ^ denominator < 0)
+		{
+			isNeg = true;
+		}
+		long long numerator1 = numerator;
+		numerator1 = abs(numerator1);
+		long long denominator1 = denominator;
+		denominator1 = abs(denominator1);
+		if (numerator1 > denominator1)
+		{
+			integerList.push_back(numerator1 / denominator1);
+			numerator1 = numerator1 % denominator1;
+		}
+		long remain = numerator1;
+		long decimal = (remain * 10) / denominator1;
+		decimalList.push_back(decimal);
+		remainList.push_back(remain);
+		while (remain != 0)
+		{
+			remain = (remain * 10) % denominator1;
+			decimal = (remain * 10) / denominator1;
+			decimalList.push_back(decimal);
+			auto loopValue = find(remainList.begin(), remainList.end(), remain);
+			if (loopValue != remainList.end())
+			{
+				loopIndex = *loopValue;
+				break;
+			}
+			else
+			{
+				remainList.push_back(remain);
+			}
+		}
+		if (!remain || loopIndex != -1)
+		{
+			decimalList.erase(decimalList.end() - 1);
+		}
+		string res;
+		if (isNeg)
+		{
+			res += "-";
+		}
+		if (integerList.size() == 0)
+		{
+			res += "0";
+		}
+		else
+		{
+			for (size_t i = 0; i < integerList.size(); i++)
+			{
+				res += to_string(integerList[i]);
+			}
+		}
+		if (decimalList.size() != 0)
+		{
+			res += ".";
+			if (loopIndex != -1)
+			{
+				for (size_t i = 0; i < remainList.size(); i++)
+				{
+					if (loopIndex == remainList[i])
+					{
+						loopIndex = i;
+						break;
+					}
+				}
+				for (int i = 0; i < loopIndex; i++)
+				{
+					res += to_string(decimalList[i]);
+				}
+				res += "(";
+				for (int i = loopIndex; i < decimalList.size(); i++)
+				{
+					res += to_string(decimalList[i]);
+				}
+				res += ")";
+			}
+			else
+			{
+				for (size_t i = 0; i < decimalList.size(); i++)
+				{
+					res += to_string(decimalList[i]);
+				}
+			}
+		}
+		return res;
+	}
+};
+/*
+Solution93 SU93;
+SU93.fractionToDecimal(INT_MIN, 1);
+*/
+/*-------------------------------------------------------------------------------------*/
+/*Isomorphic Strings */
+class Solution92 {
+public:
+	bool isIsomorphic(string s, string t) {
+		int len1 = s.size();
+		int len2 = t.size();
+		if (len1 != len2)
+		{
+			return false;
+		}
+		map<char, char> table;
+		for (size_t i = 0; i < len1; i++)
+		{
+			if (table.find(s[i]) == table.end())
+			{
+				table[s[i]] = t[i];
+			}
+			else
+			{
+				if (table[s[i]] != t[i])
+				{
+					return false;
+				}
+			}
+		}
+		table.clear();
+		for (size_t i = 0; i < len1; i++)
+		{
+			if (table.find(t[i]) == table.end())
+			{
+				table[t[i]] = s[i];
+			}
+			else
+			{
+				if (table[t[i]] != s[i])
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+};
+/*
+Solution92 SU92;
+bool res;
+res=SU92.isIsomorphic("egg", "add");
+res=SU92.isIsomorphic("foo", "bar");
+res = SU92.isIsomorphic("paper", "title");
+res = SU92.isIsomorphic("ab", "aa");
+*/
+/*-------------------------------------------------------------------------------------*/
 /*Rotate List*/
 class Solution91 {
 public:
 	ListNode* rotateRight(ListNode* head, int k) {
-		if (head==NULL)
+		if (head == NULL)
 		{
 			return NULL;
 		}
 		int len = 0;
 		ListNode* pCur = head;
-		ListNode* pNewHead=head;
+		ListNode* pNewHead = head;
 		while (pCur)
 		{
 			len++;
 			pCur = pCur->next;
 		}
 		pCur = head;
-		k %=len;
+		k %= len;
 		if (k == 0)
 		{
 			return head;
@@ -38,6 +282,19 @@ public:
 		return res;
 	}
 };
+/*
+Solution91 SU88;
+ListNode* head = new ListNode(1);
+ListNode* L2 = new ListNode(2);
+//ListNode* L3 = new ListNode(3);
+//ListNode* L4 = new ListNode(4);
+//ListNode* L5 = new ListNode(5);
+head->next = L2;
+//L2->next = L3;
+//L3->next = L4;
+//L4->next = L5;
+SU88.rotateRight(head,1);
+*/
 /*-------------------------------------------------------------------------------------*/
 /*SQRT*/
 class Solution90 {

@@ -32,11 +32,11 @@
     <ClCompile Include="stdafx.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
-    <ClCompile Include="Solution.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="LeetCode.cpp">
       <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="Solution.cpp">
+      <Filter>头文件</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
