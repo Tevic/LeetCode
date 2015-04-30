@@ -1,6 +1,107 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Permutations */
+class Solution99 {
+public:
+
+	vector<vector<int> > permute(vector<int>& nums) {
+		int N = nums.size();
+		vector<int> solution;
+		vector<vector<int> > result;
+		vector<bool> isVisited(N,false);
+		for (size_t i = 0; i < N; i++)
+		{
+			GetPremu(result, nums, solution, isVisited, i);
+		}
+		return result;
+		//vector<vector<int> > result;
+		//sort(nums.begin(),nums.end());
+		//result.push_back(nums);
+		//while (next_permutation(nums.begin(),nums.end()))
+		//{
+		//	result.push_back(nums);
+		//}
+		//return result;
+	}
+
+	void GetPremu(vector<vector<int> > &result, vector<int>& nums,vector<int> &solution, vector<bool> &isVisited, int index)
+	{
+		isVisited[index] = true;
+		solution.push_back(nums[index]);
+		if (solution.size() == nums.size())
+		{
+			result.push_back(solution);
+			isVisited[index] = false;
+			solution.erase(solution.end()-1);
+			return;
+		}
+		for (size_t i = 0; i < nums.size(); i++)
+		{
+			if (!isVisited[i])
+			{
+				GetPremu(result, nums, solution, isVisited, i);
+			}
+		}
+		isVisited[index] = false;
+		solution.erase(solution.end() - 1);
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Rotate Image*/
+class Solution98 {
+public:
+	void rotate(vector<vector<int> > &matrix) {
+		int N = matrix.size();
+		if (N>0)
+		{
+			vector<vector<int> > tmp(N,vector<int>(N,0));
+			for (size_t i = 0; i < N; i++)
+			{
+				int k = N - i - 1;
+				for (size_t j = 0; j < N; j++)
+				{
+					tmp[j][k] = matrix[i][j];
+				}
+			}
+
+			for (size_t i = 0; i < N; i++)
+			{
+				for (size_t j = 0; j < N; j++)
+				{
+					matrix[i][j]=tmp[i][j];
+				}
+			}
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Pow(x, n) */
+class Solution97 {
+public:
+	double myPow(double x, int n) {
+		if (n < 0) {
+			return 1.0 / pow(x, -n);
+		}
+		else {
+			return pow(x, n);
+		}
+	}
+	double pow(double x, int n) {
+		if (n == 0)
+			return 1;
+
+		double v = pow(x, n / 2);
+
+		if (n % 2 == 0) {
+			return v * v;
+		}
+		else {
+			return v * v * x;
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 /*Best Time to Buy and Sell Stock III*/
 class Solution96 {
 public:

@@ -8,9 +8,9 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Solution94 SU94;
-	vector<int> vec = { 7, 2, 4, 1 };
-	SU94.maxProfit(vec);
+	Solution99 SU99;
+	vector<int> vec = { 0,-1,1 };
+	SU99.permute(vec);
 	return 0;
 }
 
