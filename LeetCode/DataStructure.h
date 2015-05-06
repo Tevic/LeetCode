@@ -20,3 +20,10 @@ struct Interval {
 	Interval() : start(0), end(0) {}
 	Interval(int s, int e) : start(s), end(e) {}
 };
+
+struct TreeLinkNode {
+ int val;
+ TreeLinkNode *left, *right, *next;
+ TreeLinkNode(int x) : val(x), left(NULL), right(NULL), next(NULL) {}
+};
+

@@ -1,6 +1,80 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Populating Next Right Pointers in Each Node*/
+class Solution101 {
+public:
+	void connect(TreeLinkNode *root) {
+		ConnectNode(root);
+	}
+	void ConnectNode(TreeLinkNode *root)
+	{
+		if (root!=NULL)
+		{
+			if (root->left!=NULL&&root->right!=NULL)
+			{
+				root->left->next=root->right;
+			}
+			else
+			{
+				return;
+			}
+			if (root->left->left != NULL)
+			{
+				ConnectLeftRight(root->left,root->right);
+				ConnectNode(root->left);
+				ConnectNode(root->right);
+			}
+			else
+			{
+				return;
+			}
+		}
+		else
+		{
+			return;
+		}
+	}
+	void ConnectLeftRight(TreeLinkNode *pLeft, TreeLinkNode *pRight)
+	{
+		while (pLeft->right&&pRight->left)
+		{
+			pLeft=pLeft->right;
+			pRight = pRight->left;
+			pLeft->next = pRight;
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Reverse Linked List*/
+class Solution100 {
+public:
+	ListNode* reverseList(ListNode* head) {
+		stack<ListNode*> stList;
+		ListNode* pCur = head;
+		ListNode* pNewHead = NULL;
+		while (pCur)
+		{
+			stList.push(pCur);
+			pCur = pCur->next;
+		}
+		if (!stList.empty())
+		{
+			pNewHead = stList.top();
+			pCur = pNewHead;
+			stList.pop();
+			while (!stList.empty())
+			{
+				pCur->next = stList.top();
+				pCur = stList.top();
+				stList.pop();
+			}
+			pCur->next = NULL;
+		}
+		return pNewHead;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 /*Permutations */
 class Solution99 {
 public:
@@ -47,6 +121,11 @@ public:
 		solution.erase(solution.end() - 1);
 	}
 };
+/*
+Solution99 SU99;
+vector<int> vec = { 0,-1,1 };
+SU99.permute(vec);
+  */
 /*-------------------------------------------------------------------------------------*/
 /*Rotate Image*/
 class Solution98 {
