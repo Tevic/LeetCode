@@ -1,6 +1,39 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Maximum Subarray */
+class Solution102 {
+public:
+	int maxSubArray(vector<int>& nums) {
+		int len = nums.size();
+		if (len!=0)
+		{
+			int MaxSum = nums[0];
+			int sum = 0;
+			for (size_t i = 0; i < len; i++)
+			{
+				if (sum>=0)
+				{
+					sum += nums[i];
+				}
+				else
+				{
+					sum = nums[i];
+				}
+				if (sum>MaxSum)
+				{
+					MaxSum = sum;
+				}
+			}
+			return MaxSum;
+		}
+		else
+		{
+			return 0;
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 /*Populating Next Right Pointers in Each Node*/
 class Solution101 {
 public:
