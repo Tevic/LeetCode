@@ -1,18 +1,99 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Clone Graph*/
+class Solution105 {
+public:
+	UndirectedGraphNode *cloneGraph(UndirectedGraphNode *node) {
+		if (node == NULL) return NULL;
+		unordered_map<UndirectedGraphNode *, UndirectedGraphNode *> nodeMap;
+		queue<UndirectedGraphNode *> visit;
+		visit.push(node);
+		UndirectedGraphNode * nodeCopy = new UndirectedGraphNode(node->label);
+		nodeMap[node] = nodeCopy;
+		while (visit.size() > 0)
+		{
+			UndirectedGraphNode * cur = visit.front();
+			visit.pop();
+			for (int i = 0; i < cur->neighbors.size(); ++i)
+			{
+				UndirectedGraphNode * neighb = cur->neighbors[i];
+				if (nodeMap.find(neighb) == nodeMap.end())
+				{
+					// no copy of neighbor node yet. create one and associate with the copy of cur
+					UndirectedGraphNode* neighbCopy = new UndirectedGraphNode(neighb->label);
+					nodeMap[cur]->neighbors.push_back(neighbCopy);
+					nodeMap[neighb] = neighbCopy;
+					visit.push(neighb);
+				}
+				else
+				{
+					// already a copy there. Associate it with the copy of cur
+					nodeMap[cur]->neighbors.push_back(nodeMap[neighb]);
+				}
+			}
+		}
+
+		return nodeCopy;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Unique Binary Search Trees*/
+class Solution104 {
+public:
+	int numTrees(int n) {
+		vector<int> count(n + 1, 0);
+		count[0] = 1;
+		count[1] = 1;
+		for (int i = 2; i <= n; i++)
+		{
+			for (int j = 0; j < i; j++)
+			{
+				count[i] += count[j] * count[i - j - 1];
+			}
+		}
+		return count[n];
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Reverse Integer*/
+class Solution103 {
+public:
+	int reverse(int x) {
+		int sign = 1;
+		if (x < 0)
+		{
+			sign = -1;
+			x = -x;
+		}
+		long sum = 0;
+		while (x)
+		{
+			sum *= 10;
+			sum += (x % 10);
+			x = x / 10;
+		}
+		sum = sum*sign;
+		if (sum > INT_MAX || sum < INT_MIN)
+		{
+			sum = 0;
+		}
+		return sum;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 /*Maximum Subarray */
 class Solution102 {
 public:
 	int maxSubArray(vector<int>& nums) {
 		int len = nums.size();
-		if (len!=0)
+		if (len != 0)
 		{
 			int MaxSum = nums[0];
 			int sum = 0;
 			for (size_t i = 0; i < len; i++)
 			{
-				if (sum>=0)
+				if (sum >= 0)
 				{
 					sum += nums[i];
 				}
@@ -20,7 +101,7 @@ public:
 				{
 					sum = nums[i];
 				}
-				if (sum>MaxSum)
+				if (sum > MaxSum)
 				{
 					MaxSum = sum;
 				}
@@ -33,6 +114,11 @@ public:
 		}
 	}
 };
+/*
+vector<int> vec = { -2, 1, -3, 4, -1, 2, 1, -5, 4 };
+Solution102 SU102;
+SU102.maxSubArray(vec);
+*/
 /*-------------------------------------------------------------------------------------*/
 /*Populating Next Right Pointers in Each Node*/
 class Solution101 {
@@ -42,11 +128,11 @@ public:
 	}
 	void ConnectNode(TreeLinkNode *root)
 	{
-		if (root!=NULL)
+		if (root != NULL)
 		{
-			if (root->left!=NULL&&root->right!=NULL)
+			if (root->left != NULL&&root->right != NULL)
 			{
-				root->left->next=root->right;
+				root->left->next = root->right;
 			}
 			else
 			{
@@ -54,7 +140,7 @@ public:
 			}
 			if (root->left->left != NULL)
 			{
-				ConnectLeftRight(root->left,root->right);
+				ConnectLeftRight(root->left, root->right);
 				ConnectNode(root->left);
 				ConnectNode(root->right);
 			}
@@ -72,7 +158,7 @@ public:
 	{
 		while (pLeft->right&&pRight->left)
 		{
-			pLeft=pLeft->right;
+			pLeft = pLeft->right;
 			pRight = pRight->left;
 			pLeft->next = pRight;
 		}
@@ -116,7 +202,7 @@ public:
 		int N = nums.size();
 		vector<int> solution;
 		vector<vector<int> > result;
-		vector<bool> isVisited(N,false);
+		vector<bool> isVisited(N, false);
 		for (size_t i = 0; i < N; i++)
 		{
 			GetPremu(result, nums, solution, isVisited, i);
@@ -132,7 +218,7 @@ public:
 		//return result;
 	}
 
-	void GetPremu(vector<vector<int> > &result, vector<int>& nums,vector<int> &solution, vector<bool> &isVisited, int index)
+	void GetPremu(vector<vector<int> > &result, vector<int>& nums, vector<int> &solution, vector<bool> &isVisited, int index)
 	{
 		isVisited[index] = true;
 		solution.push_back(nums[index]);
@@ -140,7 +226,7 @@ public:
 		{
 			result.push_back(solution);
 			isVisited[index] = false;
-			solution.erase(solution.end()-1);
+			solution.erase(solution.end() - 1);
 			return;
 		}
 		for (size_t i = 0; i < nums.size(); i++)
@@ -158,16 +244,16 @@ public:
 Solution99 SU99;
 vector<int> vec = { 0,-1,1 };
 SU99.permute(vec);
-  */
+*/
 /*-------------------------------------------------------------------------------------*/
 /*Rotate Image*/
 class Solution98 {
 public:
 	void rotate(vector<vector<int> > &matrix) {
 		int N = matrix.size();
-		if (N>0)
+		if (N > 0)
 		{
-			vector<vector<int> > tmp(N,vector<int>(N,0));
+			vector<vector<int> > tmp(N, vector<int>(N, 0));
 			for (size_t i = 0; i < N; i++)
 			{
 				int k = N - i - 1;
@@ -181,7 +267,7 @@ public:
 			{
 				for (size_t j = 0; j < N; j++)
 				{
-					matrix[i][j]=tmp[i][j];
+					matrix[i][j] = tmp[i][j];
 				}
 			}
 		}

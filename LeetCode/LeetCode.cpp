@@ -8,9 +8,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	vector<int> vec = { -2, 1, -3, 4, -1, 2, 1, -5, 4 };
-	Solution102 SU102;
-	SU102.maxSubArray(vec);
+	Solution104 SU104;
+	SU104.numTrees(3);
 	return 0;
 }
 
