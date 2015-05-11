@@ -8,54 +8,37 @@ public:
 		vector<vector<int>> result;
 		if (root)
 		{
-			vector<TreeNode*> levelNode;
-			vector<int> layer;
-			int curLayer = 0;
-			int index = 0;
 			queue<TreeNode*> qu;
 			qu.push(root);
-			levelNode.push_back(root);
-			layer.push_back(curLayer);
+			vector<int> layer;
+			int iCurLayerCnt = 1;
+			int iNextLayerCnt = 0;
+			int visitedCnt = 0;
+			bool isReversed = true;
 			while (!qu.empty())
 			{
 				TreeNode* curNode = qu.front();
 				qu.pop();
-				curLayer = layer[index];
+				layer.push_back(curNode->val);
+				visitedCnt++;
 				if (curNode->left)
 				{
 					qu.push(curNode->left);
-					levelNode.push_back(curNode->left);
-					layer.push_back(curLayer + 1);
+					iNextLayerCnt++;
 				}
 				if (curNode->right)
 				{
 					qu.push(curNode->right);
-					levelNode.push_back(curNode->right);
-					layer.push_back(curLayer + 1);
+					iNextLayerCnt++;
 				}
-				index++;
-			}
-			for (size_t i = 0; i < levelNode.size(); )
-			{
-				vector<int> vec;
-				for (size_t j = i; j < levelNode.size(); j++)
+				if (visitedCnt == iCurLayerCnt)
 				{
-					if (layer[i] == layer[j])
-					{
-						vec.push_back(levelNode[j]->val);
-						if (levelNode.size()-1==j)
-						{
-							i = levelNode.size();
-							break;
-						}
-					}
-					else
-					{
-						i = j;
-						break;
-					}
+					result.push_back(layer);
+					layer.clear();
+					visitedCnt = 0;
+					iCurLayerCnt = iNextLayerCnt;
+					iNextLayerCnt = 0;
 				}
-				result.push_back(vec);
 			}
 			for (size_t i = 1; i < result.size(); i+=2)
 			{
@@ -65,6 +48,62 @@ public:
 		return result;
 	}
 };
+
+/*
+vector<TreeNode*> levelNode;
+vector<int> layer;
+int curLayer = 0;
+int index = 0;
+queue<TreeNode*> qu;
+qu.push(root);
+levelNode.push_back(root);
+layer.push_back(curLayer);
+while (!qu.empty())
+{
+TreeNode* curNode = qu.front();
+qu.pop();
+curLayer = layer[index];
+if (curNode->left)
+{
+qu.push(curNode->left);
+levelNode.push_back(curNode->left);
+layer.push_back(curLayer + 1);
+}
+if (curNode->right)
+{
+qu.push(curNode->right);
+levelNode.push_back(curNode->right);
+layer.push_back(curLayer + 1);
+}
+index++;
+}
+for (size_t i = 0; i < levelNode.size(); )
+{
+vector<int> vec;
+for (size_t j = i; j < levelNode.size(); j++)
+{
+if (layer[i] == layer[j])
+{
+vec.push_back(levelNode[j]->val);
+if (levelNode.size()-1==j)
+{
+i = levelNode.size();
+break;
+}
+}
+else
+{
+i = j;
+break;
+}
+}
+result.push_back(vec);
+}
+for (size_t i = 1; i < result.size(); i+=2)
+{
+reverse(result[i].begin(),result[i].end());
+}
+*/
 /*-------------------------------------------------------------------------------------*/
 /*Binary Search Tree Iterator */
 class BSTIterator {
