@@ -1,6 +1,308 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Binary Tree Zigzag Level Order Traversal*/
+class Solution112 {
+public:
+	vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+		vector<vector<int>> result;
+		if (root)
+		{
+			vector<TreeNode*> levelNode;
+			vector<int> layer;
+			int curLayer = 0;
+			int index = 0;
+			queue<TreeNode*> qu;
+			qu.push(root);
+			levelNode.push_back(root);
+			layer.push_back(curLayer);
+			while (!qu.empty())
+			{
+				TreeNode* curNode = qu.front();
+				qu.pop();
+				curLayer = layer[index];
+				if (curNode->left)
+				{
+					qu.push(curNode->left);
+					levelNode.push_back(curNode->left);
+					layer.push_back(curLayer + 1);
+				}
+				if (curNode->right)
+				{
+					qu.push(curNode->right);
+					levelNode.push_back(curNode->right);
+					layer.push_back(curLayer + 1);
+				}
+				index++;
+			}
+			for (size_t i = 0; i < levelNode.size(); )
+			{
+				vector<int> vec;
+				for (size_t j = i; j < levelNode.size(); j++)
+				{
+					if (layer[i] == layer[j])
+					{
+						vec.push_back(levelNode[j]->val);
+						if (levelNode.size()-1==j)
+						{
+							i = levelNode.size();
+							break;
+						}
+					}
+					else
+					{
+						i = j;
+						break;
+					}
+				}
+				result.push_back(vec);
+			}
+			for (size_t i = 1; i < result.size(); i+=2)
+			{
+				reverse(result[i].begin(),result[i].end());
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Binary Search Tree Iterator */
+class BSTIterator {
+public:
+	stack<TreeNode *> st;
+	void ReverseInOrderTraverse(TreeNode *root)
+	{
+
+		if (root)
+		{
+			if (root->right)
+			{
+				ReverseInOrderTraverse(root->right);
+			}
+			st.push(root);
+			if (root->left)
+			{
+				ReverseInOrderTraverse(root->left);
+			}
+		}
+	}
+	BSTIterator(TreeNode *root) {
+		ReverseInOrderTraverse(root);
+	}
+
+	/** @return whether we have a next smallest number */
+	bool hasNext() {
+		return !st.empty();
+	}
+
+	/** @return the next smallest number */
+	int next() {
+		if (!st.empty())
+		{
+			int result = st.top()->val;
+			st.pop();
+			return result;
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Construct Binary Tree from Inorder and Postorder Traversal */
+class Solution111 {
+public:
+	TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
+		return Build(inorder, postorder, 0, inorder.size() - 1, 0, postorder.size() - 1);
+	}
+
+	TreeNode* Build(vector<int>& inorder, vector<int>& postorder, int inStart, int inEnd, int postStart, int postEnd)
+	{
+		if (postStart > postEnd || inStart > inEnd)
+		{
+			return NULL;
+		}
+		TreeNode* parent = new TreeNode(postorder[postEnd]);
+		int index = inStart;
+		for (; index <= inEnd; index++)
+		{
+			if (postorder[postEnd] == inorder[index])
+			{
+				break;
+			}
+		}
+		parent->left = Build(inorder, postorder, inStart, index - 1, postStart, postEnd - inEnd + index - 1);
+		parent->right = Build(inorder, postorder, index + 1, inEnd, postEnd - inEnd + index, postEnd - 1);
+		return parent;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Construct Binary Tree from Preorder and Inorder Traversal*/
+class Solution110 {
+public:
+	TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+		int len = preorder.size();
+		return Build(preorder, inorder, 0, len - 1, 0, len - 1);
+	}
+
+	TreeNode* Build(vector<int>& preorder, vector<int>& inorder, int preStart, int preEnd, int inStart, int inEnd)
+	{
+		if (preStart > preEnd || inStart > inEnd)
+		{
+			return NULL;
+		}
+		TreeNode* parent = new TreeNode(preorder[preStart]);
+		int index = inStart;
+		for (; index <= inEnd; index++)
+		{
+			if (preorder[preStart] == inorder[index])
+			{
+				break;
+			}
+		}
+		parent->left = Build(preorder, inorder, preStart + 1, preStart + index - inStart, inStart, index - 1);
+		parent->right = Build(preorder, inorder, preStart + index - inStart + 1, preEnd, index + 1, inEnd);
+		return parent;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Convert Sorted Array to Binary Search Tree */
+class Solution109 {
+public:
+	TreeNode* sortedArrayToBST(vector<int>& nums) {
+		return BuildBST(nums, 0, nums.size() - 1);
+	}
+
+	TreeNode* BuildBST(vector<int> &num, int start, int end)
+	{
+		if (start > end)
+		{
+			return NULL;
+		}
+		if (start == end)
+		{
+			return new TreeNode(num[start]);
+		}
+		int mid = start + (end - start) / 2;
+		TreeNode* parent = new TreeNode(num[mid]);
+		parent->left = BuildBST(num, start, mid - 1);
+		parent->right = BuildBST(num, mid + 1, end);
+		return parent;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Convert Sorted List to Binary Search Tree */
+class Solution108 {
+public:
+	TreeNode *sortedListToBST(ListNode *head) {
+		int len = 0;
+		ListNode *p = head;
+		while (p)
+		{
+			len++;
+			p = p->next;
+		}
+		return BuildBST(head, 0, len - 1);
+	}
+	TreeNode* BuildBST(ListNode*& list, int start, int end)
+	{
+		if (start > end) return NULL;
+		int mid = (start + end) / 2;
+		TreeNode *leftChild = BuildBST(list, start, mid - 1);
+		TreeNode *parent = new TreeNode(list->val);
+		parent->left = leftChild;
+		list = list->next;
+		parent->right = BuildBST(list, mid + 1, end);
+		return parent;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Path Sum II*/
+class Solution107 {
+public:
+	vector<vector<int>> pathSum(TreeNode* root, int sum) {
+		vector<vector<int>> result;
+		vector<int> solution;
+		if (root)
+		{
+			GetPath(result, solution, root, 0, sum);
+		}
+		return result;
+	}
+
+	void GetPath(vector<vector<int>> &result, vector<int>& solution, TreeNode* root, int sum, int target)
+	{
+		solution.push_back(root->val);
+		if (root->left == NULL&&root->right == NULL)
+		{
+			if (root->val + sum == target)
+			{
+				result.push_back(solution);
+			}
+		}
+		if (root->left)
+		{
+			GetPath(result, solution, root->left, sum + root->val, target);
+		}
+		if (root->right)
+		{
+			GetPath(result, solution, root->right, sum + root->val, target);
+		}
+		solution.erase(solution.end() - 1);
+	}
+};
+/*
+TreeNode* T1 = new TreeNode(5);
+TreeNode* T2 = new TreeNode(4);
+TreeNode* T3 = new TreeNode(8);
+TreeNode* T4 = new TreeNode(11);
+TreeNode* T5 = new TreeNode(13);
+TreeNode* T6 = new TreeNode(4);
+TreeNode* T7 = new TreeNode(7);
+TreeNode* T8 = new TreeNode(2);
+TreeNode* T9 = new TreeNode(5);
+TreeNode* T10 = new TreeNode(1);
+T1->left = T2;
+T1->right = T3;
+T2->left = T4;
+T3->left = T5;
+T3->right = T6;
+T4->left = T7;
+T4->right = T8;
+T6->left = T9;
+T6->right = T10;
+Solution107 SU107;
+SU107.pathSum(T1,22);
+*/
+/*-------------------------------------------------------------------------------------*/
+/*Flatten Binary Tree to Linked List */
+class Solution106 {
+public:
+	void flatten(TreeNode* root) {
+		vector<TreeNode*> vecList;
+		if (root)
+		{
+			PreOrderTraverse(root, vecList);
+			for (size_t i = 0; i < vecList.size() - 1; i++)
+			{
+				vecList[i]->left = NULL;
+				vecList[i]->right = vecList[i + 1];
+			}
+			vecList[vecList.size() - 1]->right = NULL;
+		}
+	}
+
+	void PreOrderTraverse(TreeNode* root, vector<TreeNode*> &vecList)
+	{
+		vecList.push_back(root);
+		if (root->left)
+		{
+			PreOrderTraverse(root->left, vecList);
+		}
+		if (root->right)
+		{
+			PreOrderTraverse(root->right, vecList);
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 /*Clone Graph*/
 class Solution105 {
 public:
@@ -36,6 +338,43 @@ public:
 
 		return nodeCopy;
 	}
+	//UndirectedGraphNode *cloneGraph(UndirectedGraphNode *node) {
+	//	set<UndirectedGraphNode*> all;
+	//	return Clone(node, NULL,all);
+	//}
+
+	//UndirectedGraphNode* Clone(UndirectedGraphNode *node, UndirectedGraphNode *newNode, set<UndirectedGraphNode*> &all)
+	//{
+	//	if (node)
+	//	{
+	//		if (newNode==NULL)
+	//		{
+	//			newNode = new UndirectedGraphNode(node->label);
+	//			all.insert(newNode);
+	//		}
+	//		for (size_t i = 0; i < node->neighbors.size(); i++)
+	//		{
+	//			auto result = all.find(node->neighbors[i]);
+	//			if (result == all.end())
+	//			{
+	//				UndirectedGraphNode *newNeighbour = new UndirectedGraphNode(node->neighbors[i]->label);
+	//				all.insert(newNeighbour);
+	//				newNode->neighbors.push_back(newNeighbour);
+	//				Clone(node->neighbors[i], newNeighbour,all);
+	//			}
+	//			else
+	//			{
+	//				newNode->neighbors.push_back(*result);
+	//				continue;
+	//			}
+	//		}
+	//		return newNode;
+	//	}
+	//	else
+	//	{
+	//		return NULL;
+	//	}
+	//}
 };
 /*-------------------------------------------------------------------------------------*/
 /*Unique Binary Search Trees*/
