@@ -1,6 +1,326 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Swap Nodes in Pairs */
+class Solution119 {
+public:
+	ListNode* swapPairs(ListNode* head) {
+		if (!head||!head->next)
+		{
+			return head;
+		}
+		ListNode* pA = head;
+		ListNode* pB = head->next;
+		ListNode* nextNode = pB->next;
+		ListNode* preNode = new ListNode(-1);
+		preNode->next = pA;
+		ListNode* newHead = preNode;
+		while (pA&&pB)
+		{
+			
+			pA->next = nextNode;
+			pB->next = pA;
+			preNode->next = pB;
+			preNode = pA;
+			pA = preNode->next;
+			if (pA)
+			{
+				pB = pA->next;
+			}
+			else
+			{
+				break;
+			}
+			if (pB)
+			{
+				nextNode = pB->next;
+			}
+			else
+			{
+				break;
+			}
+		}
+		return newHead->next;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Binary Tree Postorder Traversal */
+class Solution118 {
+public:
+	vector<int> postorderTraversal(TreeNode* root) {
+		vector<int> result;
+		stack<TreeNode*> st;
+		if (root)
+		{
+			st.push(root);
+		}
+		TreeNode* pCur;
+		while (!st.empty())
+		{
+			pCur = st.top();
+			st.pop();
+			result.push_back(pCur->val);
+			if (pCur->left)
+			{
+				st.push(pCur->left);
+			}
+			if (pCur->right)
+			{
+				st.push(pCur->right);
+			}
+		}
+		reverse(result.begin(),result.end());
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Binary Tree Inorder Traversal*/
+class Solution117 {
+public:
+	vector<int> inorderTraversal(TreeNode* root) {
+		stack<TreeNode*> st;
+		vector<int> result;
+		TreeNode* pCur = root;
+		while (!st.empty() || pCur)
+		{
+			if (pCur)
+			{
+				st.push(pCur);
+				pCur = pCur->left;
+			}
+			else
+			{
+				pCur = st.top();
+				st.pop();
+				result.push_back(pCur->val);
+				pCur = pCur->right;
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Binary Tree Preorder Traversal*/
+class Solution116 {
+public:
+	vector<int> preorderTraversal(TreeNode* root) {
+		vector<int> result;
+		stack<TreeNode*> st;
+		if (root)
+		{
+			st.push(root);
+		}
+		while (!st.empty())
+		{
+			TreeNode* pCur = st.top();
+			st.pop();
+			result.push_back(pCur->val);
+			if (pCur->right)
+			{
+				st.push(pCur->right);
+			}
+			if (pCur->left)
+			{
+				st.push(pCur->left);
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Implement Trie (Prefix Tree) */
+class TrieNode {
+public:
+	TrieNode() {
+		for (size_t i = 0; i < 26; i++)
+		{
+			nextNodes[i]=NULL;
+		}
+		isWord = false;
+	}
+	bool isWord;
+	TrieNode* nextNodes[26];
+};
+
+class Trie {
+public:
+	Trie() {
+		root=new TrieNode();
+	}
+
+	void insert(string s) {
+		TrieNode* pCur = root;
+		for (size_t i = 0; i < s.size(); i++)
+		{
+			if (!pCur->nextNodes[s[i] - 'a'])
+			{
+				pCur->nextNodes[s[i] - 'a'] = new TrieNode();
+			}
+			pCur = pCur->nextNodes[s[i] - 'a'];
+		}
+		pCur->isWord = true;
+	}
+
+	bool search(string key) {
+		TrieNode* pCur = root;
+		for (size_t i = 0; i < key.size(); i++)
+		{
+			pCur = pCur->nextNodes[key[i] - 'a'];
+			if (!pCur)
+			{
+				return false;
+			}
+		}
+		return pCur->isWord;
+	}
+
+	bool startsWith(string prefix) {
+		TrieNode* pCur = root;
+		for (size_t i = 0; i < prefix.size(); i++)
+		{
+			pCur = pCur->nextNodes[prefix[i] - 'a'];
+			if (!pCur)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+private:
+	TrieNode* root;
+};
+
+// Your Trie object will be instantiated and called as such:
+// Trie trie;
+// trie.insert("somestring");
+// trie.search("key");
+/*-------------------------------------------------------------------------------------*/
+/*Course Schedule II*/
+class Solution115 {
+public:
+	vector<int> findOrder(int numCourses, vector<pair<int, int>>& prerequisites) {
+		vector<int> result;
+		if (numCourses>0)
+		{
+			vector<int> inDegree(numCourses, 0);
+			vector<int> isVisited(numCourses, false);
+			for (size_t i = 0; i < prerequisites.size(); i++)
+			{
+				inDegree[prerequisites[i].first]++;
+			}
+			while (true)
+			{
+				if (accumulate(isVisited.begin(), isVisited.end(), 0) == numCourses)
+				{
+					return result;
+				}
+				bool findOne = false;
+				for (size_t i = 0; i < numCourses; i++)
+				{
+					if (inDegree[i] == 0 && !isVisited[i])
+					{
+						findOne = true;
+						isVisited[i] = true;
+						result.push_back(i);
+						for (size_t j = 0; j < prerequisites.size(); j++)
+						{
+							if (prerequisites[j].second == i)
+							{
+								inDegree[prerequisites[j].first]--;
+							}
+						}
+						break;
+					}
+				}
+				if (!findOne)
+				{
+					result.clear();
+					return result;
+				}
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Course Schedule*/
+class Solution114 {
+public:
+	bool canFinish(int numCourses, vector<pair<int, int>>& prerequisites) {
+		bool can = true;
+		if (numCourses>1)
+		{
+			vector<int> inDegree(numCourses, 0);
+			vector<int> isVisited(numCourses, false);
+			for (size_t i = 0; i < prerequisites.size(); i++)
+			{
+				inDegree[prerequisites[i].first]++;
+			}
+			while (true)
+			{
+				if (accumulate(inDegree.begin(),inDegree.end(),0)==0)
+				{
+					return true;
+				}
+				bool findOne = false;
+				for (size_t i = 0; i < numCourses; i++)
+				{
+					if (!isVisited[i]&&inDegree[i] == 0)
+					{
+						findOne = true;
+						isVisited[i] = true;
+						for (size_t j = 0; j < prerequisites.size(); j++)
+						{
+							if (prerequisites[j].second == i)
+							{
+								inDegree[prerequisites[j].first]--;
+							}
+						}
+						break;
+					}
+				}
+				if (!findOne)
+				{
+					return false;
+				}
+			}
+		}
+		return can;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Minimum Size Subarray Sum */
+class Solution113 {
+public:
+	int minSubArrayLen(int s, vector<int>& nums) {
+		int len = nums.size();
+		if (len==0)
+		{
+			return 0;
+		}
+		int start = 0;
+		int end = -1;
+		int sum = 0;
+		int minLen = len + 1;
+		while (end<len)
+		{
+			while (end<len && sum<s)
+			{
+				end++;
+				sum += nums[end];
+			}
+			if (sum>=s)
+			{
+				minLen = end - start+1 < minLen ? end - start+1 : minLen;
+				sum -= nums[start];
+				start++;
+			}
+		}
+		return minLen > len ? 0 : minLen;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 /*Binary Tree Zigzag Level Order Traversal*/
 class Solution112 {
 public:

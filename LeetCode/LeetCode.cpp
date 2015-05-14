@@ -8,17 +8,10 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	TreeNode* T1 = new TreeNode(1);
-	TreeNode* T2 = new TreeNode(2);
-	TreeNode* T3 = new TreeNode(3);
-	TreeNode* T4 = new TreeNode(4);
-	TreeNode* T5 = new TreeNode(5);
-	T1->left = T2;
-	T1->right = T3;
-	T2->left = T4;
-	T3->right = T5;
-	Solution112 SU112;
-	SU112.zigzagLevelOrder(T1);
+	 Trie trie;
+	 trie.insert("a");
+	 bool res1 = trie.search("ab");
+	 res1 = trie.startsWith("a");
 	return 0;
 }
 

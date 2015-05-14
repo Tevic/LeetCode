@@ -26,6 +26,7 @@
 #include <regex>
 #include <bitset>
 #include <cmath>
+#include <numeric>
 
 using namespace std;
 
