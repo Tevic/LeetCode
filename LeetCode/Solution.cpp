@@ -1,11 +1,244 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Reverse Linked List II */
+class Solution122 {
+public:
+	ListNode* reverseBetween(ListNode* head, int m, int n) {
+		if (!head || m == n)
+		{
+			return head;
+		}
+		int len = n - m + 1;
+		ListNode* newHead = new ListNode(-1);
+		newHead->next = head;
+		int index = 0;
+		ListNode* pCur = newHead;
+		ListNode* pDiscNext = nullptr;
+		ListNode* pNext = nullptr;
+		ListNode* pDisc = nullptr;
+		while (m--)
+		{
+			pDisc = pCur;
+			pCur = pCur->next;
+			pDiscNext = pCur;
+		}
+		pNext = pCur->next;
+		while (len--)
+		{
+			pCur->next = pDisc->next;
+			pDisc->next = pCur;
+			pCur = pNext;
+			if (pNext)
+			{
+				pNext = pCur->next;
+			}
+		}
+		pDiscNext->next = pCur;
+		return newHead->next;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Repeated DNA Sequences */
+class Solution121 {
+public:
+	vector<string> findRepeatedDnaSequences(string s) {
+		vector<string> result;
+		unordered_set<int> resultAdded;
+		if (s.size() < 10)
+		{
+			return result;
+		}
+		unordered_map<int, int> ump;
+		for (int i = 0; i <= s.size() - 10; i++)
+		{
+			string str = s.substr(i, 10);
+			int key = str2int(str);
+			ump[key]++;
+			if (ump[key] > 1 && resultAdded.find(key) == resultAdded.end())
+			{
+				result.push_back(str);
+				resultAdded.insert(key);
+			}
+		}
+		return result;
+	}
+
+	int str2int(string str)
+	{
+		int result = 0;
+		for (size_t i = 0; i < str.size(); i++)
+		{
+			switch (str[i])
+			{
+			case 'A':result += result * 4 + 1; break;
+			case 'C':result += result * 4 + 2; break;
+			case 'T':result += result * 4 + 3; break;
+			case 'G':result += result * 4 + 4; break;
+			default:
+				break;
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Generate Parentheses */
+class Solution120 {
+public:
+	vector<string> generateParenthesis(int n) {
+		vector<string> result;
+		if (n > 0)
+		{
+			string str;
+			Gen(result, str, 0, 0, n, 0);
+		}
+		return result;
+	}
+
+
+	void Gen(vector<string>& result, string str, int leftCnt, int rightCnt, int n, int curCnt)
+	{
+		if (rightCnt > leftCnt)
+		{
+			return;
+		}
+		if (leftCnt == n&&rightCnt == n)
+		{
+			result.push_back(str);
+			return;
+		}
+		if (leftCnt < n)
+		{
+			Gen(result, str + '(', leftCnt + 1, rightCnt, n, curCnt + 1);
+		}
+		if (rightCnt < leftCnt)
+		{
+			Gen(result, str + ')', leftCnt, rightCnt + 1, n, curCnt + 1);
+		}
+	}
+
+	//void Gen(vector<string>& result, string &str, int leftCnt, int rightCnt, int n, int curCnt)
+	//{
+	//	if (curCnt == 2 * n)
+	//	{
+	//		result.push_back(str);
+	//		return;
+	//	}
+	//	if (leftCnt < n)
+	//	{
+	//		str += '(';
+	//		Gen(result, str, leftCnt + 1, rightCnt, n, curCnt + 1);
+	//		str.resize(str.size() - 1);
+	//	}
+	//	if (rightCnt < leftCnt)
+	//	{
+	//		str += ')';
+	//		Gen(result, str, leftCnt, rightCnt + 1, n, curCnt + 1);
+	//		str.resize(str.size() - 1);
+	//	}
+	//}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Add and Search Word - Data structure design*/
+class WordDictionary {
+public:
+
+	class TrieNode {
+	public:
+		TrieNode() {
+			for (size_t i = 0; i < 26; i++)
+			{
+				nextNodes[i] = NULL;
+			}
+			isWord = false;
+		}
+		bool isWord;
+		TrieNode* nextNodes[26];
+	};
+
+	class Trie {
+	public:
+		Trie() {
+			root = new TrieNode();
+		}
+
+		void insert(string s) {
+			TrieNode* pCur = root;
+			for (size_t i = 0; i < s.size(); i++)
+			{
+				if (!pCur->nextNodes[s[i] - 'a'])
+				{
+					pCur->nextNodes[s[i] - 'a'] = new TrieNode();
+				}
+				pCur = pCur->nextNodes[s[i] - 'a'];
+			}
+			pCur->isWord = true;
+		}
+
+		bool search(string key, TrieNode* startRoot) {
+			TrieNode* pCur = startRoot;
+			for (size_t i = 0; i < key.size(); i++)
+			{
+				if (key[i] == '.')
+				{
+					for (size_t j = 0; j < 26; j++)
+					{
+						TrieNode* pTemp = pCur->nextNodes[j];
+						if (pTemp && search(key.substr(i + 1, key.size() - i), pTemp))
+						{
+							return true;
+						}
+					}
+					return false;
+				}
+				else
+				{
+					pCur = pCur->nextNodes[key[i] - 'a'];
+					if (!pCur)
+					{
+						return false;
+					}
+				}
+			}
+			return pCur->isWord;
+		}
+
+		bool startsWith(string prefix) {
+			TrieNode* pCur = root;
+			for (size_t i = 0; i < prefix.size(); i++)
+			{
+				pCur = pCur->nextNodes[prefix[i] - 'a'];
+				if (!pCur)
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+		TrieNode* root;
+	};
+
+	Trie mTrie;
+
+
+	// Adds a word into the data structure.
+	void addWord(string word) {
+		mTrie.insert(word);
+	}
+
+	// Returns if the word is in the data structure. A word could
+	// contain the dot character '.' to represent any one letter.
+	bool search(string word) {
+		return mTrie.search(word, mTrie.root);
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 /*Swap Nodes in Pairs */
 class Solution119 {
 public:
 	ListNode* swapPairs(ListNode* head) {
-		if (!head||!head->next)
+		if (!head || !head->next)
 		{
 			return head;
 		}
@@ -17,7 +250,7 @@ public:
 		ListNode* newHead = preNode;
 		while (pA&&pB)
 		{
-			
+
 			pA->next = nextNode;
 			pB->next = pA;
 			preNode->next = pB;
@@ -69,7 +302,7 @@ public:
 				st.push(pCur->right);
 			}
 		}
-		reverse(result.begin(),result.end());
+		reverse(result.begin(), result.end());
 		return result;
 	}
 };
@@ -134,7 +367,7 @@ public:
 	TrieNode() {
 		for (size_t i = 0; i < 26; i++)
 		{
-			nextNodes[i]=NULL;
+			nextNodes[i] = NULL;
 		}
 		isWord = false;
 	}
@@ -145,7 +378,7 @@ public:
 class Trie {
 public:
 	Trie() {
-		root=new TrieNode();
+		root = new TrieNode();
 	}
 
 	void insert(string s) {
@@ -201,7 +434,7 @@ class Solution115 {
 public:
 	vector<int> findOrder(int numCourses, vector<pair<int, int>>& prerequisites) {
 		vector<int> result;
-		if (numCourses>0)
+		if (numCourses > 0)
 		{
 			vector<int> inDegree(numCourses, 0);
 			vector<int> isVisited(numCourses, false);
@@ -249,7 +482,7 @@ class Solution114 {
 public:
 	bool canFinish(int numCourses, vector<pair<int, int>>& prerequisites) {
 		bool can = true;
-		if (numCourses>1)
+		if (numCourses > 1)
 		{
 			vector<int> inDegree(numCourses, 0);
 			vector<int> isVisited(numCourses, false);
@@ -259,14 +492,14 @@ public:
 			}
 			while (true)
 			{
-				if (accumulate(inDegree.begin(),inDegree.end(),0)==0)
+				if (accumulate(inDegree.begin(), inDegree.end(), 0) == 0)
 				{
 					return true;
 				}
 				bool findOne = false;
 				for (size_t i = 0; i < numCourses; i++)
 				{
-					if (!isVisited[i]&&inDegree[i] == 0)
+					if (!isVisited[i] && inDegree[i] == 0)
 					{
 						findOne = true;
 						isVisited[i] = true;
@@ -295,7 +528,7 @@ class Solution113 {
 public:
 	int minSubArrayLen(int s, vector<int>& nums) {
 		int len = nums.size();
-		if (len==0)
+		if (len == 0)
 		{
 			return 0;
 		}
@@ -303,16 +536,16 @@ public:
 		int end = -1;
 		int sum = 0;
 		int minLen = len + 1;
-		while (end<len)
+		while (end < len)
 		{
-			while (end<len && sum<s)
+			while (end < len && sum < s)
 			{
 				end++;
 				sum += nums[end];
 			}
-			if (sum>=s)
+			if (sum >= s)
 			{
-				minLen = end - start+1 < minLen ? end - start+1 : minLen;
+				minLen = end - start + 1 < minLen ? end - start + 1 : minLen;
 				sum -= nums[start];
 				start++;
 			}
@@ -360,9 +593,9 @@ public:
 					iNextLayerCnt = 0;
 				}
 			}
-			for (size_t i = 1; i < result.size(); i+=2)
+			for (size_t i = 1; i < result.size(); i += 2)
 			{
-				reverse(result[i].begin(),result[i].end());
+				reverse(result[i].begin(), result[i].end());
 			}
 		}
 		return result;

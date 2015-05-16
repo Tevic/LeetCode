@@ -8,10 +8,17 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	 Trie trie;
-	 trie.insert("a");
-	 bool res1 = trie.search("ab");
-	 res1 = trie.startsWith("a");
+	ListNode* T1 = new ListNode(1);
+	ListNode* T2 = new ListNode(2);
+	//ListNode* T3 = new ListNode(3);
+	//ListNode* T4 = new ListNode(4);
+	//ListNode* T5 = new ListNode(5);
+	T1->next = T2;
+	//T2->next = T3;
+	//T3->next = T4;
+	//T4->next = T5;
+	Solution122 SU122;
+	SU122.reverseBetween(T1, 1, 2);
 	return 0;
 }
 
