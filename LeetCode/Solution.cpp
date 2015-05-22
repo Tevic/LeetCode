@@ -1,11 +1,408 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Restore IP Addresses */
+class Solution128 {
+public:
+	vector<string> restoreIpAddresses(string s) {
+		vector<string> result;
+		int len = s.size();
+		if (len>0)
+		{
+			GetIP(result, s, "", 1);
+		}
+		return result;
+	}
+
+	void GetIP(vector<string> &result,string remainIP,string curIP,int index)
+	{
+		if (index==4)
+		{
+			if (IsValid(remainIP))
+			{
+				curIP += remainIP;
+				result.push_back(curIP);
+			}
+			return;
+		}
+		else
+		{
+			if (remainIP.size() == 0)
+			{
+				return;
+			}
+			for (size_t i = 1; i < 4 && i<remainIP.size(); i++)
+			{
+				string addStr = remainIP.substr(0, i);
+				if (!IsValid(addStr))
+				{
+					continue;
+				}
+				string newReamin = remainIP.substr(i);
+				GetIP(result, newReamin, curIP + addStr + ".", index + 1);
+			}
+		}
+	}
+
+	bool IsValid(string str)
+	{
+		int len = str.size();
+		if (str.size()<=0||str.size()>3)
+		{
+			return false;
+		}
+		if (str[0] == '0'&&len!=1)
+		{
+			return false;
+		}
+		if (len == 3 && stoi(str)>255)
+		{
+			return false;
+		}
+		return true;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Container With Most Water*/
+class Solution127 {
+public:
+	int maxArea(vector<int>& height) {
+		int len = height.size();
+		if (len==0)
+		{
+			return 0;
+		}
+		int start = 0;
+		int end = len - 1;
+		int maxArea = 0;
+		while (start<end)
+		{
+			int area = min(height[start], height[end])*(end - start);
+			maxArea = max(maxArea,area);
+			if (height[start]<height[end])
+			{
+				start++;
+			}
+			else
+			{
+				end--;
+			}
+		}
+		return maxArea;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Insertion Sort List*/
+class Solution126 {
+public:
+	ListNode* insertionSortList(ListNode* head) {
+		vector<ListNode*> vec;
+		ListNode* pCur = head;
+		while (pCur)
+		{
+			vec.push_back(pCur);
+			pCur = pCur->next;
+		}
+		sort(vec.begin(),vec.end(),Cmp);
+		if (vec.size()==0)
+		{
+			return head;
+		}
+		head = vec[0];
+		pCur = head;
+		for (size_t i = 1; i < vec.size(); i++)
+		{
+			pCur->next = vec[i];
+			pCur = vec[i];
+		}
+		pCur->next = NULL;
+		return head;
+	}
+	static bool Cmp(ListNode* ln1, ListNode* ln2)
+	{
+		return ln1->val < ln2->val;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Divide Two Integers*/
+class Solution125 {
+public:
+	int divide(int dividend, int divisor) {
+		long ldividend = dividend;
+		long ldivisor = divisor;
+		if (ldivisor == 0)
+			return -1;//error
+		int bits = sizeof(int) * 8;
+		int signMask = 0x01 << (bits - 1);
+		int valMask = ~signMask;
+
+		int count = 0;
+		bool minus = false;
+		long dend = ldividend;
+		if (ldividend < 0)
+		{
+			minus = true;
+			dend = ~(dend - 1);//补码还原，先-1，再取反。（-1的补码是，将1的原码0x01取反，在+1，也就是1...1）
+		}
+		long sor = ldivisor;
+		if (ldivisor < 0)
+		{
+			minus = !minus;
+			sor = ~(sor - 1);
+		}
+		int offset = 0;
+		int mask = 0x01 << (bits - 1);
+		while ((0 == (sor&mask)) && (sor << 1) <= dend)
+		{
+			++offset;
+			sor = sor << 1;
+		}
+
+		long result = 0;
+		while (offset >= 0)
+		{
+			if (dend >= sor)
+			{
+				result += (0x01 << offset);
+				dend -= sor;
+			}
+			--offset;
+			sor = sor >> 1;
+		}
+		if (minus)
+			return 0 - result;
+		if (ldividend==INT_MIN&&ldivisor==-1)
+		{
+			result = INT_MAX;
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Partition List */
+class Solution124 {
+public:
+	ListNode* partition(ListNode* head, int x) {
+		if (head == NULL)
+		{
+			return NULL;
+		}
+		vector<ListNode*> lessList;
+		vector<ListNode*> greaterList;
+		ListNode* pCur = head;
+		while (pCur)
+		{
+			if (pCur->val < x)
+			{
+				lessList.push_back(pCur);
+			}
+			else
+			{
+				greaterList.push_back(pCur);
+			}
+			pCur = pCur->next;
+		}
+		ListNode* newHead = NULL;
+		pCur = NULL;
+		if (lessList.size() > 0)
+		{
+			newHead = lessList[0];
+			pCur = newHead;
+			for (size_t i = 1; i < lessList.size(); i++)
+			{
+				pCur->next = lessList[i];
+				pCur = lessList[i];
+			}
+			for (size_t i = 0; i < greaterList.size(); i++)
+			{
+				pCur->next = greaterList[i];
+				pCur = greaterList[i];
+			}
+			pCur->next = NULL;
+			return newHead;
+		}
+		else
+		{
+			newHead = greaterList[0];
+			pCur = newHead;
+			for (size_t i = 1; i < greaterList.size(); i++)
+			{
+				pCur->next = greaterList[i];
+				pCur = greaterList[i];
+			}
+			pCur->next = NULL;
+			return newHead;
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Subsets */
+class Solution123 {
+public:
+	vector<vector<int>> subsets(vector<int>& nums) {
+		vector<vector<int> > result;
+		int len = nums.size();
+		int cnt = 1 << len;
+		sort(nums.begin(), nums.end());
+		for (size_t i = 0; i < cnt; i++)
+		{
+			vector<int> vec;
+			int num = i;
+			for (size_t j = 0; j < len; j++)
+			{
+				int iSelect = num & 1;
+				if (iSelect == 1)
+				{
+					vec.push_back(nums[j]);
+				}
+				num >>= 1;
+			}
+			result.push_back(vec);
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Subsets II */
+class Solution122 {
+public:
+	vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+		vector<vector<int> > result;
+		int len = nums.size();
+		int cnt = 1 << len;
+		sort(nums.begin(), nums.end());
+		for (size_t i = 0; i < cnt; i++)
+		{
+			vector<int> vec;
+			int num = i;
+			for (size_t j = 0; j < len; j++)
+			{
+				int iSelect = num & 1;
+				if (iSelect == 1)
+				{
+					vec.push_back(nums[j]);
+				}
+				num >>= 1;
+			}
+			result.push_back(vec);
+		}
+		sort(result.begin(), result.end());
+		result.erase(unique(result.begin(), result.end()), result.end());
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Decode Ways */
+class Solution121 {
+public:
+	int numDecodings(string s) {
+		int len = s.size();
+		vector<int> dp(len, 0);
+		if (len == 0)
+		{
+			return 0;
+		}
+		dp[0] = s[0] == '0' ? 0 : 1;
+		if (dp[0] == 0)
+		{
+			return 0;
+		}
+		if (len > 1)
+		{
+			if (s[1] == '0')
+			{
+				if (s[0] == '0' || s[0] > '2')
+				{
+					return 0;
+				}
+				dp[1] = 1;
+			}
+			else
+			{
+				int num = (s[0] - '0') * 10 + (s[1] - '0');
+				if (num >= 1 && num <= 26)
+				{
+					dp[1] = 2;
+				}
+				else
+				{
+					dp[1] = 1;
+				}
+
+			}
+			for (size_t i = 2; i < len; i++)
+			{
+				if (s[i] == '0')
+				{
+					if (s[i - 1] == '0' || s[i - 1] > '2')
+					{
+						return 0;
+					}
+					dp[i] = dp[i - 2];
+				}
+				else
+				{
+					if (s[i - 1] == '0' || s[i - 1] > '2')
+					{
+						dp[i] = dp[i - 1];
+					}
+					else
+					{
+						int num = (s[i - 1] - '0') * 10 + (s[i] - '0');
+						if (num >= 1 && num <= 26)
+						{
+							dp[i] = dp[i - 2] + dp[i - 1];
+						}
+						else
+						{
+							dp[i] = dp[i - 1];
+						}
+					}
+
+				}
+			}
+		}
+		return dp[len - 1];
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*House Robber II */
+class Solution120 {
+public:
+	int rob(vector<int>& nums) {
+		int len = nums.size();
+		if (len == 0)
+		{
+			return 0;
+		}
+		if (len == 1)
+		{
+			return nums[0];
+		}
+		vector<int> dp(len, 0);
+		dp[0] = nums[0];
+		dp[1] = nums[0];
+		int max;
+		for (size_t i = 2; i < len - 1; i++)
+		{
+			dp[i] = dp[i - 2] + nums[i] > dp[i - 1] ? dp[i - 2] + nums[i] : dp[i - 1];
+		}
+		max = dp[len - 2];
+		dp[0] = 0;
+		dp[1] = nums[1];
+		for (size_t i = 2; i < len; i++)
+		{
+			dp[i] = dp[i - 2] + nums[i] > dp[i - 1] ? dp[i - 2] + nums[i] : dp[i - 1];
+		}
+		return max > dp[len - 1] ? max : dp[len - 1];
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 /*Swap Nodes in Pairs */
 class Solution119 {
 public:
 	ListNode* swapPairs(ListNode* head) {
-		if (!head||!head->next)
+		if (!head || !head->next)
 		{
 			return head;
 		}
@@ -17,7 +414,7 @@ public:
 		ListNode* newHead = preNode;
 		while (pA&&pB)
 		{
-			
+
 			pA->next = nextNode;
 			pB->next = pA;
 			preNode->next = pB;
@@ -69,7 +466,7 @@ public:
 				st.push(pCur->right);
 			}
 		}
-		reverse(result.begin(),result.end());
+		reverse(result.begin(), result.end());
 		return result;
 	}
 };
@@ -134,7 +531,7 @@ public:
 	TrieNode() {
 		for (size_t i = 0; i < 26; i++)
 		{
-			nextNodes[i]=NULL;
+			nextNodes[i] = NULL;
 		}
 		isWord = false;
 	}
@@ -145,7 +542,7 @@ public:
 class Trie {
 public:
 	Trie() {
-		root=new TrieNode();
+		root = new TrieNode();
 	}
 
 	void insert(string s) {
@@ -201,7 +598,7 @@ class Solution115 {
 public:
 	vector<int> findOrder(int numCourses, vector<pair<int, int>>& prerequisites) {
 		vector<int> result;
-		if (numCourses>0)
+		if (numCourses > 0)
 		{
 			vector<int> inDegree(numCourses, 0);
 			vector<int> isVisited(numCourses, false);
@@ -249,7 +646,7 @@ class Solution114 {
 public:
 	bool canFinish(int numCourses, vector<pair<int, int>>& prerequisites) {
 		bool can = true;
-		if (numCourses>1)
+		if (numCourses > 1)
 		{
 			vector<int> inDegree(numCourses, 0);
 			vector<int> isVisited(numCourses, false);
@@ -259,14 +656,14 @@ public:
 			}
 			while (true)
 			{
-				if (accumulate(inDegree.begin(),inDegree.end(),0)==0)
+				if (accumulate(inDegree.begin(), inDegree.end(), 0) == 0)
 				{
 					return true;
 				}
 				bool findOne = false;
 				for (size_t i = 0; i < numCourses; i++)
 				{
-					if (!isVisited[i]&&inDegree[i] == 0)
+					if (!isVisited[i] && inDegree[i] == 0)
 					{
 						findOne = true;
 						isVisited[i] = true;
@@ -295,7 +692,7 @@ class Solution113 {
 public:
 	int minSubArrayLen(int s, vector<int>& nums) {
 		int len = nums.size();
-		if (len==0)
+		if (len == 0)
 		{
 			return 0;
 		}
@@ -303,16 +700,16 @@ public:
 		int end = -1;
 		int sum = 0;
 		int minLen = len + 1;
-		while (end<len)
+		while (end < len)
 		{
-			while (end<len && sum<s)
+			while (end < len && sum < s)
 			{
 				end++;
 				sum += nums[end];
 			}
-			if (sum>=s)
+			if (sum >= s)
 			{
-				minLen = end - start+1 < minLen ? end - start+1 : minLen;
+				minLen = end - start + 1 < minLen ? end - start + 1 : minLen;
 				sum -= nums[start];
 				start++;
 			}
@@ -360,9 +757,9 @@ public:
 					iNextLayerCnt = 0;
 				}
 			}
-			for (size_t i = 1; i < result.size(); i+=2)
+			for (size_t i = 1; i < result.size(); i += 2)
 			{
-				reverse(result[i].begin(),result[i].end());
+				reverse(result[i].begin(), result[i].end());
 			}
 		}
 		return result;

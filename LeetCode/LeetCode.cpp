@@ -8,10 +8,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	 Trie trie;
-	 trie.insert("a");
-	 bool res1 = trie.search("ab");
-	 res1 = trie.startsWith("a");
+	Solution128 SU128;
+	SU128.restoreIpAddresses("010010");
 	return 0;
 }
 
