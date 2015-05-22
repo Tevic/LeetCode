@@ -8,8 +8,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Solution128 SU128;
-	SU128.restoreIpAddresses("010010");
+	Solution134 SU134;
+	SU134.combine(4,1);
 	return 0;
 }
 

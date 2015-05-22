@@ -1,6 +1,96 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Combinations*/
+class Solution134 {
+public:
+	vector<vector<int>> combine(int n, int k) {
+		vector<vector<int>> result;
+		vector<int> comList;
+		vector<bool> isVisited(n+1, false);
+		if (n>=k)
+		{
+			GenCombination(result, comList, isVisited, n, k);
+		}
+		return result;
+	}
+
+	void GenCombination(vector<vector<int>> &result, vector<int> &comList, vector<bool> &isVisited,int totalCnt,int remainCnt)
+	{
+		if (remainCnt==0)
+		{
+			result.push_back(comList);
+		}
+		else
+		{
+			for (size_t i = comList.size()==0?1:comList[comList.size() - 1] + 1; i <= totalCnt; i++)
+			{
+				if (!isVisited[i])
+				{
+					isVisited[i] = true;
+					comList.push_back(i);
+					GenCombination(result, comList, isVisited, totalCnt, remainCnt-1);
+					comList.erase(comList.end()-1);
+					isVisited[i] = false;
+				}
+			}
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Gray Code*/
+class Solution133 {
+public:
+	vector<int> grayCode(int n) {
+		vector<int> result;
+		result.push_back(0);
+		for (int i = 0; i< n; i++)
+		{
+			int highestBit = 1 << i;
+			int len = result.size();
+			for (int j = len - 1; j >= 0; j--)
+			{
+				result.push_back(highestBit + result[j]);
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Unique Binary Search Trees II */
+class Solution132 {
+public:
+	vector<TreeNode *> generateTrees(int n) {
+		if (n == 0) return *generate(1, 0);
+		return *generate(1, n);
+	}
+	vector<TreeNode *>* generate(int start, int end)
+	{
+		vector<TreeNode *> *subTree = new vector<TreeNode*>();
+		if (start>end)
+		{
+			subTree->push_back(NULL);
+			return subTree;
+		}
+		for (int i = start; i <= end; i++)
+		{
+			vector<TreeNode*> *leftSubs = generate(start, i - 1);
+			vector<TreeNode*> *rightSubs = generate(i + 1, end);
+			for (int j = 0; j< leftSubs->size(); j++)
+			{
+				for (int k = 0; k<rightSubs->size(); k++)
+				{
+					TreeNode *node = new TreeNode(i);
+					node->left = (*leftSubs)[j];
+					node->right = (*rightSubs)[k];
+					subTree->push_back(node);
+				}
+			}
+		}
+		return subTree;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 /*House Robber II */
 class Solution131 {
 public:
