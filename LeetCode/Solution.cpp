@@ -1,22 +1,136 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*House Robber II */
+class Solution131 {
+public:
+	int rob(vector<int>& nums) {
+		int len = nums.size();
+		if (len == 0)
+		{
+			return 0;
+		}
+		if (len == 1)
+		{
+			return nums[0];
+		}
+		vector<int> dp(len, 0);
+		dp[0] = nums[0];
+		dp[1] = nums[0];
+		int max;
+		for (size_t i = 2; i < len - 1; i++)
+		{
+			dp[i] = dp[i - 2] + nums[i] > dp[i - 1] ? dp[i - 2] + nums[i] : dp[i - 1];
+		}
+		max = dp[len - 2];
+		dp[0] = 0;
+		dp[1] = nums[1];
+		for (size_t i = 2; i < len; i++)
+		{
+			dp[i] = dp[i - 2] + nums[i] > dp[i - 1] ? dp[i - 2] + nums[i] : dp[i - 1];
+		}
+		return max > dp[len - 1] ? max : dp[len - 1];
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Reverse Linked List II */
+class Solution130 {
+public:
+	ListNode* reverseBetween(ListNode* head, int m, int n) {
+		if (!head || m == n)
+		{
+			return head;
+		}
+		int len = n - m + 1;
+		ListNode* newHead = new ListNode(-1);
+		newHead->next = head;
+		int index = 0;
+		ListNode* pCur = newHead;
+		ListNode* pDiscNext = nullptr;
+		ListNode* pNext = nullptr;
+		ListNode* pDisc = nullptr;
+		while (m--)
+		{
+			pDisc = pCur;
+			pCur = pCur->next;
+			pDiscNext = pCur;
+		}
+		pNext = pCur->next;
+		while (len--)
+		{
+			pCur->next = pDisc->next;
+			pDisc->next = pCur;
+			pCur = pNext;
+			if (pNext)
+			{
+				pNext = pCur->next;
+			}
+		}
+		pDiscNext->next = pCur;
+		return newHead->next;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Repeated DNA Sequences */
+class Solution129 {
+public:
+	vector<string> findRepeatedDnaSequences(string s) {
+		vector<string> result;
+		unordered_set<int> resultAdded;
+		if (s.size() < 10)
+		{
+			return result;
+		}
+		unordered_map<int, int> ump;
+		for (int i = 0; i <= s.size() - 10; i++)
+		{
+			string str = s.substr(i, 10);
+			int key = str2int(str);
+			ump[key]++;
+			if (ump[key] > 1 && resultAdded.find(key) == resultAdded.end())
+			{
+				result.push_back(str);
+				resultAdded.insert(key);
+			}
+		}
+		return result;
+	}
+
+	int str2int(string str)
+	{
+		int result = 0;
+		for (size_t i = 0; i < str.size(); i++)
+		{
+			switch (str[i])
+			{
+			case 'A':result += result * 4 + 1; break;
+			case 'C':result += result * 4 + 2; break;
+			case 'T':result += result * 4 + 3; break;
+			case 'G':result += result * 4 + 4; break;
+			default:
+				break;
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 /*Restore IP Addresses */
 class Solution128 {
 public:
 	vector<string> restoreIpAddresses(string s) {
 		vector<string> result;
 		int len = s.size();
-		if (len>0)
+		if (len > 0)
 		{
 			GetIP(result, s, "", 1);
 		}
 		return result;
 	}
 
-	void GetIP(vector<string> &result,string remainIP,string curIP,int index)
+	void GetIP(vector<string> &result, string remainIP, string curIP, int index)
 	{
-		if (index==4)
+		if (index == 4)
 		{
 			if (IsValid(remainIP))
 			{
@@ -31,7 +145,7 @@ public:
 			{
 				return;
 			}
-			for (size_t i = 1; i < 4 && i<remainIP.size(); i++)
+			for (size_t i = 1; i < 4 && i < remainIP.size(); i++)
 			{
 				string addStr = remainIP.substr(0, i);
 				if (!IsValid(addStr))
@@ -47,15 +161,15 @@ public:
 	bool IsValid(string str)
 	{
 		int len = str.size();
-		if (str.size()<=0||str.size()>3)
+		if (str.size() <= 0 || str.size() > 3)
 		{
 			return false;
 		}
-		if (str[0] == '0'&&len!=1)
+		if (str[0] == '0'&&len != 1)
 		{
 			return false;
 		}
-		if (len == 3 && stoi(str)>255)
+		if (len == 3 && stoi(str) > 255)
 		{
 			return false;
 		}
@@ -68,18 +182,18 @@ class Solution127 {
 public:
 	int maxArea(vector<int>& height) {
 		int len = height.size();
-		if (len==0)
+		if (len == 0)
 		{
 			return 0;
 		}
 		int start = 0;
 		int end = len - 1;
 		int maxArea = 0;
-		while (start<end)
+		while (start < end)
 		{
 			int area = min(height[start], height[end])*(end - start);
-			maxArea = max(maxArea,area);
-			if (height[start]<height[end])
+			maxArea = max(maxArea, area);
+			if (height[start] < height[end])
 			{
 				start++;
 			}
@@ -103,8 +217,8 @@ public:
 			vec.push_back(pCur);
 			pCur = pCur->next;
 		}
-		sort(vec.begin(),vec.end(),Cmp);
-		if (vec.size()==0)
+		sort(vec.begin(), vec.end(), Cmp);
+		if (vec.size() == 0)
 		{
 			return head;
 		}
@@ -171,13 +285,14 @@ public:
 		}
 		if (minus)
 			return 0 - result;
-		if (ldividend==INT_MIN&&ldivisor==-1)
+		if (ldividend == INT_MIN&&ldivisor == -1)
 		{
 			result = INT_MAX;
 		}
 		return result;
 	}
 };
+
 /*-------------------------------------------------------------------------------------*/
 /*Partition List */
 class Solution124 {
@@ -365,36 +480,156 @@ public:
 		return dp[len - 1];
 	}
 };
+
 /*-------------------------------------------------------------------------------------*/
-/*House Robber II */
+/*Generate Parentheses */
 class Solution120 {
 public:
-	int rob(vector<int>& nums) {
-		int len = nums.size();
-		if (len == 0)
+	vector<string> generateParenthesis(int n) {
+		vector<string> result;
+		if (n > 0)
 		{
-			return 0;
+			string str;
+			Gen(result, str, 0, 0, n, 0);
 		}
-		if (len == 1)
+		return result;
+	}
+
+
+	void Gen(vector<string>& result, string str, int leftCnt, int rightCnt, int n, int curCnt)
+	{
+		if (rightCnt > leftCnt)
 		{
-			return nums[0];
+			return;
 		}
-		vector<int> dp(len, 0);
-		dp[0] = nums[0];
-		dp[1] = nums[0];
-		int max;
-		for (size_t i = 2; i < len - 1; i++)
+		if (leftCnt == n&&rightCnt == n)
 		{
-			dp[i] = dp[i - 2] + nums[i] > dp[i - 1] ? dp[i - 2] + nums[i] : dp[i - 1];
+			result.push_back(str);
+			return;
 		}
-		max = dp[len - 2];
-		dp[0] = 0;
-		dp[1] = nums[1];
-		for (size_t i = 2; i < len; i++)
+		if (leftCnt < n)
 		{
-			dp[i] = dp[i - 2] + nums[i] > dp[i - 1] ? dp[i - 2] + nums[i] : dp[i - 1];
+			Gen(result, str + '(', leftCnt + 1, rightCnt, n, curCnt + 1);
 		}
-		return max > dp[len - 1] ? max : dp[len - 1];
+		if (rightCnt < leftCnt)
+		{
+			Gen(result, str + ')', leftCnt, rightCnt + 1, n, curCnt + 1);
+		}
+	}
+
+	//void Gen(vector<string>& result, string &str, int leftCnt, int rightCnt, int n, int curCnt)
+	//{
+	//	if (curCnt == 2 * n)
+	//	{
+	//		result.push_back(str);
+	//		return;
+	//	}
+	//	if (leftCnt < n)
+	//	{
+	//		str += '(';
+	//		Gen(result, str, leftCnt + 1, rightCnt, n, curCnt + 1);
+	//		str.resize(str.size() - 1);
+	//	}
+	//	if (rightCnt < leftCnt)
+	//	{
+	//		str += ')';
+	//		Gen(result, str, leftCnt, rightCnt + 1, n, curCnt + 1);
+	//		str.resize(str.size() - 1);
+	//	}
+	//}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Add and Search Word - Data structure design*/
+class WordDictionary {
+public:
+
+	class TrieNode {
+	public:
+		TrieNode() {
+			for (size_t i = 0; i < 26; i++)
+			{
+				nextNodes[i] = NULL;
+			}
+			isWord = false;
+		}
+		bool isWord;
+		TrieNode* nextNodes[26];
+	};
+
+	class Trie {
+	public:
+		Trie() {
+			root = new TrieNode();
+		}
+
+		void insert(string s) {
+			TrieNode* pCur = root;
+			for (size_t i = 0; i < s.size(); i++)
+			{
+				if (!pCur->nextNodes[s[i] - 'a'])
+				{
+					pCur->nextNodes[s[i] - 'a'] = new TrieNode();
+				}
+				pCur = pCur->nextNodes[s[i] - 'a'];
+			}
+			pCur->isWord = true;
+		}
+
+		bool search(string key, TrieNode* startRoot) {
+			TrieNode* pCur = startRoot;
+			for (size_t i = 0; i < key.size(); i++)
+			{
+				if (key[i] == '.')
+				{
+					for (size_t j = 0; j < 26; j++)
+					{
+						TrieNode* pTemp = pCur->nextNodes[j];
+						if (pTemp && search(key.substr(i + 1, key.size() - i), pTemp))
+						{
+							return true;
+						}
+					}
+					return false;
+				}
+				else
+				{
+					pCur = pCur->nextNodes[key[i] - 'a'];
+					if (!pCur)
+					{
+						return false;
+					}
+				}
+			}
+			return pCur->isWord;
+		}
+
+		bool startsWith(string prefix) {
+			TrieNode* pCur = root;
+			for (size_t i = 0; i < prefix.size(); i++)
+			{
+				pCur = pCur->nextNodes[prefix[i] - 'a'];
+				if (!pCur)
+				{
+					return false;
+				}
+			}
+			return true;
+		}
+		TrieNode* root;
+	};
+
+	Trie mTrie;
+
+
+	// Adds a word into the data structure.
+	void addWord(string word) {
+		mTrie.insert(word);
+	}
+
+	// Returns if the word is in the data structure. A word could
+	// contain the dot character '.' to represent any one letter.
+	bool search(string word) {
+		return mTrie.search(word, mTrie.root);
 	}
 };
 /*-------------------------------------------------------------------------------------*/
