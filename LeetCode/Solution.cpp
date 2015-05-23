@@ -1,36 +1,193 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Evaluate Reverse Polish Notation */
+class Solution137 {
+public:
+	int evalRPN(vector<string>& tokens) {
+		stack<int> st;
+		int result = 0;
+		for (size_t i = 0; i < tokens.size(); i++)
+		{
+			if (!(tokens[i] == "+" || tokens[i] == "-" || tokens[i] == "*" || tokens[i] == "/"))
+			{
+				st.push(stoi(tokens[i]));
+			}
+			else
+			{
+				int Op2 = st.top();
+				st.pop();
+				int Op1 = st.top();
+				st.pop();
+				st.push(Op(Op1, Op2, tokens[i]));
+			}
+		}
+		return st.top();
+	}
+
+	int Op(int Op1,int Op2,string Op)
+	{
+		if (Op=="+")
+		{
+			return Op1 + Op2;
+		}
+		if (Op == "-")
+		{
+			return Op1 - Op2;
+		}
+		if (Op == "*")
+		{
+			return Op1 * Op2;
+		}
+		if (Op == "/")
+		{
+			return Op1 / Op2;
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Sort List */
+class Solution136 {
+public:
+	ListNode* sortList(ListNode* head) {
+		return MergeSort(head);
+	}
+
+	ListNode* MergeSort(ListNode* head)
+	{
+		if (!head || !head->next)
+		{
+			return head;
+		}
+		ListNode* pFast = head;
+		ListNode* pSlow = head;
+		while (pFast->next&&pFast->next->next)
+		{
+			pSlow = pSlow->next;
+			pFast = pFast->next->next;
+		}
+		ListNode* pMid = pSlow->next;
+		pSlow->next = NULL;
+		head = MergeSort(head);
+		pMid = MergeSort(pMid);
+		return Merge(head, pMid);
+	}
+
+
+	ListNode* Merge(ListNode* L1, ListNode* L2)
+	{
+		if (!L1)
+		{
+			return L2;
+		}
+		if (!L2)
+		{
+			return L1;
+		}
+		ListNode* head = NULL;
+		ListNode* pCur = NULL;
+		if (L1->val<L2->val)
+		{
+			head = L1;
+			pCur = L1;
+			L1 = L1->next;
+		}
+		else
+		{
+			head = L2;
+			pCur = L2;
+			L2 = L2->next;
+		}
+		while (L1&&L2)
+		{
+			if (L1->val < L2->val)
+			{
+				pCur->next = L1;
+				L1 = L1->next;
+			}
+			else
+			{
+				pCur->next = L2;
+				L2 = L2->next;
+			}
+			pCur = pCur->next;
+		}
+		if (L1)
+		{
+			pCur->next = L1;
+		}
+		if (L2)
+		{
+			pCur->next = L2;
+		}
+		return head;
+	}
+};
+/*
+ListNode* L1 = new ListNode(5);
+ListNode* L2 = new ListNode(4);
+ListNode* L3 = new ListNode(3);
+ListNode* L4 = new ListNode(2);
+ListNode* L5 = new ListNode(1);
+L1->next = L2;
+L2->next = L3;
+L3->next = L4;
+L4->next = L5;
+Solution136 SU136;
+SU136.sortList(L1);
+*/
+/*-------------------------------------------------------------------------------------*/
+/*Kth Largest Element in an Array*/
+class Solution135 {
+public:
+	int findKthLargest(vector<int>& nums, int k) {
+		priority_queue<int, vector<int>, greater<int>> heap;
+		for (size_t i = 0; i < k; i++)
+		{
+			heap.push(nums[i]);
+		}
+		for (size_t i = k; i < nums.size(); i++)
+		{
+			if (nums[i]>heap.top())
+			{
+				heap.pop();
+				heap.push(nums[i]);
+			}
+		}
+		return heap.top();
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 /*Combinations*/
 class Solution134 {
 public:
 	vector<vector<int>> combine(int n, int k) {
 		vector<vector<int>> result;
 		vector<int> comList;
-		vector<bool> isVisited(n+1, false);
-		if (n>=k)
+		vector<bool> isVisited(n + 1, false);
+		if (n >= k)
 		{
 			GenCombination(result, comList, isVisited, n, k);
 		}
 		return result;
 	}
 
-	void GenCombination(vector<vector<int>> &result, vector<int> &comList, vector<bool> &isVisited,int totalCnt,int remainCnt)
+	void GenCombination(vector<vector<int>> &result, vector<int> &comList, vector<bool> &isVisited, int totalCnt, int remainCnt)
 	{
-		if (remainCnt==0)
+		if (remainCnt == 0)
 		{
 			result.push_back(comList);
 		}
 		else
 		{
-			for (size_t i = comList.size()==0?1:comList[comList.size() - 1] + 1; i <= totalCnt; i++)
+			for (size_t i = comList.size() == 0 ? 1 : comList[comList.size() - 1] + 1; i <= totalCnt; i++)
 			{
 				if (!isVisited[i])
 				{
 					isVisited[i] = true;
 					comList.push_back(i);
-					GenCombination(result, comList, isVisited, totalCnt, remainCnt-1);
-					comList.erase(comList.end()-1);
+					GenCombination(result, comList, isVisited, totalCnt, remainCnt - 1);
+					comList.erase(comList.end() - 1);
 					isVisited[i] = false;
 				}
 			}
@@ -44,7 +201,7 @@ public:
 	vector<int> grayCode(int n) {
 		vector<int> result;
 		result.push_back(0);
-		for (int i = 0; i< n; i++)
+		for (int i = 0; i < n; i++)
 		{
 			int highestBit = 1 << i;
 			int len = result.size();
@@ -67,7 +224,7 @@ public:
 	vector<TreeNode *>* generate(int start, int end)
 	{
 		vector<TreeNode *> *subTree = new vector<TreeNode*>();
-		if (start>end)
+		if (start > end)
 		{
 			subTree->push_back(NULL);
 			return subTree;
@@ -76,9 +233,9 @@ public:
 		{
 			vector<TreeNode*> *leftSubs = generate(start, i - 1);
 			vector<TreeNode*> *rightSubs = generate(i + 1, end);
-			for (int j = 0; j< leftSubs->size(); j++)
+			for (int j = 0; j < leftSubs->size(); j++)
 			{
-				for (int k = 0; k<rightSubs->size(); k++)
+				for (int k = 0; k < rightSubs->size(); k++)
 				{
 					TreeNode *node = new TreeNode(i);
 					node->left = (*leftSubs)[j];

@@ -27,6 +27,7 @@
 #include <bitset>
 #include <cmath>
 #include <numeric>
+#include <functional>
 
 using namespace std;
 

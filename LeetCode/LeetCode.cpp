@@ -8,8 +8,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Solution134 SU134;
-	SU134.combine(4,1);
+	Solution137 SU137;
+	SU137.evalRPN(vector < string > {"-3", "9", "*"});
 	return 0;
 }
 
