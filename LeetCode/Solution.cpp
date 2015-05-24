@@ -5,86 +5,35 @@
 class Solution143 {
 public:
 	vector<int> spiralOrder(vector<vector<int> > &matrix) {
-		vector<int> result;
-		int row = matrix.size();
-		if (row == 0) return result;
-		int col = matrix[0].size();
-		if (col == 0) return result;
-
-		//define the step for 4 directions
-		int x[4] = { 1, 0, -1, 0 };
-		int y[4] = { 0, 1, 0, -1 };
-
-		int visitedRows = 0;
-		int visitedCols = 0;
-
-		// define direction: 0 means up, 1 means down, 2 means left, 3 means up
-		int direction = 0;
-		int startx = 0, starty = 0;
-		int candidateNum = 0, moveStep = 0;
-		while (true)
-		{
-			if (x[direction] == 0) // visit y axis
-				candidateNum = row - visitedRows;
-			else // visit x axis
-				candidateNum = col - visitedCols;
-
-			if (candidateNum <= 0)
-				break;
-			result.push_back(matrix[starty][startx]);
-			moveStep++;
-			if (candidateNum == moveStep) // change direction            
-			{
-				visitedRows += x[direction] == 0 ? 0 : 1;
-				visitedCols += y[direction] == 0 ? 0 : 1;
-				direction = (direction + 1) % 4;
-				moveStep = 0;
+		vector<int> ret;
+		if (matrix.empty() || matrix[0].empty()) return ret;
+		int m = matrix.size(), n = matrix[0].size();
+		int nlvl = (min(m, n) + 1) / 2;
+		for (int i = 0; i < nlvl; i++) {
+			int lastRow = m - 1 - i;
+			int lastCol = n - 1 - i;
+			if (lastRow == i) {    // one row remain
+				for (int j = i; j <= lastCol; j++)
+					ret.push_back(matrix[i][j]);
 			}
-			startx += x[direction];
-			starty += y[direction];
+			else if (lastCol == i) {   // one col remain
+				for (int j = i; j <= lastRow; j++)
+					ret.push_back(matrix[j][i]);
+			}
+			else {
+				for (int j = i; j < lastCol; j++)
+					ret.push_back(matrix[i][j]);
+				for (int j = i; j < lastRow; j++)
+					ret.push_back(matrix[j][lastCol]);
+				for (int j = lastCol; j > i; j--)
+					ret.push_back(matrix[lastRow][j]);
+				for (int j = lastRow; j > i; j--)
+					ret.push_back(matrix[j][i]);
+			}
 		}
-		return result;
-	}
+		return ret;
 
-	//vector<int> spiralOrder(vector<vector<int>>& matrix) {
-	//	vector<int> result;
-	//	int M = matrix.size();
-	//	int N=0;
-	//	if (M!=0)
-	//	{
-	//		N = matrix[0].size();
-	//	}
-	//	int start = 0;
-	//	int mLen = M - 1;
-	//	int nLen = N - 1;
-	//	while (mLen>0||nLen>0)
-	//	{
-	//		for (int i = start; i < start+nLen; i++)
-	//		{
-	//			result.push_back(matrix[start][i]);
-	//		}
-	//		for (int i = start; i < mLen; i++)
-	//		{
-	//			result.push_back(matrix[i][start+nLen]);
-	//		}
-	//		for (int i = start+nLen; i > start; i--)
-	//		{
-	//			result.push_back(matrix[start+mLen][i]);
-	//		}
-	//		for (int i = start+mLen; i >start; i--)
-	//		{
-	//			result.push_back(matrix[i][start]);
-	//		}
-	//		mLen -= 2;
-	//		nLen -= 2;
-	//		start++;
-	//	}
-	//	if (mLen==0&&nLen==0)
-	//	{
-	//		result.push_back(matrix[start][start]);
-	//	}
-	//	return result;
-	//}
+	}
 };
 /*-------------------------------------------------------------------------------------*/
 /*Combination Sum*/
@@ -94,13 +43,13 @@ public:
 		vector<vector<int>> result;
 		vector<int> vecList;
 		sort(candidates.begin(), candidates.end());
-		GetCombination(result, candidates, vecList, 0, target,0);
+		GetCombination(result, candidates, vecList, 0, target, 0);
 		return result;
 	}
 
-	void GetCombination(vector<vector<int>> &result, vector<int>& candidates,vector<int> &vecList, int sum, int target,int index)
+	void GetCombination(vector<vector<int>> &result, vector<int>& candidates, vector<int> &vecList, int sum, int target, int index)
 	{
-		if (sum==target)
+		if (sum == target)
 		{
 			result.push_back(vecList);
 		}
@@ -109,7 +58,7 @@ public:
 			for (size_t i = index; i < candidates.size(); i++)
 			{
 				vecList.push_back(candidates[i]);
-				GetCombination(result, candidates, vecList, sum + candidates[i], target,i);
+				GetCombination(result, candidates, vecList, sum + candidates[i], target, i);
 				vecList.pop_back();
 				while (i < candidates.size() - 1 && candidates[i] == candidates[i + 1]) i++;
 			}
