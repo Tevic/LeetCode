@@ -8,8 +8,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Solution141 SU141;
-	SU141.searchRange(vector < int > {5, 7, 7, 8, 8, 10}, 6);
+	Solution142 SU142;
+	SU142.combinationSum(vector < int > {2, 3, 6, 7}, 7);
 	return 0;
 }
 

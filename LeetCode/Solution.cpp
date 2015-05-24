@@ -1,6 +1,35 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Combination Sum*/
+class Solution142 {
+public:
+	vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+		vector<vector<int>> result;
+		vector<int> vecList;
+		sort(candidates.begin(), candidates.end());
+		GetCombination(result, candidates, vecList, 0, target,0);
+		return result;
+	}
+
+	void GetCombination(vector<vector<int>> &result, vector<int>& candidates,vector<int> &vecList, int sum, int target,int index)
+	{
+		if (sum==target)
+		{
+			result.push_back(vecList);
+		}
+		else if (sum < target)
+		{
+			for (size_t i = index; i < candidates.size(); i++)
+			{
+				vecList.push_back(candidates[i]);
+				GetCombination(result, candidates, vecList, sum + candidates[i], target,i);
+				vecList.pop_back();
+			}
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 /*Search for a Range */
 class Solution141 {
 public:
