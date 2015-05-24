@@ -1,6 +1,169 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Search for a Range */
+class Solution141 {
+public:
+	vector<int> searchRange(vector<int>& nums, int target) {
+		vector<int> result;
+		result.push_back(FindFirst(nums, target));
+		result.push_back(FindLast(nums, target));
+		return result;
+	}
+
+	int FindFirst(vector<int>& nums, int target)
+	{
+		int left = 0;
+		int right = nums.size() - 1;
+		int mid;
+		while (left < right)
+		{
+			mid = left + ((right - left) >> 1);
+			if (nums[mid] < target)
+			{
+				left = mid + 1;
+			}
+			else
+			{
+				right = mid;
+			}
+		}
+		return nums[left] == target ? left : -1;
+	}
+
+	int FindLast(vector<int>& nums, int target)
+	{
+		int left = 0;
+		int right = nums.size() - 1;
+		int mid;
+		while (left < right)
+		{
+			mid = left + ((right - left + 1) >> 1);
+			if (nums[mid] > target)
+			{
+				right = mid - 1;
+			}
+			else
+			{
+				left = mid;
+			}
+		}
+		return nums[right] == target ? right : -1;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Next Permutation */
+class Solution140 {
+public:
+	void nextPermutation(vector<int>& nums) {
+		int len = nums.size();
+		int length = len - 1;
+		while (length > 0)
+		{
+			if (nums[length - 1] < nums[length])
+			{
+				break;
+			}
+			length--;
+		}
+		if (length == 0)
+		{
+			reverse(nums.begin(), nums.end());
+			return;
+		}
+
+		int k = len - 1;
+		for (; k >= length; k--)
+		{
+			if (nums[length - 1] < nums[k])
+			{
+				swap(nums[k], nums[length - 1]);
+				sort(nums.begin() + length, nums.end());
+				break;
+			}
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Anagrams */
+class Solution139 {
+public:
+	vector<string> anagrams(vector<string>& strs) {
+		unordered_map<string, vector<string>> ump;
+		vector<string> result;
+		for (size_t i = 0; i < strs.size(); i++)
+		{
+			string str = strs[i];
+			sort(strs[i].begin(), strs[i].end());
+			if (ump.find(strs[i]) == ump.end())
+			{
+				ump[strs[i]] = vector < string > {str};
+			}
+			else
+			{
+				ump[strs[i]].push_back(str);
+			}
+		}
+		for (auto m : ump)
+		{
+			int vecLen = m.second.size();
+			if (vecLen > 1)
+			{
+				for (size_t i = 0; i < vecLen; i++)
+				{
+					result.push_back(m.second[i]);
+				}
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Combination Sum III*/
+class Solution138 {
+public:
+	vector<vector<int>> combinationSum3(int k, int n) {
+		vector<vector<int>> result;
+		vector<bool> isVisited(10, false);
+		vector<int> vecList;
+		GetCombination(result, isVisited, vecList, n, 0, k);
+		return result;
+	}
+
+	void GetCombination(vector<vector<int>> &result, vector<bool> &isVisited, vector<int> &vecList, int iTarget, int iSum, int iCnt)
+	{
+		if (vecList.size() == iCnt)
+		{
+			if (iSum == iTarget)
+			{
+				result.push_back(vecList);
+			}
+
+		}
+		else
+		{
+			if (iSum < iTarget)
+			{
+				for (size_t i = vecList.size() == 0 ? 1 : vecList[vecList.size() - 1]; i < 10; i++)
+				{
+					if (!isVisited[i])
+					{
+						isVisited[i] = true;
+						vecList.push_back(i);
+						GetCombination(result, isVisited, vecList, iTarget, iSum + i, iCnt);
+					}
+
+				}
+			}
+		}
+		if (vecList.size() > 0)
+		{
+			isVisited[vecList[vecList.size() - 1]] = false;
+			vecList.erase(vecList.end() - 1);
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 /*Evaluate Reverse Polish Notation */
 class Solution137 {
 public:
@@ -25,9 +188,9 @@ public:
 		return st.top();
 	}
 
-	int Op(int Op1,int Op2,string Op)
+	int Op(int Op1, int Op2, string Op)
 	{
-		if (Op=="+")
+		if (Op == "+")
 		{
 			return Op1 + Op2;
 		}
@@ -86,7 +249,7 @@ public:
 		}
 		ListNode* head = NULL;
 		ListNode* pCur = NULL;
-		if (L1->val<L2->val)
+		if (L1->val < L2->val)
 		{
 			head = L1;
 			pCur = L1;
@@ -5334,9 +5497,71 @@ SU18.majorityElement(num);
 /*Regular Expression Matching*/
 class Solution17 {
 public:
-	bool isMatch(const char *s, const char *p) {
-		regex pattern(p);
-		return regex_match(s, pattern);
+	//regex pattern(p);
+	//return regex_match(s, pattern);
+
+	//C Version
+	//bool isMatch(const char *s, const char *p) {
+	//	if (*p==0)
+	//	{
+	//		return *s == 0;
+	//	}
+	//	if (*(p+1)!='*')
+	//	{
+	//		if (*p==*s||(*p=='.' && *s!=0))
+	//		{
+	//			return isMatch(s+1,p+1);
+	//		}
+	//		return false;
+	//	}
+	//	else
+	//	{
+	//		while (*p == *s || (*p == '.' && *s != 0))
+	//		{
+	//			if (isMatch(s,p+2))
+	//			{
+	//				return true;
+	//			}
+	//			s++;
+	//		}
+	//		return isMatch(s, p + 2);
+	//	}
+	//}
+
+	//CPP Version
+	bool isMatch(string s, string p) {
+		s += '#';
+		p += '#';
+		return isMatchWord(s, p, 0, 0);
+	}
+
+	bool isMatchWord(string &s, string &p, int sIndex, int pIndex) {
+		int lenS = s.size();
+		int lenP = p.size();
+		if (p[pIndex] == '#')
+		{
+			return s[sIndex] == '#';
+		}
+		if (p[pIndex + 1] != '*')
+		{
+			if (p[pIndex] == s[sIndex] || (p[pIndex] == '.'&&s[sIndex] != '#'))
+			{
+				return isMatchWord(s, p, sIndex + 1, pIndex + 1);
+			}
+			return false;
+		}
+		else
+		{
+			while (p[pIndex] == s[sIndex] || (p[pIndex] == '.'&&s[sIndex] != '#'))
+			{
+				if (isMatchWord(s, p, sIndex, pIndex + 2))
+				{
+					return true;
+				}
+				sIndex++;
+			}
+			return isMatchWord(s, p, sIndex, pIndex + 2);
+		}
 	}
 };
 /*

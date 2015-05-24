@@ -8,8 +8,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Solution137 SU137;
-	SU137.evalRPN(vector < string > {"-3", "9", "*"});
+	Solution141 SU141;
+	SU141.searchRange(vector < int > {5, 7, 7, 8, 8, 10}, 6);
 	return 0;
 }
 
