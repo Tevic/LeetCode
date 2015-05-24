@@ -8,8 +8,10 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Solution142 SU142;
-	SU142.combinationSum(vector < int > {2, 3, 6, 7}, 7);
+	Solution143 SU143;
+	SU143.spiralOrder(vector < vector<int> > {vector < int > {1, 2, 3,4, 5, 6,7, 8, 9,10}});
+	//SU143.spiralOrder(vector < vector<int> > {vector < int > {1, 2, 3}, vector < int > {4, 5, 6}, vector < int > {7, 8, 9}});
+	//SU143.spiralOrder(vector < vector<int> > {vector < int > {1, 2, 3, 4}, vector < int > {5, 6, 7, 8}, vector < int > {9, 10, 11, 12}});
 	return 0;
 }
 

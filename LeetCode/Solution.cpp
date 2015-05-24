@@ -1,6 +1,92 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Spiral Matrix*/
+class Solution143 {
+public:
+	vector<int> spiralOrder(vector<vector<int> > &matrix) {
+		vector<int> result;
+		int row = matrix.size();
+		if (row == 0) return result;
+		int col = matrix[0].size();
+		if (col == 0) return result;
+
+		//define the step for 4 directions
+		int x[4] = { 1, 0, -1, 0 };
+		int y[4] = { 0, 1, 0, -1 };
+
+		int visitedRows = 0;
+		int visitedCols = 0;
+
+		// define direction: 0 means up, 1 means down, 2 means left, 3 means up
+		int direction = 0;
+		int startx = 0, starty = 0;
+		int candidateNum = 0, moveStep = 0;
+		while (true)
+		{
+			if (x[direction] == 0) // visit y axis
+				candidateNum = row - visitedRows;
+			else // visit x axis
+				candidateNum = col - visitedCols;
+
+			if (candidateNum <= 0)
+				break;
+			result.push_back(matrix[starty][startx]);
+			moveStep++;
+			if (candidateNum == moveStep) // change direction            
+			{
+				visitedRows += x[direction] == 0 ? 0 : 1;
+				visitedCols += y[direction] == 0 ? 0 : 1;
+				direction = (direction + 1) % 4;
+				moveStep = 0;
+			}
+			startx += x[direction];
+			starty += y[direction];
+		}
+		return result;
+	}
+
+	//vector<int> spiralOrder(vector<vector<int>>& matrix) {
+	//	vector<int> result;
+	//	int M = matrix.size();
+	//	int N=0;
+	//	if (M!=0)
+	//	{
+	//		N = matrix[0].size();
+	//	}
+	//	int start = 0;
+	//	int mLen = M - 1;
+	//	int nLen = N - 1;
+	//	while (mLen>0||nLen>0)
+	//	{
+	//		for (int i = start; i < start+nLen; i++)
+	//		{
+	//			result.push_back(matrix[start][i]);
+	//		}
+	//		for (int i = start; i < mLen; i++)
+	//		{
+	//			result.push_back(matrix[i][start+nLen]);
+	//		}
+	//		for (int i = start+nLen; i > start; i--)
+	//		{
+	//			result.push_back(matrix[start+mLen][i]);
+	//		}
+	//		for (int i = start+mLen; i >start; i--)
+	//		{
+	//			result.push_back(matrix[i][start]);
+	//		}
+	//		mLen -= 2;
+	//		nLen -= 2;
+	//		start++;
+	//	}
+	//	if (mLen==0&&nLen==0)
+	//	{
+	//		result.push_back(matrix[start][start]);
+	//	}
+	//	return result;
+	//}
+};
+/*-------------------------------------------------------------------------------------*/
 /*Combination Sum*/
 class Solution142 {
 public:
@@ -25,6 +111,7 @@ public:
 				vecList.push_back(candidates[i]);
 				GetCombination(result, candidates, vecList, sum + candidates[i], target,i);
 				vecList.pop_back();
+				while (i < candidates.size() - 1 && candidates[i] == candidates[i + 1]) i++;
 			}
 		}
 	}
