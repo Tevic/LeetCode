@@ -1,6 +1,51 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Unique Paths II*/
+class Solution151 {
+public:
+	int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
+		int M = obstacleGrid.size();
+		int N;
+		if (M)
+		{
+			N = obstacleGrid[0].size();
+		}
+		if (M&&N)
+		{
+			vector<vector<int>> paths(M, vector<int>(N, 0));
+			paths[0][0] = obstacleGrid[0][0] == 1 ? 0 : 1;
+			for (size_t i = 1; i < M; i++)
+			{
+				paths[i][0] = (obstacleGrid[i][0] != 1 && paths[i - 1][0] != 0) ? 1 : 0;
+			}
+			for (size_t i = 1; i < N; i++)
+			{
+				paths[0][i] = (obstacleGrid[0][i] != 1 && paths[0][i - 1] != 0) ? 1 : 0;
+			}
+			for (size_t i = 1; i < M; i++)
+			{
+				for (size_t j = 1; j < N; j++)
+				{
+					if (obstacleGrid[i][j]==1)
+					{
+						paths[i][j] = 0;
+					}
+					else
+					{
+						paths[i][j] = paths[i - 1][j] + paths[i][j - 1];
+					}
+				}
+			}
+			return paths[M-1][N-1];
+		}
+		else
+		{
+			return 0;
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 /*Find Minimum in Rotated Sorted Array II */
 class Solution150 {
 public:
@@ -11,7 +56,7 @@ public:
 			if (num[mid] < num[end])
 				end = mid;
 			else if (num[mid] > num[end])
-				start = mid+1;
+				start = mid + 1;
 			else
 				end--;
 		}
