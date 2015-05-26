@@ -1,6 +1,179 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Find Minimum in Rotated Sorted Array II */
+class Solution150 {
+public:
+	int findMin(vector<int> &num) {
+		int start = 0, end = num.size() - 1;
+		while (start < end) {
+			int mid = start + (end - start) / 2;
+			if (num[mid] < num[end])
+				end = mid;
+			else if (num[mid] > num[end])
+				start = mid+1;
+			else
+				end--;
+		}
+		return num[end];
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Find Minimum in Rotated Sorted Array*/
+class Solution149 {
+public:
+	int findMin(vector<int> &num) {
+		int start = 0, end = num.size() - 1;
+		while (start < end) {
+			int mid = start + (end - start) / 2;
+			if (num[mid] < num[end])
+				end = mid;
+			else
+				start = mid + 1;
+		}
+		return num[start];
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Minimum Path Sum*/
+class Solution148 {
+public:
+	int minPathSum(vector<vector<int>>& grid) {
+		int M = grid.size();
+		int N;
+		if (M)
+		{
+			N = grid[0].size();
+		}
+		if (M&&N)
+		{
+			vector<vector<int>> sum(M, vector<int>(N, 0));
+			sum[0][0] = grid[0][0];
+			for (size_t i = 1; i < M; i++)
+			{
+				sum[i][0] = grid[i][0] + sum[i - 1][0];
+			}
+			for (size_t i = 1; i < N; i++)
+			{
+				sum[0][i] = grid[0][i] + sum[0][i - 1];
+			}
+			for (size_t i = 1; i < M; i++)
+			{
+				for (size_t j = 1; j < N; j++)
+				{
+					sum[i][j] = grid[i][j] + min(sum[i - 1][j], sum[i][j - 1]);
+				}
+			}
+			return sum[M - 1][N - 1];
+		}
+		else
+		{
+			return 0;
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Search a 2D Matrix*/
+class Solution147 {
+public:
+	bool searchMatrix(vector<vector<int>>& matrix, int target) {
+		int M = matrix.size();
+		int N;
+		if (M)
+		{
+			N = matrix[0].size();
+		}
+		int low = 0;
+		int high = M*N - 1;
+		while (low <= high)
+		{
+			int mid = low + ((high - low) >> 1);
+			if (matrix[mid / N][mid%N] > target)
+			{
+				high = mid - 1;
+			}
+			else if (matrix[mid / N][mid%N] < target)
+			{
+				low = mid + 1;
+			}
+			else
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Search Insert Position*/
+class Solution146 {
+public:
+	int searchInsert(vector<int>& nums, int target) {
+		if (nums.size() == 0)
+		{
+			return 0;
+		}
+		if (target > nums[nums.size() - 1])
+		{
+			return nums.size();
+		}
+		int left = 0;
+		int right = nums.size() - 1;
+		while (left < right)
+		{
+			int mid = left + ((right - left) >> 1);
+			if (nums[mid] >= target)
+			{
+				right = mid;
+			}
+			else
+			{
+				left = mid + 1;
+			}
+		}
+		return right;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Maximum Product Subarray*/
+class Solution145 {
+public:
+	int maxProduct(vector<int>& nums) {
+		if (nums.size() == 0)
+		{
+			return 0;
+		}
+		int maxLocal = nums[0];
+		int minLocal = nums[0];
+		int maxProduct = nums[0];
+		for (size_t i = 1; i < nums.size(); i++)
+		{
+			int maxCopy = maxLocal;
+			maxLocal = max(max(nums[i], nums[i] * maxLocal), nums[i] * minLocal);
+			minLocal = min(min(nums[i], nums[i] * maxCopy), nums[i] * minLocal);
+			maxProduct = max(maxProduct, maxLocal);
+		}
+		return maxProduct;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Contains Duplicate*/
+class Solution144 {
+public:
+	bool containsDuplicate(vector<int>& nums) {
+		unordered_map<int, int> ump;
+		for (size_t i = 0; i < nums.size(); i++)
+		{
+			ump[nums[i]]++;
+			if (ump[nums[i]] > 1)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 /*Spiral Matrix*/
 class Solution143 {
 public:
