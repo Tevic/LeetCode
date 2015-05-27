@@ -8,8 +8,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Solution149 SU149;
-	SU149.findMin(vector < int > {1, 3, 5, 7});
+	Solution154 SU154;
+	SU154.canJump(vector < int > {3, 2, 1, 0, 4});
 	return 0;
 }
 

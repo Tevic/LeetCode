@@ -1,6 +1,92 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Jump Game*/
+class Solution154 {
+public:
+	bool canJump(vector<int>& nums) {
+		int len = nums.size();
+		if (len==0)
+		{
+			return false;
+		}
+		vector<int> jump(len, 0);
+		jump[0] = 0;
+		for (int i = 1; i < len; i++)
+		{
+			jump[i] = max(jump[i-1],nums[i-1])-1;
+			if (jump[i]<0)
+			{
+				return false;
+			}
+		}
+		return jump[len-1]>=0;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Permutation Sequence */
+class Solution153 {
+public:
+	string getPermutation(int n, int k) {
+		int i, j, data[10], sign[10];
+		data[1] = 1;
+		for (i = 2; i <= n; ++i)data[i] = data[i - 1] * i;
+		memset(sign, 0, sizeof(sign));
+		string s = "";
+		i -= 2;
+		--k;
+		while (i >= 0)
+		{
+			int temp = k / data[i];
+			for (j = 1; j < 10; ++j)
+			{
+				if (sign[j] == 0)temp--;
+				if (temp < 0)break;
+			}
+			sign[j] = 1;
+			s += j + '0';
+			k %= data[i];
+			i--;
+		}
+		return s;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Simplify Path*/
+class Solution152 {
+public:
+	string simplifyPath(string path) {
+		vector<string> pathes;
+		string seg = "";
+		for (int i = 0; i <= path.size(); ++i) {
+			if (i == path.size() || path[i] == '/') {
+				if (seg == "..") {
+					if (pathes.size() > 0) {
+						pathes.pop_back();
+					}
+					else {
+					}
+				}
+				else if (seg == ".") {
+				}
+				else if (seg.size() > 0) {
+					pathes.push_back(seg);
+				}
+				seg = "";
+			}
+			else {
+				seg += path[i];
+			}
+		}
+		string ret = "/";
+		for (int i = 0; i < pathes.size(); ++i) {
+			if (i>0) ret += "/";
+			ret += pathes[i];
+		}
+		return ret;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 /*Unique Paths II*/
 class Solution151 {
 public:
@@ -27,7 +113,7 @@ public:
 			{
 				for (size_t j = 1; j < N; j++)
 				{
-					if (obstacleGrid[i][j]==1)
+					if (obstacleGrid[i][j] == 1)
 					{
 						paths[i][j] = 0;
 					}
@@ -37,7 +123,7 @@ public:
 					}
 				}
 			}
-			return paths[M-1][N-1];
+			return paths[M - 1][N - 1];
 		}
 		else
 		{
