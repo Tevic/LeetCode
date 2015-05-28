@@ -3,13 +3,14 @@
 
 #include "stdafx.h"
 #include "DataStructure.h"
-#include "Solution.cpp"
+//#include "Solution.cpp"
+#include "LeetCodeV2.cpp"
 
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Solution154 SU154;
-	SU154.canJump(vector < int > {3, 2, 1, 0, 4});
+	Solution008 S;
+	S.myAtoi("+-2");
 	return 0;
 }
 
