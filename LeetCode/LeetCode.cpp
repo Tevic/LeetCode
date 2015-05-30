@@ -9,8 +9,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Solution017 S;
-	S.letterCombinations("");
+	Solution031 S;
+	S.nextPermutation(vector < int > {1, 3, 2});
 	return 0;
 }
 
