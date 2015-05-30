@@ -9,8 +9,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Solution008 S;
-	S.myAtoi("+-2");
+	Solution017 S;
+	S.letterCombinations("");
 	return 0;
 }
 

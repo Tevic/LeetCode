@@ -1,7 +1,233 @@
 #include "stdafx.h"
 #include "DataStructure.h"
+/*-------------------------------------------------------------------------------------*/
+class Solution017 {
+public:
+	vector<string> letterCombinations(string digits) {
+		vector<string> strArray = { " ", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz" };
+		int digLen = digits.size();
+		vector<string> result;
+		if (digLen==0)
+		{
+			return result;
+		}
+		result.push_back("");
+		for (int i = 0; i < digLen; i++)
+		{
+			vector<string> tmp;
+			for (size_t j = 0; j < result.size(); j++)
+			{
+				for (size_t k = 0; k < strArray[digits[i]-'0'].size(); k++)
+				{
+					tmp.push_back(result[j]+strArray[digits[i] - '0'][k]);
+				}
+			}
+			result = tmp;
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution016 {
+public:
+	int threeSumClosest(vector<int> &num, int target) {
+		sort(num.begin(), num.end());
+		int len = num.size();
+		int distMin = INT_MAX;
+		int ret = 0;
+		for (int i = 0; i < len; i++)
+		{
+			int j = i + 1;
+			int k = len - 1;
+			while (j<k)
+			{
+				int dist = target - num[i] - num[j] - num[k];
+				if (abs(dist)<distMin)
+				{
+					distMin = abs(dist);
+					ret = num[i] + num[j] + num[k];
+				}
+				if (dist>0)
+				{
+					j++;
+				}
+				else if (dist<0)
+				{
+					k--;
+				}
+				else
+				{
+					return ret;
+				}
+			}
+		}
+		return ret;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution015 {
+public:
+	vector<vector<int>> threeSum(vector<int>& nums) {
+		sort(nums.begin(),nums.end());
+		vector<vector<int>> result;
+		int len = nums.size();
+		if (len<3)
+		{
+			return result;
+		}
+		for (size_t i = 0; i < len-2; i++)
+		{
+			if (i>0 && nums[i] == nums[i - 1])continue;
+			for (size_t j = i+1; j < len-1; j++)
+			{
+				if (j>i+1&&nums[j] == nums[j - 1])continue;
+				int index = BinarySearch(nums, j+1, len - 1, 0 - nums[i] - nums[j]);
+				if (index!=-1)
+				{
+					result.push_back(vector < int > {nums[i], nums[j], nums[index]});
+				}
+			}
+		}
+		return result;
+	}
 
+	int BinarySearch(vector<int>& nums,int low,int high,int target)
+	{
+		while (low<high)
+		{
+			int mid = low + ((high - low) >> 1);
+			if (nums[mid]<target)
+			{
+				low = mid + 1;
+			}
+			else
+			{
+				high = mid;
+			}
+		}
+		return nums[low] == target ? low : -1;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution014 {
+public:
+	string longestCommonPrefix(vector<string>& strs) {
+		int len = strs.size();
+		if (len==0)
+		{
+			return "";
+		}
+		if (len==1)
+		{
+			return strs[0];
+		}
+		int index = 0;
+		while (true)
+		{
+			if (index==strs[0].size())
+			{
+				return strs[0].substr(0,index);
+			}
+			for (int i = 1; i < len; i++)
+			{
+				if (index == strs[i].size() || strs[i][index] != strs[0][index])
+				{
+					return strs[0].substr(0, index);
+				}
+			}
+			index++;
+		}
 
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution011 {
+public:
+	int maxArea(vector<int>& height) {
+		int L = 0;
+		int R = height.size()-1;
+		int maxArea = 0;
+		while (L<R)
+		{
+			int curArea = min(height[L], height[R])*(R - L);
+			maxArea = max(maxArea,curArea);
+			if (height[L]<height[R])
+			{
+				L++;
+			}
+			else
+			{
+				R--;
+			}
+		}
+		return maxArea;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution010 {
+public:
+	bool isMatch(string s, string p) {
+		s += '#';
+		p += '#';
+		return isMatchWord(s, p, 0, 0);
+	}
+
+	bool isMatchWord(string &s, string &p, int sIndex, int pIndex) {
+		int sLen = s.size();
+		int pLen = p.size();
+		if (p[pIndex] == '#')
+		{
+			return s[sIndex] == '#';
+		}
+		if (p[pIndex+1]!='*')
+		{
+			if (s[sIndex]==p[pIndex]||p[pIndex]=='.'&&s[sIndex]!='#')
+			{
+				return isMatchWord(s, p, sIndex + 1, pIndex + 1);
+			}
+			return false;
+		}
+		else
+		{
+			while (s[sIndex] == p[pIndex] || p[pIndex] == '.'&&s[sIndex] != '#')
+			{
+				if (isMatchWord(s, p, sIndex, pIndex + 2))
+				{
+					return true;
+				}
+				sIndex++;
+			}
+			return isMatchWord(s, p, sIndex, pIndex + 2);
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution009 {
+public:
+	bool isPalindrome(int x) {
+		if (x<0)
+		{
+			return false;
+		}
+		int div = 1;
+		while (x/div>=10)
+		{
+			div *= 10;
+		}
+		while (x)
+		{
+			int l = x / div;
+			int r = x % 10;
+			if (l!=r)
+			{
+				return false;
+			}
+			x = x%div / 10;
+			div /= 100;
+		}
+		return true;
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution008 {
 public:
