@@ -1,26 +1,258 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 
+/*-------------------------------------------------------------------------------------*/
+class Solution041 {
+public:
+	int firstMissingPositive(vector<int>& nums) {
+		int i = 0;
+		int len = nums.size();
+		while (i<len)
+		{
+			if (nums[i] != i + 1 && nums[i] >= 1 && nums[i] <= len &&nums[i]!=nums[nums[i] - 1])
+			{
+				swap(nums[i],nums[nums[i]-1]);
+			}
+			else
+			{
+				i++;
+			}
+		}
+		for (size_t i = 0; i < len; i++)
+		{
+			if (nums[i]!=i+1)
+			{
+				return i + 1;
+			}
+		}
+		return len + 1;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution040 {
+public:
+	vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+		vector<vector<int>> result;
+		vector<int> vec;
+		sort(candidates.begin(), candidates.end());
+		if (candidates.size() > 0)
+		{
+			GetComb(result, candidates, vec, 0, target, 0);
+		}
+		return result;
+	}
 
+	void GetComb(vector<vector<int>>& result, vector<int>& candidates, vector<int>& vec, int sum, int target, int index)
+	{
+		if (sum == target)
+		{
+			result.push_back(vec);
+		}
+		else if (sum < target)
+		{
+			for (int i = vec.size()==0?0:index + 1; i < candidates.size(); i++)
+			{
+				if (sum + candidates[i] <= target)
+				{
+					vec.push_back(candidates[i]);
+					GetComb(result, candidates, vec, sum + candidates[i], target, i);
+					while (i < candidates.size() - 1 && candidates[i] == candidates[i + 1]) i++;
+				}
+
+			}
+		}
+		if (vec.size() != 0)
+		{
+			vec.pop_back();
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution039 {
+public:
+	vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+		vector<vector<int>> result;
+		vector<int> vec;
+		sort(candidates.begin(), candidates.end());
+		if (candidates.size()>0)
+		{
+			GetComb(result, candidates, vec, 0, target, 0);
+		}
+		return result;
+	}
+
+	void GetComb(vector<vector<int>>& result, vector<int>& candidates, vector<int>& vec, int sum, int target, int index)
+	{
+		if (sum == target)
+		{
+			result.push_back(vec);
+		}
+		else if (sum < target)
+		{
+			for (size_t i = index; i < candidates.size(); i++)
+			{
+				vec.push_back(candidates[i]);
+				GetComb(result, candidates, vec, sum + candidates[i], target, i);
+				while (i < candidates.size() - 1 && candidates[i] == candidates[i + 1]) i++;
+			}
+		}
+		if (vec.size() != 0)
+		{
+			vec.pop_back();
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution038 {
+public:
+	string countAndSay(int n) {
+		if (n <= 0)
+		{
+			return "";
+		}
+		string str = "1";
+		for (int i = 1; i < n; i++)
+		{
+			string tmp;
+			int len = str.size();
+			int index = 0;
+			char ch = str[0];
+			int cnt = 0;
+			while (index < len)
+			{
+				while (index < len&&str[index] == ch)
+				{
+					cnt++;
+					index++;
+				}
+				tmp += (cnt + '0');
+				tmp += ch;
+				if (index == len)
+				{
+					str = tmp;
+					break;
+				}
+				else
+				{
+					ch = str[index];
+					cnt = 0;
+				}
+			}
+		}
+		return str;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution036 {
+public:
+	bool isValidSudoku(vector<vector<char>>& board) {
+		return CheckRow(board) && CheckCol(board) && CheckBoard(board);
+	}
+
+	bool CheckRow(vector<vector<char>>& board)
+	{
+		for (size_t i = 0; i < 9; i++)
+		{
+			vector<int> cnt(9, 0);
+			for (size_t j = 0; j < 9; j++)
+			{
+				if (board[i][j] == '.')
+				{
+					continue;
+				}
+				else
+				{
+					cnt[board[i][j] - '0' - 1]++;
+				}
+			}
+			for (size_t j = 0; j < 9; j++)
+			{
+				if (cnt[j]>1)
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	bool CheckCol(vector<vector<char>>& board)
+	{
+		for (size_t i = 0; i < 9; i++)
+		{
+			vector<int> cnt(9, 0);
+			for (size_t j = 0; j < 9; j++)
+			{
+				if (board[j][i] == '.')
+				{
+					continue;
+				}
+				else
+				{
+					cnt[board[j][i] - '0' - 1]++;
+				}
+			}
+			for (size_t j = 0; j < 9; j++)
+			{
+				if (cnt[j]>1)
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	bool CheckBoard(vector<vector<char>>& board)
+	{
+		for (size_t i = 0; i < 9; i += 3)
+		{
+			for (size_t j = 0; j < 9; j += 3)
+			{
+				vector<int> cnt(9, 0);
+				for (int m = 0; m < 3; m++)
+				{
+					for (int n = 0; n < 3; n++)
+					{
+						if (board[i + m][j + n] == '.')
+						{
+							continue;
+						}
+						else
+						{
+							cnt[board[i + m][j + n] - '0' - 1]++;
+						}
+					}
+				}
+				for (size_t j = 0; j < 9; j++)
+				{
+					if (cnt[j]>1)
+					{
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution035 {
 public:
 	int searchInsert(vector<int>& nums, int target) {
 		int len = nums.size();
-		if (len==0)
+		if (len == 0)
 		{
 			return 0;
 		}
-		if (target>nums[len-1])
+		if (target > nums[len - 1])
 		{
 			return len;
 		}
 		int L = 0;
 		int R = len - 1;
-		while (L<R)
+		while (L < R)
 		{
 			int M = L + ((R - L) >> 1);
-			if (target>nums[M])
+			if (target > nums[M])
 			{
 				L = M + 1;
 			}
@@ -39,7 +271,7 @@ public:
 		vector<int> result;
 		int First = FindFirst(nums, target);
 		result.push_back(First);
-		if (First!=-1)
+		if (First != -1)
 		{
 			result.push_back(FindLast(nums, target));
 		}
@@ -55,10 +287,10 @@ public:
 	{
 		int L = 0;
 		int R = nums.size() - 1;
-		while (L<R)
+		while (L < R)
 		{
 			int M = L + ((R - L) >> 1);
-			if (nums[M]<target)
+			if (nums[M] < target)
 			{
 				L = M + 1;
 			}
@@ -73,10 +305,10 @@ public:
 	{
 		int L = 0;
 		int R = nums.size() - 1;
-		while (L<R)
+		while (L < R)
 		{
-			int M = L + ((R - L+1) >> 1);
-			if (nums[M]>target)
+			int M = L + ((R - L + 1) >> 1);
+			if (nums[M] > target)
 			{
 				R = M - 1;
 			}
@@ -95,22 +327,22 @@ public:
 		int len = nums.size();
 		int L = 0;
 		int R = len - 1;
-		if (len==0)
+		if (len == 0)
 		{
 			return -1;
 		}
-		while (L<R)
+		while (L < R)
 		{
 			int M = L + ((R - L) >> 1);
-			if (nums[M]==target)
+			if (nums[M] == target)
 			{
 				return M;
 			}
 			if (nums[M] >= nums[L])
 			{
-				if (target<nums[M]&&target>=nums[L])
+				if (target < nums[M] && target >= nums[L])
 				{
-					R = M-1;
+					R = M - 1;
 				}
 				else
 				{
@@ -121,7 +353,7 @@ public:
 			{
 				if (target <= nums[R] && target > nums[M])
 				{
-					L = M+1;
+					L = M + 1;
 				}
 				else
 				{
@@ -142,7 +374,7 @@ public:
 		int maxLen = 0;
 		for (int i = 0; i < len; i++)
 		{
-			if (s[i]=='(')
+			if (s[i] == '(')
 			{
 				st.push(i);
 			}
@@ -153,7 +385,7 @@ public:
 					st.pop();
 					if (st.empty())
 					{
-						maxLen = max(maxLen,i-index);
+						maxLen = max(maxLen, i - index);
 					}
 					else
 					{
@@ -174,22 +406,22 @@ class Solution031 {
 public:
 	void nextPermutation(vector<int>& nums) {
 		int len = nums.size();
-		for (int i = len-2; i>=0; i--)
+		for (int i = len - 2; i >= 0; i--)
 		{
-			if (nums[i]<nums[i+1])
+			if (nums[i] < nums[i + 1])
 			{
-				for (int j = len-1; j >i; j--)
+				for (int j = len - 1; j > i; j--)
 				{
 					if (nums[i] < nums[j])
 					{
-						swap(nums[i] , nums[j]);
-						sort(nums.begin()+i+1,nums.end());
+						swap(nums[i], nums[j]);
+						sort(nums.begin() + i + 1, nums.end());
 						return;
 					}
 				}
 			}
 		}
-		reverse(nums.begin(),nums.end());
+		reverse(nums.begin(), nums.end());
 	}
 };
 /*-------------------------------------------------------------------------------------*/
@@ -252,20 +484,20 @@ public:
 	int strStr(string haystack, string needle) {
 		int hLen = haystack.size();
 		int nLen = needle.size();
-		if (nLen>hLen)
+		if (nLen > hLen)
 		{
 			return -1;
 		}
-		if (nLen==0)
+		if (nLen == 0)
 		{
 			return 0;
 		}
-		vector<int> nextArray(nLen,-1);
+		vector<int> nextArray(nLen, -1);
 		GetNextArray(needle, nextArray);
 		int i = 0, j = 0;
-		while (i<hLen&&j<nLen)
+		while (i < hLen&&j < nLen)
 		{
-			if (j == -1 || haystack[i]==needle[j])
+			if (j == -1 || haystack[i] == needle[j])
 			{
 				i++;
 				j++;
@@ -275,7 +507,7 @@ public:
 				j = nextArray[j];
 			}
 		}
-		if (j==nLen)
+		if (j == nLen)
 		{
 			return i - j;
 		}
@@ -316,7 +548,7 @@ public:
 		int count = 0;
 		for (size_t i = 0; i < len; i++)
 		{
-			if (nums[i]==val)
+			if (nums[i] == val)
 			{
 				count++;
 			}
@@ -335,10 +567,10 @@ public:
 		int len = nums.size();
 		int newLen = len;
 		int diff = 0;
-		int pre=INT_MIN;
+		int pre = INT_MIN;
 		for (size_t i = 0; i < len; i++)
 		{
-			if (nums[i]==pre)
+			if (nums[i] == pre)
 			{
 				diff++;
 				newLen--;
@@ -359,7 +591,7 @@ public:
 	ListNode* swapPairs(ListNode* head) {
 		ListNode* fakeHead = new ListNode(-1);
 		fakeHead->next = head;
-		ListNode* pPre=fakeHead;
+		ListNode* pPre = fakeHead;
 		ListNode* p1;
 		ListNode* p2;
 		while (pPre->next&&pPre->next->next)
@@ -379,9 +611,9 @@ class Solution022 {
 public:
 	vector<string> generateParenthesis(int n) {
 		vector<string> result;
-		if (n>=0)
+		if (n >= 0)
 		{
-			GenPar(result, n, 0,0,"");
+			GenPar(result, n, 0, 0, "");
 		}
 		return result;
 	}
@@ -389,16 +621,16 @@ public:
 	void GenPar(vector<string>& result, int n, int leftCnt, int rightCnt, string patern)
 	{
 		int len = patern.size();
-		if (len==2*n)
+		if (len == 2 * n)
 		{
 			result.push_back(patern);
 			return;
 		}
-		if (leftCnt<n)
+		if (leftCnt < n)
 		{
 			GenPar(result, n, leftCnt + 1, rightCnt, patern + "(");
 		}
-		if (leftCnt>rightCnt)
+		if (leftCnt > rightCnt)
 		{
 			GenPar(result, n, leftCnt, rightCnt + 1, patern + ")");
 		}
@@ -435,7 +667,7 @@ public:
 				pCur->next = l2;
 				l2 = l2->next;
 			}
-			pCur=pCur->next;
+			pCur = pCur->next;
 		}
 		if (l1)
 		{

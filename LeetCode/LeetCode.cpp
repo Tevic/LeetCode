@@ -9,8 +9,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Solution033 S;
-	S.search(vector < int > {3,1},1);
+	Solution040 S;
+	S.combinationSum2(vector < int > {10, 1, 2, 7, 6, 1, 5}, 8);
 	return 0;
 }
 
