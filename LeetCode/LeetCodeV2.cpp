@@ -3,6 +3,173 @@
 
 
 /*-------------------------------------------------------------------------------------*/
+class Solution035 {
+public:
+	int searchInsert(vector<int>& nums, int target) {
+		int len = nums.size();
+		if (len==0)
+		{
+			return 0;
+		}
+		if (target>nums[len-1])
+		{
+			return len;
+		}
+		int L = 0;
+		int R = len - 1;
+		while (L<R)
+		{
+			int M = L + ((R - L) >> 1);
+			if (target>nums[M])
+			{
+				L = M + 1;
+			}
+			else
+			{
+				R = M;
+			}
+		}
+		return nums[L] < target ? L + 1 : L;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution034 {
+public:
+	vector<int> searchRange(vector<int>& nums, int target) {
+		vector<int> result;
+		int First = FindFirst(nums, target);
+		result.push_back(First);
+		if (First!=-1)
+		{
+			result.push_back(FindLast(nums, target));
+		}
+		else
+		{
+			result.push_back(-1);
+		}
+		return result;
+
+	}
+
+	int FindFirst(vector<int>& nums, int target)
+	{
+		int L = 0;
+		int R = nums.size() - 1;
+		while (L<R)
+		{
+			int M = L + ((R - L) >> 1);
+			if (nums[M]<target)
+			{
+				L = M + 1;
+			}
+			else
+			{
+				R = M;
+			}
+		}
+		return nums[L] == target ? L : -1;
+	}
+	int FindLast(vector<int>& nums, int target)
+	{
+		int L = 0;
+		int R = nums.size() - 1;
+		while (L<R)
+		{
+			int M = L + ((R - L+1) >> 1);
+			if (nums[M]>target)
+			{
+				R = M - 1;
+			}
+			else
+			{
+				L = M;
+			}
+		}
+		return nums[R] == target ? R : -1;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution033 {
+public:
+	int search(vector<int>& nums, int target) {
+		int len = nums.size();
+		int L = 0;
+		int R = len - 1;
+		if (len==0)
+		{
+			return -1;
+		}
+		while (L<R)
+		{
+			int M = L + ((R - L) >> 1);
+			if (nums[M]==target)
+			{
+				return M;
+			}
+			if (nums[M] >= nums[L])
+			{
+				if (target<nums[M]&&target>=nums[L])
+				{
+					R = M-1;
+				}
+				else
+				{
+					L = M + 1;
+				}
+			}
+			else
+			{
+				if (target <= nums[R] && target > nums[M])
+				{
+					L = M+1;
+				}
+				else
+				{
+					R = M - 1;
+				}
+			}
+		}
+		return nums[R] == target ? R : -1;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution032 {
+public:
+	int longestValidParentheses(string s) {
+		int len = s.size();
+		stack<int> st;
+		int index = -1;
+		int maxLen = 0;
+		for (int i = 0; i < len; i++)
+		{
+			if (s[i]=='(')
+			{
+				st.push(i);
+			}
+			else
+			{
+				if (!st.empty())
+				{
+					st.pop();
+					if (st.empty())
+					{
+						maxLen = max(maxLen,i-index);
+					}
+					else
+					{
+						maxLen = max(maxLen, i - st.top());
+					}
+				}
+				else
+				{
+					index = i;
+				}
+			}
+		}
+		return maxLen;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 class Solution031 {
 public:
 	void nextPermutation(vector<int>& nums) {

@@ -9,8 +9,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Solution031 S;
-	S.nextPermutation(vector < int > {1, 3, 2});
+	Solution033 S;
+	S.search(vector < int > {3,1},1);
 	return 0;
 }
 
