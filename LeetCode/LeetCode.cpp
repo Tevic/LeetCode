@@ -9,8 +9,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Solution040 S;
-	S.combinationSum2(vector < int > {10, 1, 2, 7, 6, 1, 5}, 8);
+	Solution048 S;
+	S.rotate(vector < vector<int> > {{1, 2, 3}, { 4, 5, 6 }, {7,8,9}});
 	return 0;
 }
 

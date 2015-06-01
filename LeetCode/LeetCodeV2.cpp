@@ -1,17 +1,217 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 
+
+
+/*-------------------------------------------------------------------------------------*/
+class Solution050 {
+public:
+	double myPow(double x, int n) {
+		if (n<0)
+		{
+			return 1.0 / Pow(x, -n);
+		}
+		else
+		{
+			return Pow(x, n);
+		}
+	}
+	double Pow(double x, int n)
+	{
+		if (n == 0)
+			return 1;
+
+		double v = pow(x, n / 2);
+		if (n % 2 == 0)
+		{
+			return v*v;
+		}
+		else
+		{
+			return v*v*x;
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution049 {
+public:
+	vector<string> anagrams(vector<string>& strs) {
+		unordered_map<string, vector<string>> ump;
+		for (size_t i = 0; i < strs.size(); i++)
+		{
+			string sortedStr = strs[i];
+			sort(sortedStr.begin(),sortedStr.end());
+			ump[sortedStr].push_back(strs[i]);
+		}
+		vector<string> result;
+		for (auto um:ump)
+		{
+			if (um.second.size()>1)
+			{
+				for (size_t i = 0; i < um.second.size(); i++)
+				{
+					result.push_back(um.second[i]);
+				}
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution048 {
+public:
+	void rotate(vector<vector<int>>& matrix) {
+		int N = matrix.size();
+		if (N > 1)
+		{
+			for (size_t i = 0; i < N; i++)
+			{
+				for (size_t j = i+1; j < N; j++)
+				{
+					swap(matrix[i][j], matrix[j][i]);
+				}
+			}
+			for (int i = 0; i < N; i++)
+			{
+				for (int j = 0; j < N/2; j++)
+				{
+					swap(matrix[i][j], matrix[i][N-j-1]);
+				}
+			}
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution047 {
+public:
+	vector<vector<int>> permuteUnique(vector<int>& nums) {
+		vector<vector<int>> result;
+		vector<bool> isVisited(nums.size(), false);
+		vector<int> vec;
+		if (nums.size() > 0)
+		{
+			sort(nums.begin(), nums.end());
+			GetPerm(result, isVisited, nums, vec);
+		}
+		return result;
+	}
+
+	void GetPerm(vector<vector<int>>& result, vector<bool>& isVisited, vector<int>& nums, vector<int>& vec)
+	{
+		if (vec.size() == nums.size())
+		{
+			result.push_back(vec);
+		}
+		else
+		{
+			for (size_t i = 0; i < nums.size(); i++)
+			{
+				if (!isVisited[i])
+				{
+					isVisited[i] = true;
+					vec.push_back(nums[i]);
+					GetPerm(result, isVisited, nums, vec);
+					isVisited[i] = false;
+					while (i < nums.size() - 1 && nums[i] == nums[i + 1])
+					{
+						i++;
+					}
+				}
+			}
+		}
+		if (!vec.empty())
+		{
+			vec.pop_back();
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution046 {
+public:
+	vector<vector<int>> permute(vector<int>& nums) {
+		vector<vector<int>> result;
+		vector<bool> isVisited(nums.size(), false);
+		vector<int> vec;
+		if (nums.size() > 0)
+		{
+			GetPerm(result, isVisited, nums, vec);
+		}
+		return result;
+	}
+
+	void GetPerm(vector<vector<int>>& result, vector<bool>& isVisited, vector<int>& nums, vector<int>& vec)
+	{
+		if (vec.size() == nums.size())
+		{
+			result.push_back(vec);
+		}
+		else
+		{
+			for (size_t i = 0; i < nums.size(); i++)
+			{
+				if (!isVisited[i])
+				{
+					isVisited[i] = true;
+					vec.push_back(nums[i]);
+					GetPerm(result, isVisited, nums, vec);
+					isVisited[i] = false;
+				}
+			}
+		}
+		if (!vec.empty())
+		{
+			vec.pop_back();
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution043 {
+public:
+	string multiply(string num1, string num2) {
+		int len1 = num1.size();
+		int len2 = num2.size();
+		if (len1 == 0 || len2 == 0 || num1 == "0" || num2 == "0")
+		{
+			return "0";
+		}
+		if (len1 > len2)
+		{
+			return multiply(num2, num1);
+		}
+		vector<int> res(len1 + len2, 0);
+		for (int i = 0; i < len1; i++)
+		{
+			for (int j = 0; j < len2; j++)
+			{
+				res[i + j] += (num1[i] - '0')*(num2[j] - '0');
+			}
+		}
+		string resStr;
+		int carry = 0;
+		for (int i = len1 + len2 - 2; i >= 0; i--)
+		{
+			resStr += ((res[i] + carry) % 10 + '0');
+			carry = (res[i] + carry) / 10;
+		}
+		if (carry != 0)
+		{
+			resStr += ((carry) % 10 + '0');
+		}
+		reverse(resStr.begin(), resStr.end());
+		return resStr;
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution041 {
 public:
 	int firstMissingPositive(vector<int>& nums) {
 		int i = 0;
 		int len = nums.size();
-		while (i<len)
+		while (i < len)
 		{
-			if (nums[i] != i + 1 && nums[i] >= 1 && nums[i] <= len &&nums[i]!=nums[nums[i] - 1])
+			if (nums[i] != i + 1 && nums[i] >= 1 && nums[i] <= len &&nums[i] != nums[nums[i] - 1])
 			{
-				swap(nums[i],nums[nums[i]-1]);
+				swap(nums[i], nums[nums[i] - 1]);
 			}
 			else
 			{
@@ -20,7 +220,7 @@ public:
 		}
 		for (size_t i = 0; i < len; i++)
 		{
-			if (nums[i]!=i+1)
+			if (nums[i] != i + 1)
 			{
 				return i + 1;
 			}
@@ -50,7 +250,7 @@ public:
 		}
 		else if (sum < target)
 		{
-			for (int i = vec.size()==0?0:index + 1; i < candidates.size(); i++)
+			for (int i = vec.size() == 0 ? 0 : index + 1; i < candidates.size(); i++)
 			{
 				if (sum + candidates[i] <= target)
 				{
@@ -74,7 +274,7 @@ public:
 		vector<vector<int>> result;
 		vector<int> vec;
 		sort(candidates.begin(), candidates.end());
-		if (candidates.size()>0)
+		if (candidates.size() > 0)
 		{
 			GetComb(result, candidates, vec, 0, target, 0);
 		}

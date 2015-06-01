@@ -1,6 +1,27 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 /*-------------------------------------------------------------------------------------*/
+/*Contains Duplicate II*/
+class Solution155 {
+public:
+	bool containsNearbyDuplicate(vector<int>& nums, int k) {
+		int len = nums.size();
+		unordered_map<int, vector<int>> ump;
+		for (size_t i = 0; i < len; i++)
+		{
+			ump[nums[i]].push_back(i);
+		}
+		for (auto m:ump)
+		{
+			if (m.second.size() == 2 && abs(m.second[0]-m.second[1]) <= k)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 /*Jump Game*/
 class Solution154 {
 public:
