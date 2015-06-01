@@ -28,6 +28,7 @@
 #include <cmath>
 #include <numeric>
 #include <functional>
+#include <cctype>
 
 using namespace std;
 

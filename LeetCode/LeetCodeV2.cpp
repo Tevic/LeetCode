@@ -4,10 +4,274 @@
 
 
 /*-------------------------------------------------------------------------------------*/
+class Solution061 {
+public:
+	ListNode* rotateRight(ListNode* head, int k) {
+		if (!head)
+		{
+			return NULL;
+		}
+		ListNode* newHead = new ListNode(0);
+		newHead->next = head;
+		ListNode* p1 = newHead;
+		ListNode* p2 = newHead;
+		int len = 0;
+		ListNode* pCur = head;
+		while (pCur)
+		{
+			len++;
+			pCur = pCur->next;
+		}
+		k %= len;
+		while (k--)
+		{
+			p2 = p2->next;
+		}
+		while (p2->next)
+		{
+			p1 = p1->next;
+			p2 = p2->next;
+		}
+		p2->next = newHead->next;
+		newHead->next = p1->next;
+		p1->next = NULL;
+		return newHead->next;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution060 {
+public:
+	string getPermutation(int n, int k) {
+		int i, j, data[10], sign[10];
+		data[1] = 1;
+		for (i = 2; i <= n; ++i)data[i] = data[i - 1] * i;
+		memset(sign, 0, sizeof(sign));
+		string s = "";
+		i -= 2;
+		--k;
+		while (i >= 0)
+		{
+			int temp = k / data[i];
+			for (j = 1; j < 10; ++j)
+			{
+				if (sign[j] == 0)temp--;
+				if (temp < 0)break;
+			}
+			sign[j] = 1;
+			s += j + '0';
+			k %= data[i];
+			i--;
+		}
+		return s;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution059 {
+public:
+	vector<vector<int>> generateMatrix(int n) {
+		vector<vector<int>> result(n,vector<int>(n,0));
+		if (n>0)
+		{
+			int index = 1;
+			int row = 0;
+			int col = -1;
+			int M = n;
+			int N = n;
+			while (true)
+			{
+				for (size_t i = 0; i < N; i++)
+				{
+					result[row][++col] = index;
+					index++;
+				}
+				if (--M == 0)break;
+				for (size_t i = 0; i < M; i++)
+				{
+					result[++row][col] = index;
+					index++;
+				}
+				if (--N == 0)break;
+				for (size_t i = 0; i < N; i++)
+				{
+					result[row][--col] = index;
+					index++;
+				}
+				if (--M == 0)break;
+				for (size_t i = 0; i < M; i++)
+				{
+					result[--row][col] = index;
+					index++;
+				}
+				if (--N == 0)break;
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution058 {
+public:
+	int lengthOfLastWord(string s) {
+		int len = s.size();
+		int index = len - 1;
+		while (index>=0)
+		{
+			if (isspace(s[index]))
+			{
+				index--;
+			}
+			else
+			{
+				break;
+			}
+		}
+		int count = 0;
+		while (index>=0)
+		{
+
+			if (isalnum(s[index]))
+			{
+				index--;
+				count++;
+			}
+			else
+			{
+				break;
+			}
+		}
+		return count;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution056 {
+public:
+	vector<Interval> merge(vector<Interval>& intervals) {
+		vector<Interval> result;
+		int len = intervals.size();
+		if (len>0)
+		{
+			sort(intervals.begin(),intervals.end(),CompareInterval);
+			int index = 0;
+			while (index<len)
+			{
+				if (index+1<len)
+				{
+					while (index + 1<len && intervals[index].end >= intervals[index + 1].start)
+					{
+						intervals[index + 1].start = intervals[index].start;
+						intervals[index + 1].end = max(intervals[index + 1].end, intervals[index].end);
+						index++;
+					}
+				}
+				result.push_back(intervals[index]);
+				index++;
+			}
+		}
+		return result;
+	}
+
+	Interval Merge(Interval I1, Interval I2)
+	{
+
+	}
+
+	static bool CompareInterval(Interval I1, Interval I2)
+	{
+		return I1.start < I2.start;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution055 {
+public:
+	bool canJump(vector<int>& nums) {
+		int len = nums.size();
+		vector<int> reaminStep(len,0);
+		if (len==0)
+		{
+			return false;
+		}
+		else
+		{
+			reaminStep[0] = nums[0];
+			for (size_t i = 1; i < len; i++)
+			{
+				if (reaminStep[i-1]<=0)
+				{
+					return false;
+				}
+				reaminStep[i] = max(reaminStep[i-1]-1,nums[i]);
+			}
+			return reaminStep[len - 1] >= 0;
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution054 {
+public:
+	vector<int> spiralOrder(vector<vector<int>>& matrix) {
+		vector<int> result;
+		int M = matrix.size();
+		int N;
+		if (M)
+		{
+			N = matrix[0].size();
+		}
+		else
+		{
+			return result;
+		}
+		int row = 0;
+		int col = -1;
+		while (true)
+		{
+			for (size_t i = 0; i < N; i++)
+			{
+				result.push_back(matrix[row][++col]);
+			}
+			if (--M == 0)break;
+			for (size_t i = 0; i < M; i++)
+			{
+				result.push_back(matrix[++row][col]);
+			}
+			if (--N == 0)break;
+			for (size_t i = 0; i < N; i++)
+			{
+				result.push_back(matrix[row][--col]);
+			}
+			if (--M == 0)break;
+			for (size_t i = 0; i < M; i++)
+			{
+				result.push_back(matrix[--row][col]);
+			}
+			if (--N == 0)break;
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution053 {
+public:
+	int maxSubArray(vector<int>& nums) {
+		int len = nums.size();
+		int maxSum = 0;
+		if (len > 0)
+		{
+			int curSum = nums[0];
+			maxSum = nums[0];
+			for (size_t i = 1; i < len; i++)
+			{
+				curSum = max(curSum + nums[i], nums[i]);
+				maxSum = max(curSum, maxSum);
+			}
+		}
+		return maxSum;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 class Solution050 {
 public:
 	double myPow(double x, int n) {
-		if (n<0)
+		if (n < 0)
 		{
 			return 1.0 / Pow(x, -n);
 		}
@@ -40,13 +304,13 @@ public:
 		for (size_t i = 0; i < strs.size(); i++)
 		{
 			string sortedStr = strs[i];
-			sort(sortedStr.begin(),sortedStr.end());
+			sort(sortedStr.begin(), sortedStr.end());
 			ump[sortedStr].push_back(strs[i]);
 		}
 		vector<string> result;
-		for (auto um:ump)
+		for (auto um : ump)
 		{
-			if (um.second.size()>1)
+			if (um.second.size() > 1)
 			{
 				for (size_t i = 0; i < um.second.size(); i++)
 				{
@@ -66,16 +330,16 @@ public:
 		{
 			for (size_t i = 0; i < N; i++)
 			{
-				for (size_t j = i+1; j < N; j++)
+				for (size_t j = i + 1; j < N; j++)
 				{
 					swap(matrix[i][j], matrix[j][i]);
 				}
 			}
 			for (int i = 0; i < N; i++)
 			{
-				for (int j = 0; j < N/2; j++)
+				for (int j = 0; j < N / 2; j++)
 				{
-					swap(matrix[i][j], matrix[i][N-j-1]);
+					swap(matrix[i][j], matrix[i][N - j - 1]);
 				}
 			}
 		}
