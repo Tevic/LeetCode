@@ -1,5 +1,32 @@
 #include "stdafx.h"
 #include "DataStructure.h"
+
+/*-------------------------------------------------------------------------------------*/
+/*Contains Duplicate III */
+class Solution156 {
+public:
+	bool containsNearbyAlmostDuplicate(vector<int>& nums, int k, int t) {
+		int len = nums.size();
+		for (size_t i = 0; i < len-1; i++)
+		{
+			for (size_t j = 1; j <= k; j++)
+			{
+				if (i+j<len)
+				{
+					if (abs(nums[i] - nums[i + j]) <= t)
+					{
+						return true;
+					}
+				}
+				else
+				{
+					return false;
+				}
+			}
+		}
+		return false;
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 /*Contains Duplicate II*/
 class Solution155 {
