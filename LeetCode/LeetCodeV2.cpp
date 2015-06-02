@@ -2,7 +2,110 @@
 #include "DataStructure.h"
 
 
-
+/*-------------------------------------------------------------------------------------*/
+class Solution064 {
+public:
+	int minPathSum(vector<vector<int>>& grid) {
+		int m = grid.size();
+		int n = 0;
+		if (m)
+		{
+			n = grid[0].size();
+		}
+		if (m>0 && n>0)
+		{
+			vector<vector<int>> paths(m, vector<int>(n, 0));
+			paths[0][0] = grid[0][0];
+			for (size_t i = 1; i < m; i++)
+			{
+				paths[i][0] = grid[i][0]+paths[i - 1][0];
+			}
+			for (size_t i = 1; i < n; i++)
+			{
+				paths[0][i] = grid[0][i]+paths[0][i - 1];
+			}
+			for (size_t i = 1; i < m; i++)
+			{
+				for (size_t j = 1; j < n; j++)
+				{
+					paths[i][j] = grid[i][j]+min(paths[i - 1][j] , paths[i][j - 1]);
+				}
+			}
+			return paths[m - 1][n - 1];
+		}
+		else
+		{
+			return 0;
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution063 {
+public:
+	int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
+		int m = obstacleGrid.size();
+		int n = 0;
+		if (m)
+		{
+			n = obstacleGrid[0].size();
+		}
+		if (m>0 && n>0)
+		{
+			vector<vector<int>> paths(m, vector<int>(n, 0));
+			paths[0][0] = obstacleGrid[0][0] == 1 ? 0 : 1;
+			for (size_t i = 1; i < m; i++)
+			{
+				paths[i][0] = obstacleGrid[i][0]==1?0:paths[i-1][0];
+			}
+			for (size_t i = 1; i < n; i++)
+			{
+				paths[0][i] = obstacleGrid[0][i] == 1 ? 0 : paths[0][i - 1];
+			}
+			for (size_t i = 1; i < m; i++)
+			{
+				for (size_t j = 1; j < n; j++)
+				{
+					paths[i][j] = obstacleGrid[i][j] == 1 ? 0 : paths[i - 1][j] + paths[i][j - 1];
+				}
+			}
+			return paths[m - 1][n - 1];
+		}
+		else
+		{
+			return 0;
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution062 {
+public:
+	int uniquePaths(int m, int n) {
+		if (m>0&&n>0)
+		{
+			vector<vector<int>> paths(m,vector<int>(n,0));
+			for (size_t i = 0; i < m; i++)
+			{
+				paths[i][0] = 1;
+			}
+			for (size_t i = 0; i < n; i++)
+			{
+				paths[0][i] = 1;
+			}
+			for (size_t i = 1; i < m; i++)
+			{
+				for (size_t j = 1; j < n; j++)
+				{
+					paths[i][j] = paths[i-1][j]+paths[i][j-1];
+				}
+			}
+			return paths[m - 1][n - 1];
+		}
+		else
+		{
+			return 0;
+		}
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution061 {
 public:
