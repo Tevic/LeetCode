@@ -8,8 +8,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Solution059 S;
-	S.generateMatrix(3);
+	Solution068 S;
+	S.mySqrt(2147395599);
 	return 0;
 }
 

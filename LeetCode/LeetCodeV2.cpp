@@ -2,6 +2,199 @@
 #include "DataStructure.h"
 
 
+
+/*-------------------------------------------------------------------------------------*/
+class Solution071 {
+public:
+	string simplifyPath(string path) {
+		// Start typing your C/C++ solution below
+		// DO NOT write int main() function
+		vector<string> pathes;
+		string seg = "";
+		for (int i = 0; i <= path.size(); ++i) {
+			if (i == path.size() || path[i] == '/') {
+				if (seg == "..") {
+					if (pathes.size() > 0) {
+						pathes.pop_back();
+					}
+					else {
+						//return "/";//error, in the test set, this case just ignore
+					}
+				}
+				else if (seg == ".") {
+					//do nothing
+				}
+				else if (seg.size() > 0) {
+					pathes.push_back(seg);
+				}
+				seg = "";
+			}
+			else {
+				seg += path[i];
+			}
+		}
+		string ret = "/";
+		for (int i = 0; i < pathes.size(); ++i) {
+			if (i>0) ret += "/";
+			ret += pathes[i];
+		}
+		return ret;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution070 {
+public:
+	int climbStairs(int n) {
+		if (n==1||n==2)
+		{
+			return n;
+		}
+		int f1 = 1;
+		int f2 = 2;
+		int f3;
+		for (size_t i = 3; i <= n; i++)
+		{
+			f3 = f1 + f2;
+			f1 = f2;
+			f2 = f3;
+		}
+		return f3;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution069 {
+public:
+	int mySqrt(int x) {
+		int L = 0;
+		int R = (x >> 1) + 1;
+		while (L <= R)
+		{
+			long long mid = L + ((R - L) >> 1);
+			long long res = mid*mid;
+			if (res < x)
+			{
+				L = mid + 1;
+			}
+			else if (res > x)
+			{
+				R = mid - 1;
+			}
+			else
+			{
+				return mid;
+			}
+		}
+		return R;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution067 {
+public:
+	string addBinary(string a, string b) {
+		int lenA = a.size();
+		int lenB = b.size();
+		if (lenA < lenB)
+		{
+			return addBinary(b, a);
+		}
+		reverse(a.begin(), a.end());
+		reverse(b.begin(), b.end());
+		string result;
+		int carry = 0;
+		for (int i = 0; i < lenB; i++)
+		{
+			int res = (a[i] - '0') + (b[i] - '0') + carry;
+			carry = res / 2;
+			result.push_back((res % 2) + '0');
+		}
+		for (int i = lenB; i < lenA; i++)
+		{
+			int res = (a[i] - '0') + carry;
+			carry = res / 2;
+			result.push_back((res % 2) + '0');
+		}
+		if (carry == 1)
+		{
+			result.push_back('1');
+		}
+		reverse(result.begin(), result.end());
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution066 {
+public:
+	vector<int> plusOne(vector<int>& digits) {
+		vector<int> result;
+		int len = digits.size();
+		int carry = 1;
+		for (int i = len - 1; i >= 0; i--)
+		{
+			if (carry == 1 && digits[i] == 9)
+			{
+				result.push_back(0);
+			}
+			else
+			{
+				result.push_back(carry + digits[i]);
+				carry = 0;
+			}
+		}
+		if (carry == 1)
+		{
+			result.push_back(1);
+		}
+		reverse(result.begin(), result.end());
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution065 {
+public:
+	bool isNumber(string s) {
+		int len = s.size();
+		int index = 0;
+		while (index < len&&isspace(s[index]))index++;
+		if (index < len && (s[index] == '+' || s[index] == '-'))
+		{
+			index++;
+		}
+		bool isNum = false;
+		while (index < len&&isdigit(s[index]))
+		{
+			index++;
+			isNum = true;
+		}
+		if (index < len && s[index] == '.')
+		{
+			index++;
+			while (index < len&&isdigit(s[index]))
+			{
+				index++;
+				isNum = true;
+			}
+		}
+		if (isNum && index < len && (s[index] == 'E' || s[index] == 'e'))
+		{
+			index++;
+			if (index < len && (s[index] == '+' || s[index] == '-'))
+			{
+				index++;
+			}
+			isNum = false;
+			while (index < len&&isdigit(s[index]))
+			{
+				index++;
+				isNum = true;
+			}
+		}
+		while (index < len&&isspace(s[index]))
+		{
+			index++;
+		}
+		return isNum&&index == len;
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution064 {
 public:
@@ -12,23 +205,23 @@ public:
 		{
 			n = grid[0].size();
 		}
-		if (m>0 && n>0)
+		if (m > 0 && n > 0)
 		{
 			vector<vector<int>> paths(m, vector<int>(n, 0));
 			paths[0][0] = grid[0][0];
 			for (size_t i = 1; i < m; i++)
 			{
-				paths[i][0] = grid[i][0]+paths[i - 1][0];
+				paths[i][0] = grid[i][0] + paths[i - 1][0];
 			}
 			for (size_t i = 1; i < n; i++)
 			{
-				paths[0][i] = grid[0][i]+paths[0][i - 1];
+				paths[0][i] = grid[0][i] + paths[0][i - 1];
 			}
 			for (size_t i = 1; i < m; i++)
 			{
 				for (size_t j = 1; j < n; j++)
 				{
-					paths[i][j] = grid[i][j]+min(paths[i - 1][j] , paths[i][j - 1]);
+					paths[i][j] = grid[i][j] + min(paths[i - 1][j], paths[i][j - 1]);
 				}
 			}
 			return paths[m - 1][n - 1];
@@ -49,13 +242,13 @@ public:
 		{
 			n = obstacleGrid[0].size();
 		}
-		if (m>0 && n>0)
+		if (m > 0 && n > 0)
 		{
 			vector<vector<int>> paths(m, vector<int>(n, 0));
 			paths[0][0] = obstacleGrid[0][0] == 1 ? 0 : 1;
 			for (size_t i = 1; i < m; i++)
 			{
-				paths[i][0] = obstacleGrid[i][0]==1?0:paths[i-1][0];
+				paths[i][0] = obstacleGrid[i][0] == 1 ? 0 : paths[i - 1][0];
 			}
 			for (size_t i = 1; i < n; i++)
 			{
@@ -80,9 +273,9 @@ public:
 class Solution062 {
 public:
 	int uniquePaths(int m, int n) {
-		if (m>0&&n>0)
+		if (m>0 && n>0)
 		{
-			vector<vector<int>> paths(m,vector<int>(n,0));
+			vector<vector<int>> paths(m, vector<int>(n, 0));
 			for (size_t i = 0; i < m; i++)
 			{
 				paths[i][0] = 1;
@@ -95,7 +288,7 @@ public:
 			{
 				for (size_t j = 1; j < n; j++)
 				{
-					paths[i][j] = paths[i-1][j]+paths[i][j-1];
+					paths[i][j] = paths[i - 1][j] + paths[i][j - 1];
 				}
 			}
 			return paths[m - 1][n - 1];
@@ -172,8 +365,8 @@ public:
 class Solution059 {
 public:
 	vector<vector<int>> generateMatrix(int n) {
-		vector<vector<int>> result(n,vector<int>(n,0));
-		if (n>0)
+		vector<vector<int>> result(n, vector<int>(n, 0));
+		if (n > 0)
 		{
 			int index = 1;
 			int row = 0;
@@ -217,7 +410,7 @@ public:
 	int lengthOfLastWord(string s) {
 		int len = s.size();
 		int index = len - 1;
-		while (index>=0)
+		while (index >= 0)
 		{
 			if (isspace(s[index]))
 			{
@@ -229,7 +422,7 @@ public:
 			}
 		}
 		int count = 0;
-		while (index>=0)
+		while (index >= 0)
 		{
 
 			if (isalnum(s[index]))
@@ -251,15 +444,15 @@ public:
 	vector<Interval> merge(vector<Interval>& intervals) {
 		vector<Interval> result;
 		int len = intervals.size();
-		if (len>0)
+		if (len > 0)
 		{
-			sort(intervals.begin(),intervals.end(),CompareInterval);
+			sort(intervals.begin(), intervals.end(), CompareInterval);
 			int index = 0;
-			while (index<len)
+			while (index < len)
 			{
-				if (index+1<len)
+				if (index + 1 < len)
 				{
-					while (index + 1<len && intervals[index].end >= intervals[index + 1].start)
+					while (index + 1 < len && intervals[index].end >= intervals[index + 1].start)
 					{
 						intervals[index + 1].start = intervals[index].start;
 						intervals[index + 1].end = max(intervals[index + 1].end, intervals[index].end);
@@ -288,8 +481,8 @@ class Solution055 {
 public:
 	bool canJump(vector<int>& nums) {
 		int len = nums.size();
-		vector<int> reaminStep(len,0);
-		if (len==0)
+		vector<int> reaminStep(len, 0);
+		if (len == 0)
 		{
 			return false;
 		}
@@ -298,11 +491,11 @@ public:
 			reaminStep[0] = nums[0];
 			for (size_t i = 1; i < len; i++)
 			{
-				if (reaminStep[i-1]<=0)
+				if (reaminStep[i - 1] <= 0)
 				{
 					return false;
 				}
-				reaminStep[i] = max(reaminStep[i-1]-1,nums[i]);
+				reaminStep[i] = max(reaminStep[i - 1] - 1, nums[i]);
 			}
 			return reaminStep[len - 1] >= 0;
 		}
