@@ -6,27 +6,51 @@
 class Solution156 {
 public:
 	bool containsNearbyAlmostDuplicate(vector<int>& nums, int k, int t) {
-		int len = nums.size();
-		for (size_t i = 0; i < len-1; i++)
-		{
-			for (size_t j = 1; j <= k; j++)
-			{
-				if (i+j<len)
-				{
-					if (abs(nums[i] - nums[i + j]) <= t)
-					{
-						return true;
-					}
-				}
-				else
-				{
-					return false;
-				}
+		if (nums.size() < 2 || k == 0)
+			return false;
+		deque<int> windows_deq;
+		multiset<long> windows;
+		for (int i = 0; i < nums.size(); i++) {
+			if (windows.size() > k) {
+				int num = windows_deq.front();
+				windows_deq.pop_front();
+				windows.erase(windows.find(num));
 			}
+			auto it = windows.lower_bound((long)nums[i] - (long)t);
+			if (it == windows.end() || *it > (long)nums[i] + (long)t) {
+				// not found
+				windows_deq.push_back(nums[i]);
+				windows.insert(nums[i]);
+			}
+			else return true;
 		}
 		return false;
 	}
 };
+//class Solution156 {
+//public:
+//	bool containsNearbyAlmostDuplicate(vector<int>& nums, int k, int t) {
+//		int len = nums.size();
+//		for (size_t i = 0; i < len-1; i++)
+//		{
+//			for (size_t j = 1; j <= k; j++)
+//			{
+//				if (i+j<len)
+//				{
+//					if (abs(nums[i] - nums[i + j]) <= t)
+//					{
+//						return true;
+//					}
+//				}
+//				else
+//				{
+//					return false;
+//				}
+//			}
+//		}
+//		return false;
+//	}
+//};
 /*-------------------------------------------------------------------------------------*/
 /*Contains Duplicate II*/
 class Solution155 {
