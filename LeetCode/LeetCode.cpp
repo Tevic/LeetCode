@@ -8,9 +8,11 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	//Solution068 S;
-	//S.mySqrt(2147395599);
-	return 0;
+	TreeNode* T1 = new TreeNode(1);
+	TreeNode* T2 = new TreeNode(1);
+	T1->left = T2;
+	Solution098 S;
+	cout<<S.isValidBST(T1);
 }
 
 

@@ -29,6 +29,8 @@
 #include <numeric>
 #include <functional>
 #include <cctype>
+#include <fstream>
+#include <memory>
 
 using namespace std;
 

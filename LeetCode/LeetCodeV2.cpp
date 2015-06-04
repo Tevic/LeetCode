@@ -3,12 +3,910 @@
 
 
 
+
+class Solution101 {
+public:
+	bool isSymmetric(TreeNode* root) {
+		return Check(root);
+	}
+
+	bool Check(TreeNode* root)
+	{
+		if (!root)
+		{
+			return true;
+		}
+		if (!root->left&&!root->right)
+		{
+			return true;
+		}
+		else if (root->left&&root->right)
+		{
+			return CheckSymmetric(root->left,root->right);
+		}
+		else
+		{
+			return false;
+		}
+	}
+	bool CheckSymmetric(TreeNode* p, TreeNode* q)
+	{
+		if (!p&&!q)
+		{
+			return true;
+		}
+		else if (p&&q)
+		{
+			return p->val == q->val&&CheckSymmetric(p->left,q->right) && CheckSymmetric(p->right,q->left);
+		}
+		else
+		{
+			return false;
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution100 {
+public:
+	bool isSameTree(TreeNode* p, TreeNode* q) {
+		return PreOrderCheck(p,q);
+	}
+
+	bool PreOrderCheck(TreeNode* p, TreeNode* q)
+	{
+		if (!p&&!q)
+		{
+			return true;
+		}
+		if (p&&q)
+		{
+			return p->val == q->val&&PreOrderCheck(p->left, q->left) && PreOrderCheck(p->right, q->right);
+		}
+		else
+		{
+			return false;
+		}
+		return true;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution099 {
+public:
+	void recoverTree(TreeNode* root) {
+		vector<TreeNode*> result;
+		InOrder(root, result);
+		int L = 0;
+		int R = result.size() - 1;
+		while (result[L]->val < result[L + 1]->val)L++;
+		while (result[R]->val > result[R-1]->val)R--;
+		swap(result[L]->val,result[R]->val);
+	}
+
+	void InOrder(TreeNode* root, vector<TreeNode*>& result)
+	{
+		stack<TreeNode*> st;
+		TreeNode* pCur = root;
+		while (!st.empty() || pCur)
+		{
+			if (pCur)
+			{
+				st.push(pCur);
+				pCur = pCur->left;
+			}
+			else
+			{
+				pCur = st.top();
+				st.pop();
+				result.push_back(pCur);
+				pCur = pCur->right;
+			}
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution098 {
+public:
+	bool isValidBST(TreeNode* root) {
+		vector<int> result;
+		InOrder( root,  result);
+		if (result.size()>1)
+		{
+			for (size_t i = 1; i < result.size(); i++)
+			{
+				if (result[i]<=result[i-1])
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+
+	void InOrder(TreeNode* root, vector<int>& result)
+	{
+		stack<TreeNode*> st;
+		TreeNode* pCur = root;
+		while (!st.empty()||pCur)
+		{
+			if (pCur)
+			{
+				st.push(pCur);
+				pCur = pCur->left;
+			}
+			else
+			{
+				pCur = st.top();
+				st.pop();
+				result.push_back(pCur->val);
+				pCur = pCur->right;
+			}
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution097 {
+public:
+	bool isInterleave(string s1, string s2, string s3) {
+		if (s3.size() != s1.size() + s2.size())
+			return false;
+		//create indicator
+		vector<vector<bool> > match(s1.size() + 1, vector<bool>(s2.size() + 1, false));
+		//initialization the first row and the first column
+		match[0][0] = true;
+		for (int l1 = 1; l1 <= s1.size(); ++l1) {
+			char c1 = s1[l1 - 1];
+			char c3 = s3[l1 - 1];
+			if (c1 == c3) {
+				match[l1][0] = true;
+			}
+			else
+				break;
+		}
+		for (int l2 = 1; l2 <= s2.size(); ++l2) {
+			char c2 = s2[l2 - 1];
+			char c3 = s3[l2 - 1];
+			if (c2 == c3) {
+				match[0][l2] = true;
+			}
+			else
+				break;
+		}
+		//work through the rest of matrix using the formula
+		for (int l1 = 1; l1 <= s1.size(); ++l1) {
+			char c1 = s1[l1 - 1];
+			for (int l2 = 1; l2 <= s2.size(); ++l2) {
+				char c2 = s2[l2 - 1];
+				int l3 = l1 + l2;
+				char c3 = s3[l3 - 1];
+				if (c1 == c3) {
+					match[l1][l2] = match[l1 - 1][l2] || match[l1][l2];
+				}
+				if (c2 == c3) {
+					match[l1][l2] = match[l1][l2 - 1] || match[l1][l2];
+				}
+			}
+		}
+		//the last element is the result
+		return match[s1.size()][s2.size()];
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution096 {
+public:
+	int numTrees(int n) {
+		vector<int> count(n + 1, 0);
+		count[0] = 1;
+		count[1] = 1;
+		for (int i = 2; i <= n; i++)
+		{
+			for (int j = 0; j < i; j++)
+			{
+				count[i] += count[j] * count[i - j - 1];
+			}
+		}
+		return count[n];
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution095 {
+public:
+	vector<TreeNode *> generateTrees(int n) {
+		if (n == 0) return *generate(1, 0);
+		return *generate(1, n);
+	}
+	vector<TreeNode *>* generate(int start, int end)
+	{
+		vector<TreeNode *> *subTree = new vector<TreeNode*>();
+		if (start > end)
+		{
+			subTree->push_back(NULL);
+			return subTree;
+		}
+		for (int i = start; i <= end; i++)
+		{
+			vector<TreeNode*> *leftSubs = generate(start, i - 1);
+			vector<TreeNode*> *rightSubs = generate(i + 1, end);
+			for (int j = 0; j < leftSubs->size(); j++)
+			{
+				for (int k = 0; k < rightSubs->size(); k++)
+				{
+					TreeNode *node = new TreeNode(i);
+					node->left = (*leftSubs)[j];
+					node->right = (*rightSubs)[k];
+					subTree->push_back(node);
+				}
+			}
+		}
+		return subTree;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution094 {
+public:
+	vector<int> inorderTraversal(TreeNode* root) {
+		stack<TreeNode*> st;
+		vector<int> result;
+		TreeNode* p = root;
+		while (!st.empty() || p)
+		{
+			if (p)
+			{
+				st.push(p);
+				p = p->left;
+			}
+			else
+			{
+				result.push_back(st.top()->val);
+				p = st.top()->right;
+				st.pop();
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution093 {
+public:
+	vector<string> restoreIpAddresses(string s) {
+		vector<string> result;
+		if (s.size() >= 4)
+		{
+			GetIP(result, s, 0, 0, "");
+		}
+		for (int i = 0; i < result.size(); i++)
+		{
+			result[i].pop_back();
+		}
+		return result;
+	}
+
+	void GetIP(vector<string>& result, string &s, int index, int cnt, string curIP)
+	{
+		if (cnt == 4)
+		{
+			if (index == s.size())
+			{
+				result.push_back(curIP);
+			}
+		}
+		else
+		{
+			for (int i = 1; i <= 3; i++)
+			{
+				if (index + i - 1 < s.size())
+				{
+					string strIPPart = s.substr(index, i);
+					if (IsValidNum(strIPPart))
+					{
+						GetIP(result, s, index + i, cnt + 1, curIP + strIPPart + ".");
+					}
+				}
+			}
+		}
+	}
+
+	bool IsValidNum(string s)
+	{
+		if (s[0] == '0')
+		{
+			return s.size() == 1;
+		}
+		else
+		{
+			int num = stoi(s);
+			return num >= 1 && num <= 255;
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution092 {
+public:
+	ListNode* reverseBetween(ListNode* head, int m, int n) {
+		ListNode* newHead = new ListNode(0);
+		newHead->next = head;
+		int dist = n - m + 1;
+		ListNode* pCur = newHead;
+		ListNode* pPre = newHead;
+		while (m--)
+		{
+			pPre = pCur;
+			pCur = pCur->next;
+		}
+		ListNode* pCurPre = pPre->next;
+		pPre->next = NULL;
+		ListNode* pNext = NULL;
+
+		while (dist--)
+		{
+			pNext = pCur->next;
+			pCur->next = pPre->next;
+			pPre->next = pCur;
+			pCur = pNext;
+		}
+		if (pCurPre)
+		{
+			pCurPre->next = pNext;
+		}
+		return newHead->next;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution091 {
+public:
+	int numDecodings(string s) {
+		if (s.size() > 0)
+		{
+			vector<int> dp(s.size(), 0);
+			if (CheckOne(s, 0))
+			{
+				dp[0] = 1;
+				if (CheckOne(s, 1))
+				{
+					if (CheckTwo(s, 1))
+					{
+						dp[1] = 2;
+					}
+					else
+					{
+						dp[1] = 1;
+					}
+				}
+				else
+				{
+					if (CheckTwo(s, 1))
+					{
+						dp[1] = 1;
+					}
+					else
+					{
+						dp[1] = 0;
+					}
+				}
+			}
+			else
+			{
+				dp[0] = 0;
+				dp[1] = 0;
+			}
+			for (size_t i = 2; i < s.size(); i++)
+			{
+				if (CheckOne(s, i))
+				{
+					if (CheckTwo(s, i))
+					{
+						dp[i] = dp[i - 1] + dp[i - 2];
+					}
+					else
+					{
+						dp[i] = dp[i - 1];
+					}
+				}
+				else
+				{
+					if (CheckTwo(s, i))
+					{
+						dp[i] = dp[i - 2];
+					}
+					else
+					{
+						dp[i] = 0;
+					}
+				}
+			}
+			return dp[s.size() - 1];
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	bool CheckOne(string &s, int index)
+	{
+		return s[index] >= '1'&&s[index] <= '9';
+	}
+	bool CheckTwo(string &s, int index)
+	{
+		return s[index - 1] == '1' || (s[index - 1] == '2'&&s[index] >= '0'&&s[index] <= '6');
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution090 {
+public:
+	vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+		vector<vector<int>> result;
+		vector<int> vec;
+		sort(nums.begin(), nums.end());
+		GetComb(result, vec, nums, -1);
+		return result;
+	}
+
+	void GetComb(vector<vector<int>> &result, vector<int> &vec, vector<int>& nums, int index)
+	{
+		if (vec.size() <= nums.size())
+		{
+			result.push_back(vec);
+			if (vec.size() < nums.size())
+			{
+				for (size_t i = index + 1; i < nums.size(); i++)
+				{
+					vec.push_back(nums[i]);
+					GetComb(result, vec, nums, i);
+					while (index + 1 < nums.size() && nums[i] == nums[i + 1])i++;
+				}
+			}
+		}
+		if (vec.size() > 0)
+		{
+			vec.pop_back();
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution089 {
+public:
+	vector<int> grayCode(int n) {
+		vector<int> result;
+		result.push_back(0);
+		for (int i = 0; i < n; i++)
+		{
+			int highestBit = 1 << i;
+			int len = result.size();
+			for (int j = len - 1; j >= 0; j--)
+			{
+				result.push_back(highestBit + result[j]);
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution088 {
+public:
+	void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+		int i = m - 1;
+		int j = n - 1;
+		int k = m + n - 1;
+		while (i >= 0 && j >= 0)
+		{
+			if (nums1[i] > nums2[j])
+			{
+				nums1[k--] = nums1[i--];
+			}
+			else
+			{
+				nums1[k--] = nums2[j--];
+			}
+		}
+		while (i >= 0)
+		{
+			nums1[k--] = nums1[i--];
+		}
+		while (j >= 0)
+		{
+			nums1[k--] = nums2[j--];
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution086 {
+public:
+	ListNode* partition(ListNode* head, int x) {
+		ListNode* pLessHead = new ListNode(0);
+		ListNode* pGreaterHead = new ListNode(0);
+		ListNode* pLess = pLessHead;
+		ListNode* pGreater = pGreaterHead;
+		ListNode* pCur = head;
+		while (pCur)
+		{
+			if (pCur->val < x)
+			{
+				pLess->next = pCur;
+				pLess = pLess->next;
+			}
+			else
+			{
+				pGreater->next = pCur;
+				pGreater = pGreater->next;
+			}
+			pCur = pCur->next;
+		}
+		if (!pLessHead->next)
+		{
+			return pGreaterHead->next;
+		}
+		pLess->next = pGreaterHead->next;
+		pGreater->next = NULL;
+		return pLessHead->next;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution083 {
+public:
+	ListNode* deleteDuplicates(ListNode* head) {
+		ListNode* newHead = new ListNode(INT_MAX);
+		newHead->next = head;
+		ListNode* pCur = newHead;
+		int preVal;
+		while (pCur->next)
+		{
+			if (pCur->val == pCur->next->val)
+			{
+				pCur->next = pCur->next->next;
+			}
+			else
+			{
+				pCur = pCur->next;
+			}
+		}
+		return newHead->next;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution082 {
+public:
+	ListNode* deleteDuplicates(ListNode* head) {
+		ListNode* newHead = new ListNode(INT_MAX);
+		newHead->next = head;
+		ListNode* pCur = head;
+		ListNode* pPre = newHead;
+		while (pCur)
+		{
+			while (pCur->next && (pCur->next->val == pPre->val || pCur->next->val == pCur->val))
+			{
+				pCur = pCur->next;
+			}
+			if (pPre->next == pCur)
+			{
+				pPre = pPre->next;
+			}
+			else
+			{
+				pPre->next = pCur->next;
+			}
+			pCur = pCur->next;
+		}
+		return newHead->next;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution081 {
+public:
+	bool search(vector<int>& nums, int target) {
+		int len = nums.size();
+		if (len > 0)
+		{
+			int L = 0;
+			int R = len - 1;
+			while (L <= R)
+			{
+				int M = L + ((R - L) >> 1);
+				if (nums[M] == target)
+				{
+					return true;
+				}
+				if (nums[M] > nums[L])
+				{
+					if (target >= nums[L] && target < nums[M])
+					{
+						R = M - 1;
+					}
+					else
+					{
+						L = M + 1;
+					}
+				}
+				else if (nums[M]<nums[L])
+				{
+					if (target > nums[M] && target <= nums[R])
+					{
+						L = M + 1;
+					}
+					else
+					{
+						R = M - 1;
+					}
+				}
+				else
+				{
+					L = L + 1;
+				}
+			}
+			return false;
+		}
+		else
+		{
+			return false;
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution080 {
+public:
+	int removeDuplicates(vector<int>& nums) {
+		int len = nums.size();
+		if (len == 0) return 0;
+		int occur = 1;
+		int index = 0;
+		for (int i = 1; i < len; i++)
+		{
+			if (nums[index] == nums[i])
+			{
+				if (occur == 2)
+				{
+					continue;
+				}
+				occur++;
+			}
+			else
+			{
+				occur = 1;
+			}
+			nums[++index] = nums[i];
+		}
+		return index + 1;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution079 {
+public:
+	bool exist(vector<vector<char>>& board, string word) {
+		int M = board.size();
+		int N = 0;
+		if (M)
+		{
+			N = board[0].size();
+		}
+		if (M&&N)
+		{
+			vector<vector<bool>> isVisited(M, vector<bool>(N, false));
+			for (size_t i = 0; i < M; i++)
+			{
+				for (size_t j = 0; j < N; j++)
+				{
+					if (DFS(board, word, isVisited, 0, i, j))
+					{
+						return true;
+					}
+				}
+			}
+		}
+		return false;
+	}
+
+	bool DFS(vector<vector<char>>& board, string &word, vector<vector<bool>> &isVisited, int index, int row, int col)
+	{
+		if (word[index] != board[row][col])
+		{
+			return false;
+		}
+		if (index == word.size() - 1)
+		{
+			return true;
+		}
+		else
+		{
+			isVisited[row][col] = true;
+			if (row - 1 >= 0 && !isVisited[row - 1][col] && DFS(board, word, isVisited, index + 1, row - 1, col))
+			{
+				return true;
+			}
+			if (col - 1 >= 0 && !isVisited[row][col - 1] && DFS(board, word, isVisited, index + 1, row, col - 1))
+			{
+				return true;
+			}
+			if (row + 1 < board.size() && !isVisited[row + 1][col] && DFS(board, word, isVisited, index + 1, row + 1, col))
+			{
+				return true;
+			}
+			if (col + 1 < board[0].size() && !isVisited[row][col + 1] && DFS(board, word, isVisited, index + 1, row, col + 1))
+			{
+				return true;
+			}
+			isVisited[row][col] = false;
+			return false;
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution078 {
+public:
+	vector<vector<int>> subsets(vector<int>& nums) {
+		vector<vector<int>> result;
+		vector<int> vec;
+		sort(nums.begin(), nums.end());
+		GetComb(result, vec, nums, -1);
+		return result;
+	}
+
+	void GetComb(vector<vector<int>> &result, vector<int> &vec, vector<int>& nums, int index)
+	{
+		if (vec.size() <= nums.size())
+		{
+			result.push_back(vec);
+			if (vec.size() < nums.size())
+			{
+				for (size_t i = index + 1; i < nums.size(); i++)
+				{
+					vec.push_back(nums[i]);
+					GetComb(result, vec, nums, i);
+				}
+			}
+		}
+		if (vec.size() > 0)
+		{
+			vec.pop_back();
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution077 {
+public:
+	vector<vector<int>> combine(int n, int k) {
+		vector<vector<int>> result;
+		vector<int> vec;
+		vector<bool> isVisited(n, false);
+		if (k <= n)
+		{
+			GetComb(result, vec, isVisited, n, k);
+		}
+		return result;
+	}
+
+	void GetComb(vector<vector<int>> &result, vector<int> &vec, vector<bool> &isVisited, int n, int k)
+	{
+		if (vec.size() == k)
+		{
+			result.push_back(vec);
+		}
+		else
+		{
+			for (size_t i = vec.size() == 0 ? 1 : vec[vec.size() - 1] + 1; i <= n; i++)
+			{
+				if (!isVisited[i - 1])
+				{
+					isVisited[i - 1] = true;
+					vec.push_back(i);
+					GetComb(result, vec, isVisited, n, k);
+					isVisited[i - 1] = false;
+				}
+			}
+		}
+		if (vec.size() > 0)
+		{
+			vec.pop_back();
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution075 {
+public:
+	void sortColors(vector<int>& nums) {
+		int len = nums.size();
+		int L = 0;
+		int R = len - 1;
+		int index = 0;
+		while (index < R + 1)
+		{
+			if (nums[index] == 0)
+			{
+				swap(nums[L], nums[index]);
+				index++;
+				L++;
+			}
+			else if (nums[index] == 2)
+			{
+				swap(nums[R], nums[index]);
+				R--;
+			}
+			else
+			{
+				index++;
+			}
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution074 {
+public:
+	bool searchMatrix(vector<vector<int>>& matrix, int target) {
+		return BinarySearch(matrix, target);
+	}
+
+	bool BinarySearch(vector<vector<int>>& matrix, int target)
+	{
+		int M = matrix.size();
+		int N = 0;
+		if (M)
+		{
+			N = matrix[0].size();
+		}
+		int L = 0;
+		int R = M*N - 1;
+		while (L < R)
+		{
+			int mid = L + ((R - L) >> 1);
+			if (matrix[mid / N][mid%N] < target)
+			{
+				L = mid + 1;
+			}
+			else
+			{
+				R = mid;
+			}
+		}
+		return matrix[L / N][L%N] == target ? true : false;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution073 {
+public:
+	void setZeroes(vector<vector<int>>& matrix) {
+		int M = matrix.size();
+		int N = 0;
+		if (M)
+		{
+			N = matrix[0].size();
+		}
+		if (!M || !N)
+		{
+			return;
+		}
+		vector<bool> row(M, false);
+		vector<bool> col(N, false);
+		for (size_t i = 0; i < M; i++)
+		{
+			for (size_t j = 0; j < N; j++)
+			{
+				if (matrix[i][j] == 0)
+				{
+					row[i] = true;
+					col[j] = true;
+				}
+			}
+		}
+		for (size_t i = 0; i < M; i++)
+		{
+			if (row[i])
+			{
+				matrix[i].assign(N, 0);
+			}
+		}
+		for (size_t i = 0; i < N; i++)
+		{
+			if (col[i])
+			{
+				for (size_t j = 0; j < M; j++)
+				{
+					matrix[j][i] = 0;
+				}
+			}
+		}
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution071 {
 public:
 	string simplifyPath(string path) {
-		// Start typing your C/C++ solution below
-		// DO NOT write int main() function
 		vector<string> pathes;
 		string seg = "";
 		for (int i = 0; i <= path.size(); ++i) {
@@ -17,12 +915,8 @@ public:
 					if (pathes.size() > 0) {
 						pathes.pop_back();
 					}
-					else {
-						//return "/";//error, in the test set, this case just ignore
-					}
 				}
 				else if (seg == ".") {
-					//do nothing
 				}
 				else if (seg.size() > 0) {
 					pathes.push_back(seg);
@@ -45,7 +939,7 @@ public:
 class Solution070 {
 public:
 	int climbStairs(int n) {
-		if (n==1||n==2)
+		if (n == 1 || n == 2)
 		{
 			return n;
 		}
