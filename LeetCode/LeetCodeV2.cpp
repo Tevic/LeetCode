@@ -4,7 +4,207 @@
 
 
 
+/*-------------------------------------------------------------------------------------*/
+class Solution120 {
+public:
+	int minimumTotal(vector<vector<int> > &triangle) {
+		int len = triangle.size();
+		for (int i = len-2; i >= 0; i--)
+		{
+			for (int j = 0; j < triangle[i].size(); j++)
+			{
+				triangle[i][j] = min(triangle[i + 1][j], triangle[i+1][j+1])+triangle[i][j];
+			}
+		}
+		return triangle[0][0];
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution119 {
+public:
+	vector<int> getRow(int rowIndex) {
+		vector<int> result(rowIndex + 1, 1);
+		if (rowIndex > 0)
+		{
+			for (int i = 1; i <= rowIndex; i++)
+			{
+				for (int j = i - 1; j > 0; j--)
+				{
+					result[j] = result[j] + result[j - 1];
+				}
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution118 {
+public:
+	vector<vector<int>> generate(int numRows) {
+		vector<vector<int>> result;
+		if (numRows >= 1)
+		{
+			result.push_back(vector < int > {1});
+			for (int i = 1; i < numRows; i++)
+			{
+				vector<int> vec;
+				vec.push_back(1);
+				for (int j = 0; j < result[i - 1].size() - 1; j++)
+				{
+					vec.push_back(result[i - 1][j] + result[i - 1][j + 1]);
+				}
+				vec.push_back(1);
+				result.push_back(vec);
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution117 {
+public:
+	void connect(TreeLinkNode *root) {
+		if (root == NULL) return;
+		TreeLinkNode* p = root->next;
+		while (p != NULL)
+		{
+			if (p->left != NULL)
+			{
+				p = p->left;
+				break;
+			}
+			if (p->right != NULL)
+			{
+				p = p->right;
+				break;
+			}
+			p = p->next;
+		}
+		if (root->right != NULL)
+		{
+			root->right->next = p;
+		}
+		if (root->left != NULL)
+		{
+			root->left->next = root->right ? root->right : p;
+		}
+		connect(root->right);
+		connect(root->left);
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution116 {
+public:
+	void connect(TreeLinkNode *root) {
+		if (!root)
+		{
+			return;
+		}
+		if (root->left)
+		{
+			root->left->next = root->right;
+		}
+		if (root->next&&root->right)
+		{
+			root->right->next = root->next->left;
+		}
+		connect(root->left);
+		connect(root->right);
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution114 {
+public:
+	TreeNode* lastNode = NULL;
+	void flatten(TreeNode* root) {
+		if (!root)
+		{
+			return;
+		}
+		TreeNode* rightNode = root->right;
+		if (lastNode)
+		{
+			lastNode->left = NULL;
+			lastNode->right = root;
+		}
+		lastNode = root;
+		flatten(root->left);
+		flatten(rightNode);
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution113 {
+public:
+	vector<vector<int>> pathSum(TreeNode* root, int sum) {
+		vector<vector<int>> result;
+		vector<int> nums;
+		GetPath(result, nums, root, sum, 0);
+		return result;
+	}
 
+	void GetPath(vector<vector<int>> &result, vector<int> &nums, TreeNode* root, int target, int sum) {
+		if (!root)
+		{
+			return;
+		}
+		else
+		{
+			nums.push_back(root->val);
+			if (!root->left&&!root->right)
+			{
+				if (target == sum + root->val)
+				{
+					result.push_back(nums);
+				}
+			}
+			if (root->left)
+			{
+				GetPath(result, nums, root->left, target, sum + root->val);
+			}
+			if (root->right)
+			{
+				GetPath(result, nums, root->right, target, sum + root->val);
+			}
+			nums.pop_back();
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution112 {
+public:
+	bool hasPathSum(TreeNode* root, int sum) {
+		return CheckSum(root, sum, 0);
+	}
+
+	bool CheckSum(TreeNode* root, int target, int sum) {
+		if (!root)
+		{
+			return false;
+		}
+		else
+		{
+			if (!root->left&&!root->right)
+			{
+				return target == sum + root->val;
+			}
+			if (root->left)
+			{
+				if (CheckSum(root->left, target, sum + root->val))
+				{
+					return true;
+				}
+			}
+			if (root->right)
+			{
+				if (CheckSum(root->right, target, sum + root->val))
+				{
+					return true;
+				}
+			}
+			return false;
+		}
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution111 {
 public:
@@ -19,13 +219,13 @@ public:
 		}
 		if (!root->left)
 		{
-			return minDepth(root->right)+1;
+			return minDepth(root->right) + 1;
 		}
 		if (!root->right)
 		{
-			return minDepth(root->left)+1;
+			return minDepth(root->left) + 1;
 		}
-		return min(minDepth(root->left),minDepth(root->right))+1;
+		return min(minDepth(root->left), minDepth(root->right)) + 1;
 	}
 };
 /*-------------------------------------------------------------------------------------*/
@@ -36,7 +236,7 @@ public:
 		{
 			return true;
 		}
-		if (abs(Depth(root->left) - Depth(root->right))>1)
+		if (abs(Depth(root->left) - Depth(root->right)) > 1)
 		{
 			return false;
 		}
@@ -49,7 +249,7 @@ public:
 		{
 			return NULL;
 		}
-		return max(Depth(root->left),Depth(root->right)) + 1;
+		return max(Depth(root->left), Depth(root->right)) + 1;
 	}
 };
 /*-------------------------------------------------------------------------------------*/
@@ -63,17 +263,17 @@ public:
 			pCur = pCur->next;
 			len++;
 		}
-		return Build(head,0,len-1);
+		return Build(head, 0, len - 1);
 	}
 
 	TreeNode* Build(ListNode*& head, int L, int R)
 	{
-		if (L>R)
+		if (L > R)
 		{
 			return NULL;
 		}
 		int M = L + ((R - L) >> 1);
-		TreeNode* leftChild = Build(head,L,M-1);
+		TreeNode* leftChild = Build(head, L, M - 1);
 		TreeNode* root = new TreeNode(head->val);
 		root->left = leftChild;
 		head = head->next;
@@ -85,19 +285,19 @@ public:
 class Solution108 {
 public:
 	TreeNode* sortedArrayToBST(vector<int>& nums) {
-		return Build(nums, 0, nums.size()-1);
+		return Build(nums, 0, nums.size() - 1);
 	}
 
-	TreeNode* Build(vector<int>& nums,int L,int R)
+	TreeNode* Build(vector<int>& nums, int L, int R)
 	{
-		if (L>R)
+		if (L > R)
 		{
 			return NULL;
 		}
 		int M = L + ((R - L) >> 1);
 		TreeNode* root = new TreeNode(nums[M]);
-		root->left = Build(nums,L,M-1);
-		root->right = Build(nums,M+1,R);
+		root->left = Build(nums, L, M - 1);
+		root->right = Build(nums, M + 1, R);
 		return root;
 	}
 };
@@ -138,7 +338,7 @@ public:
 				}
 			}
 		}
-		reverse(result.begin(),result.end());
+		reverse(result.begin(), result.end());
 		return result;
 	}
 };
@@ -149,7 +349,7 @@ public:
 		return Build(inorder, postorder, 0, inorder.size() - 1, 0, postorder.size() - 1);
 	}
 
-	TreeNode* Build(vector<int>& inorder, vector<int>& postorder, int inS, int inE, int postS, int postE )
+	TreeNode* Build(vector<int>& inorder, vector<int>& postorder, int inS, int inE, int postS, int postE)
 	{
 		if (inS > inE)
 		{
@@ -165,8 +365,8 @@ public:
 				break;
 			}
 		}
-		root->left = Build(inorder, postorder, inS, inRoot - 1, postS, inRoot-1-inS+postS);
-		root->right = Build(inorder, postorder, inRoot + 1, inE, postE-inE+inRoot, postE - 1);
+		root->left = Build(inorder, postorder, inS, inRoot - 1, postS, inRoot - 1 - inS + postS);
+		root->right = Build(inorder, postorder, inRoot + 1, inE, postE - inE + inRoot, postE - 1);
 		return root;
 	}
 };

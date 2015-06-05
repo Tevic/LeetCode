@@ -8,11 +8,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	TreeNode* T1 = new TreeNode(1);
-	TreeNode* T2 = new TreeNode(1);
-	T1->left = T2;
-	Solution098 S;
-	cout<<S.isValidBST(T1);
+	Solution120 S;
+	cout<<S.minimumTotal(vector < vector<int> > {vector < int > {-1}, vector < int > {-2, -3}});
 }
 
 
