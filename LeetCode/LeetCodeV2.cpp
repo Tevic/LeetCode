@@ -4,6 +4,301 @@
 
 
 
+
+/*-------------------------------------------------------------------------------------*/
+class Solution111 {
+public:
+	int minDepth(TreeNode* root) {
+		if (!root)
+		{
+			return 0;
+		}
+		if (!root->left&&!root->right)
+		{
+			return 1;
+		}
+		if (!root->left)
+		{
+			return minDepth(root->right)+1;
+		}
+		if (!root->right)
+		{
+			return minDepth(root->left)+1;
+		}
+		return min(minDepth(root->left),minDepth(root->right))+1;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution110 {
+public:
+	bool isBalanced(TreeNode* root) {
+		if (!root)
+		{
+			return true;
+		}
+		if (abs(Depth(root->left) - Depth(root->right))>1)
+		{
+			return false;
+		}
+		return isBalanced(root->left) && isBalanced(root->right);
+	}
+
+	int Depth(TreeNode* root)
+	{
+		if (!root)
+		{
+			return NULL;
+		}
+		return max(Depth(root->left),Depth(root->right)) + 1;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution109 {
+public:
+	TreeNode* sortedListToBST(ListNode* head) {
+		int len = 0;
+		ListNode* pCur = head;
+		while (pCur)
+		{
+			pCur = pCur->next;
+			len++;
+		}
+		return Build(head,0,len-1);
+	}
+
+	TreeNode* Build(ListNode*& head, int L, int R)
+	{
+		if (L>R)
+		{
+			return NULL;
+		}
+		int M = L + ((R - L) >> 1);
+		TreeNode* leftChild = Build(head,L,M-1);
+		TreeNode* root = new TreeNode(head->val);
+		root->left = leftChild;
+		head = head->next;
+		root->right = Build(head, M + 1, R);
+		return root;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution108 {
+public:
+	TreeNode* sortedArrayToBST(vector<int>& nums) {
+		return Build(nums, 0, nums.size()-1);
+	}
+
+	TreeNode* Build(vector<int>& nums,int L,int R)
+	{
+		if (L>R)
+		{
+			return NULL;
+		}
+		int M = L + ((R - L) >> 1);
+		TreeNode* root = new TreeNode(nums[M]);
+		root->left = Build(nums,L,M-1);
+		root->right = Build(nums,M+1,R);
+		return root;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution107 {
+public:
+	vector<vector<int>> levelOrderBottom(TreeNode* root) {
+		queue<TreeNode*> qu;
+		vector<vector<int>> result;
+		if (root)
+		{
+			int curCnt = 1;
+			int nextCnt = 0;
+			qu.push(root);
+			vector<int> levelNodes;
+			while (!qu.empty())
+			{
+				TreeNode* pCur = qu.front();
+				qu.pop();
+				curCnt--;
+				levelNodes.push_back(pCur->val);
+				if (pCur->left)
+				{
+					qu.push(pCur->left);
+					nextCnt++;
+				}
+				if (pCur->right)
+				{
+					qu.push(pCur->right);
+					nextCnt++;
+				}
+				if (curCnt == 0)
+				{
+					result.push_back(levelNodes);
+					curCnt = nextCnt;
+					nextCnt = 0;
+					levelNodes.clear();
+				}
+			}
+		}
+		reverse(result.begin(),result.end());
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution106 {
+public:
+	TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
+		return Build(inorder, postorder, 0, inorder.size() - 1, 0, postorder.size() - 1);
+	}
+
+	TreeNode* Build(vector<int>& inorder, vector<int>& postorder, int inS, int inE, int postS, int postE )
+	{
+		if (inS > inE)
+		{
+			return NULL;
+		}
+		TreeNode* root = new TreeNode(postorder[postE]);
+		int inRoot;
+		for (int i = inS; i <= inE; i++)
+		{
+			if (postorder[postE] == inorder[i])
+			{
+				inRoot = i;
+				break;
+			}
+		}
+		root->left = Build(inorder, postorder, inS, inRoot - 1, postS, inRoot-1-inS+postS);
+		root->right = Build(inorder, postorder, inRoot + 1, inE, postE-inE+inRoot, postE - 1);
+		return root;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution105 {
+public:
+	TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+		return Build(preorder, inorder, 0, preorder.size() - 1, 0, inorder.size() - 1);
+	}
+
+	TreeNode* Build(vector<int>& preorder, vector<int>& inorder, int preS, int preE, int inS, int inE)
+	{
+		if (preS > preE)
+		{
+			return NULL;
+		}
+		TreeNode* root = new TreeNode(preorder[preS]);
+		int inRoot;
+		for (int i = inS; i <= inE; i++)
+		{
+			if (preorder[preS] == inorder[i])
+			{
+				inRoot = i;
+				break;
+			}
+		}
+		root->left = Build(preorder, inorder, preS + 1, inRoot - inS + preS, inS, inRoot - 1);
+		root->right = Build(preorder, inorder, preE - inE + inRoot + 1, preE, inRoot + 1, inE);
+		return root;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution104 {
+public:
+	int maxDepth(TreeNode* root) {
+		if (!root)
+		{
+			return 0;
+		}
+		else
+		{
+			return max(maxDepth(root->left), maxDepth(root->right)) + 1;
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution103{
+public:
+	vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+		queue<TreeNode*> qu;
+		vector<vector<int>> result;
+		if (root)
+		{
+			int curCnt = 1;
+			int nextCnt = 0;
+			qu.push(root);
+			vector<int> levelNodes;
+			bool isReversed = false;
+			while (!qu.empty())
+			{
+				TreeNode* pCur = qu.front();
+				qu.pop();
+				curCnt--;
+				levelNodes.push_back(pCur->val);
+				if (pCur->left)
+				{
+					qu.push(pCur->left);
+					nextCnt++;
+				}
+				if (pCur->right)
+				{
+					qu.push(pCur->right);
+					nextCnt++;
+				}
+				if (curCnt == 0)
+				{
+					if (isReversed)
+					{
+						reverse(levelNodes.begin(), levelNodes.end());
+					}
+					result.push_back(levelNodes);
+					curCnt = nextCnt;
+					nextCnt = 0;
+					isReversed = !isReversed;
+					levelNodes.clear();
+				}
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution102 {
+public:
+	vector<vector<int>> levelOrder(TreeNode* root) {
+		queue<TreeNode*> qu;
+		vector<vector<int>> result;
+		if (root)
+		{
+			int curCnt = 1;
+			int nextCnt = 0;
+			qu.push(root);
+			vector<int> levelNodes;
+			while (!qu.empty())
+			{
+				TreeNode* pCur = qu.front();
+				qu.pop();
+				curCnt--;
+				levelNodes.push_back(pCur->val);
+				if (pCur->left)
+				{
+					qu.push(pCur->left);
+					nextCnt++;
+				}
+				if (pCur->right)
+				{
+					qu.push(pCur->right);
+					nextCnt++;
+				}
+				if (curCnt == 0)
+				{
+					result.push_back(levelNodes);
+					curCnt = nextCnt;
+					nextCnt = 0;
+					levelNodes.clear();
+				}
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 class Solution101 {
 public:
 	bool isSymmetric(TreeNode* root) {
@@ -22,7 +317,7 @@ public:
 		}
 		else if (root->left&&root->right)
 		{
-			return CheckSymmetric(root->left,root->right);
+			return CheckSymmetric(root->left, root->right);
 		}
 		else
 		{
@@ -37,7 +332,7 @@ public:
 		}
 		else if (p&&q)
 		{
-			return p->val == q->val&&CheckSymmetric(p->left,q->right) && CheckSymmetric(p->right,q->left);
+			return p->val == q->val&&CheckSymmetric(p->left, q->right) && CheckSymmetric(p->right, q->left);
 		}
 		else
 		{
@@ -49,7 +344,7 @@ public:
 class Solution100 {
 public:
 	bool isSameTree(TreeNode* p, TreeNode* q) {
-		return PreOrderCheck(p,q);
+		return PreOrderCheck(p, q);
 	}
 
 	bool PreOrderCheck(TreeNode* p, TreeNode* q)
@@ -78,8 +373,8 @@ public:
 		int L = 0;
 		int R = result.size() - 1;
 		while (result[L]->val < result[L + 1]->val)L++;
-		while (result[R]->val > result[R-1]->val)R--;
-		swap(result[L]->val,result[R]->val);
+		while (result[R]->val > result[R - 1]->val)R--;
+		swap(result[L]->val, result[R]->val);
 	}
 
 	void InOrder(TreeNode* root, vector<TreeNode*>& result)
@@ -108,12 +403,12 @@ class Solution098 {
 public:
 	bool isValidBST(TreeNode* root) {
 		vector<int> result;
-		InOrder( root,  result);
-		if (result.size()>1)
+		InOrder(root, result);
+		if (result.size() > 1)
 		{
 			for (size_t i = 1; i < result.size(); i++)
 			{
-				if (result[i]<=result[i-1])
+				if (result[i] <= result[i - 1])
 				{
 					return false;
 				}
@@ -126,7 +421,7 @@ public:
 	{
 		stack<TreeNode*> st;
 		TreeNode* pCur = root;
-		while (!st.empty()||pCur)
+		while (!st.empty() || pCur)
 		{
 			if (pCur)
 			{
