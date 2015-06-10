@@ -3,17 +3,335 @@
 
 
 /*-------------------------------------------------------------------------------------*/
+class Solution145 {
+public:
+	vector<int> postorderTraversal(TreeNode* root) {
+		vector<int> result;
+		stack<TreeNode*> st;
+		if (root)
+		{
+			st.push(root);
+			while (!st.empty())
+			{
+				TreeNode* curNode = st.top();
+				st.pop();
+				result.push_back(curNode->val);
+				if (curNode->left)
+				{
+					st.push(curNode->left);
+				}
+				if (curNode->right)
+				{
+					st.push(curNode->right);
+				}
+			}
+			reverse(result.begin(),result.end());
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution144 {
+public:
+	vector<int> preorderTraversal(TreeNode* root) {
+		vector<int> result;
+		stack<TreeNode*> st;
+		if (root)
+		{
+			st.push(root);
+			while (!st.empty())
+			{
+				TreeNode* curNode = st.top();
+				st.pop();
+				result.push_back(curNode->val);
+				if (curNode->right)
+				{
+					st.push(curNode->right);
+				}
+				if (curNode->left)
+				{
+					st.push(curNode->left);
+				}
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution143 {
+public:
+	void reorderList(ListNode *head) {
+		if (head == NULL) return;
+		// find the median node
+		ListNode* fast = head;
+		ListNode* slow = head;
+		while (true)
+		{
+			fast = fast->next;
+			if (fast == NULL)
+				break;
+			fast = fast->next;
+			if (fast == NULL)
+				break;
+			slow = slow->next;
+		}
+
+		if (slow == NULL) return;
+
+		// reverse second half of link list
+		ListNode* cur = slow;
+		ListNode* pre = slow->next;
+		cur->next = NULL;
+		while (pre != NULL)
+		{
+			ListNode* temp = pre->next;
+			pre->next = cur;
+			cur = pre;
+			pre = temp;
+		}
+
+		// merge two lists
+		ListNode* first = head;
+		ListNode* second = cur;
+
+		while (second != NULL&& first != NULL && first != second)
+		{
+			ListNode* temp = second->next;
+			second->next = first->next;
+			first->next = second;
+			first = second->next;
+			second = temp;
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution142 {
+public:
+	ListNode *detectCycle(ListNode *head) {
+		ListNode* fakeNode = new ListNode(1);
+		fakeNode->next = head;
+		ListNode* pSlow = fakeNode;
+		ListNode* pFast = fakeNode;
+		while (pFast->next&&pFast->next->next)
+		{
+			pSlow = pSlow->next;
+			pFast = pFast->next->next;
+			if (pSlow == pFast)
+			{
+				break;
+			}
+		}
+		if (!pFast->next || !pFast->next->next)
+		{
+			return NULL;
+		}
+		pFast = fakeNode;
+		while (pFast!=pSlow)
+		{
+			pFast = pFast->next;
+			pSlow = pSlow->next;
+		}
+		return pFast;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution141 {
+public:
+	bool hasCycle(ListNode *head) {
+		ListNode* fakeNode = new ListNode(1);
+		fakeNode->next = head;
+		ListNode* pSlow = fakeNode;
+		ListNode* pFast = fakeNode;
+		while (pFast->next&&pFast->next->next)
+		{
+			pSlow = pSlow->next;
+			pFast = pFast->next->next;
+			if (pSlow==pFast)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution139 {
+public:
+	bool wordBreak(string s, unordered_set<string>& wordDict) {
+		s = '#' + s;
+		int len = s.size();
+		vector<bool> isOK(len,false);
+		isOK[0] = true;
+		for (size_t i = 1; i < len; i++)
+		{
+			for (size_t j = 0; j < i; j++)
+			{
+				isOK[i] = isOK[j] && (wordDict.find(s.substr(j+1,i-j))!=wordDict.end());
+				if (isOK[i])
+				{
+					break;
+				}
+			}
+		}
+		return isOK[len - 1];
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution137 {
+public:
+	int singleNumber(vector<int>& nums) {
+		unordered_map<int, int> mp;
+		for (size_t i = 0; i < nums.size(); i++)
+		{
+			mp[nums[i]]++;
+		}
+		for (auto m:mp)
+		{
+			if (m.second==1)
+			{
+				return m.first;
+			}
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution136 {
+public:
+	int singleNumber(vector<int>& nums) {
+		int len = nums.size();
+		int res = 0;
+		if (len>0)
+		{
+			res = nums[0];
+			for (size_t i = 1; i < len; i++)
+			{
+				res ^= nums[i];
+			}
+		}
+		return res;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution135 {
+public:
+	int candy(vector<int>& ratings) {
+		vector<int> candy(ratings.size());
+		candy[0] = 1;
+		int i = 1;
+		for (; i < ratings.size(); ++i)
+		{
+			if (ratings[i] > ratings[i - 1]) //µÝÔö  
+			{
+				candy[i] = candy[i - 1] + 1;
+			}
+			if (ratings[i] == ratings[i - 1]) //Æ½ÐÐ  
+			{
+				candy[i] = 1;
+			}
+			if (ratings[i] < ratings[i - 1]) //µÝ¼õ  
+			{
+				candy[i] = candy[i - 1] - 1;
+			}
+			if (i < ratings.size() - 1 && ratings[i] < ratings[i - 1] && ratings[i] <= ratings[i + 1])
+				ReAdjustCandy(ratings, candy, i);
+		}
+		if (ratings[i - 1] < ratings[i - 2])
+			ReAdjustCandy(ratings, candy, ratings.size() - 1);
+		int total = 0;
+		std::for_each(candy.begin(), candy.end(), [&](int n){
+			total += n;
+		});
+		return total;
+	}
+	void ReAdjustCandy(vector<int>& ratings, vector<int>& candy, int startIndex)
+	{
+		int k = startIndex;
+		int diff = 1 - candy[k];
+		while (k > 0 && ratings[k - 1] > ratings[k])
+		{
+			candy[k] = candy[k] + diff;
+			k--;
+		}
+		if (diff > 0) candy[k] += diff;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution134 {
+public:
+	int canCompleteCircuit(vector<int>& gas, vector<int>& cost) {
+		int len = gas.size();
+		if (len <= 0)
+		{
+			return -1;
+		}
+		vector<int> vec(len, 0);
+		for (size_t i = 0; i < len; i++)
+		{
+			vec[i] = gas[i] - cost[i];
+		}
+		int leftGas = 0;
+		int sum = 0;
+		int index = 0;
+		for (size_t i = 0; i < len; i++)
+		{
+			sum += vec[i];
+			leftGas += vec[i];
+			if (sum < 0)
+			{
+				sum = 0;
+				index = i + 1;
+			}
+		}
+		return leftGas < 0 ? -1 : index;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution133 {
+public:
+	UndirectedGraphNode *cloneGraph(UndirectedGraphNode *node) {
+		if (!node)
+		{
+			return NULL;
+		}
+		queue<UndirectedGraphNode*> qu;
+		unordered_map<UndirectedGraphNode*, UndirectedGraphNode*> mp;
+		UndirectedGraphNode* nodeCopy = new UndirectedGraphNode(node->label);
+		qu.push(node);
+		mp[node] = nodeCopy;
+		while (!qu.empty())
+		{
+			UndirectedGraphNode* curNode = qu.front();
+			qu.pop();
+			for (size_t i = 0; i < curNode->neighbors.size(); i++)
+			{
+				if (mp.find(curNode->neighbors[i]) == mp.end())
+				{
+					UndirectedGraphNode* neighbourNode = new UndirectedGraphNode(curNode->neighbors[i]->label);
+					mp[curNode->neighbors[i]] = neighbourNode;
+					mp[curNode]->neighbors.push_back(neighbourNode);
+					qu.push(curNode->neighbors[i]);
+				}
+				else
+				{
+					mp[curNode]->neighbors.push_back(mp[curNode->neighbors[i]]);
+				}
+			}
+		}
+		return nodeCopy;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 class Solution132 {
 public:
 	int minCut(string s) {
 		int len = s.size();
 		vector<int> D(len + 1);
-		vector<vector<bool>> P(len,vector<bool>(len,false));
+		vector<vector<bool>> P(len, vector<bool>(len, false));
 		for (int i = 0; i <= len; i++)
 			D[i] = len - i;
 		for (int i = len - 1; i >= 0; i--){
 			for (int j = i; j < len; j++){
-				if (s[i] == s[j] && (j - i<2 || P[i + 1][j - 1])){
+				if (s[i] == s[j] && (j - i < 2 || P[i + 1][j - 1])){
 					P[i][j] = true;
 					D[i] = min(D[i], D[j + 1] + 1);
 				}
@@ -28,41 +346,41 @@ public:
 	vector<vector<string>> partition(string s) {
 		vector<vector<string>> result;
 		vector<string> paList;
-		if (s.size()>0)
+		if (s.size() > 0)
 		{
 			GetPa(result, paList, s, 0);
 		}
 		return result;
 	}
 
-	void GetPa(vector<vector<string>>& result, vector<string>& paList, string& s,int index)
+	void GetPa(vector<vector<string>>& result, vector<string>& paList, string& s, int index)
 	{
-		if (index==s.size())
+		if (index == s.size())
 		{
 			result.push_back(paList);
 		}
 		else
 		{
-			for (size_t i = 0; i+index < s.size(); i++)
+			for (size_t i = 0; i + index < s.size(); i++)
 			{
-				if (IsPa(s,index,i+index))
+				if (IsPa(s, index, i + index))
 				{
-					paList.push_back(s.substr(index,i+1));
-					GetPa(result, paList, s, i+index+1);
+					paList.push_back(s.substr(index, i + 1));
+					GetPa(result, paList, s, i + index + 1);
 				}
 			}
 		}
-		if (paList.size()>0)
+		if (paList.size() > 0)
 		{
 			paList.pop_back();
 		}
 	}
 
-	bool IsPa(string &s,int L,int R)
+	bool IsPa(string &s, int L, int R)
 	{
-		while (L<R)
+		while (L < R)
 		{
-			if (s[L]!=s[R])
+			if (s[L] != s[R])
 			{
 				return false;
 			}
@@ -77,7 +395,7 @@ class Solution130 {
 public:
 	void solve(vector<vector<char>>& board) {
 		int M = board.size();
-		int N=0;
+		int N = 0;
 		if (M)
 		{
 			N = board[0].size();
@@ -88,20 +406,20 @@ public:
 			vector<int> yList;
 			for (size_t i = 0; i < M; i++)
 			{
-				if (board[i][0]=='O')
+				if (board[i][0] == 'O')
 				{
 					board[i][0] = 'N';
 					xList.push_back(i);
 					yList.push_back(0);
 				}
-				if (board[i][N-1] == 'O')
+				if (board[i][N - 1] == 'O')
 				{
-					board[i][N-1] = 'N';
+					board[i][N - 1] = 'N';
 					xList.push_back(i);
-					yList.push_back(N-1);
+					yList.push_back(N - 1);
 				}
 			}
-			for (size_t i = 1; i < N-1; i++)
+			for (size_t i = 1; i < N - 1; i++)
 			{
 				if (board[0][i] == 'O')
 				{
@@ -109,29 +427,29 @@ public:
 					xList.push_back(0);
 					yList.push_back(i);
 				}
-				if (board[M-1][i] == 'O')
+				if (board[M - 1][i] == 'O')
 				{
-					board[M-1][i] = 'N';
-					xList.push_back(M-1);
+					board[M - 1][i] = 'N';
+					xList.push_back(M - 1);
 					yList.push_back(i);
 				}
 			}
 			int index = 0;
-			while (index<xList.size())
+			while (index < xList.size())
 			{
 				int X = xList[index];
 				int Y = yList[index];
-				if (X - 1 >= 0 && board[X-1][Y] == 'O')
+				if (X - 1 >= 0 && board[X - 1][Y] == 'O')
 				{
 					board[X - 1][Y] = 'N';
 					xList.push_back(X - 1);
 					yList.push_back(Y);
 				}
-				if (Y - 1 >= 0 && board[X][Y-1] == 'O')
+				if (Y - 1 >= 0 && board[X][Y - 1] == 'O')
 				{
-					board[X][Y-1] = 'N';
+					board[X][Y - 1] = 'N';
 					xList.push_back(X);
-					yList.push_back(Y-1);
+					yList.push_back(Y - 1);
 				}
 				if (X + 1 < M && board[X + 1][Y] == 'O')
 				{
@@ -151,7 +469,7 @@ public:
 			{
 				for (size_t j = 0; j < N; j++)
 				{
-					if (board[i][j]=='O')
+					if (board[i][j] == 'O')
 					{
 						board[i][j] = 'X';
 					}
@@ -170,10 +488,10 @@ public:
 	int sumNumbers(TreeNode* root) {
 		vector<int> nums;
 		SumToLeaf(root, nums, 0);
-		return accumulate(nums.begin(),nums.end(),0);
+		return accumulate(nums.begin(), nums.end(), 0);
 	}
 
-	void SumToLeaf(TreeNode* root, vector<int> &nums,int curSum)
+	void SumToLeaf(TreeNode* root, vector<int> &nums, int curSum)
 	{
 		if (!root)
 		{
@@ -245,19 +563,19 @@ class Solution125 {
 public:
 	bool isPalindrome(string s) {
 		int len = s.size();
-		if (len==0)
+		if (len == 0)
 		{
 			return true;
 		}
 		int L = 0;
 		int R = len - 1;
-		while (L<R)
+		while (L < R)
 		{
-			while (L<len&&!isalnum(s[L]))L++;
-			while (R>=0&&!isalnum(s[R]))R--;
-			if (L<R)
+			while (L < len&&!isalnum(s[L]))L++;
+			while (R >= 0 && !isalnum(s[R]))R--;
+			if (L < R)
 			{
-				if (tolower(s[L])==tolower(s[R]))
+				if (tolower(s[L]) == tolower(s[R]))
 				{
 					L++;
 					R--;
@@ -293,9 +611,9 @@ public:
 		}
 		int lMax = GetMax(root->left);
 		int rMax = GetMax(root->right);
-		maxValue = max(maxValue,lMax+rMax+root->val);
+		maxValue = max(maxValue, lMax + rMax + root->val);
 		int retValue = max(lMax, rMax) + root->val;
-		return retValue>0?retValue:0;
+		return retValue > 0 ? retValue : 0;
 	}
 };
 /*-------------------------------------------------------------------------------------*/
@@ -340,14 +658,14 @@ public:
 	int maxProfit(vector<int>& prices) {
 		int len = prices.size();
 		int result = 0;
-		if (len>=2)
+		if (len >= 2)
 		{
 			int index = 1;
-			while (index<len)
+			while (index < len)
 			{
 				int minIndex;
 				int maxIndex;
-				while (index<len&&prices[index] <= prices[index - 1])index++;
+				while (index < len&&prices[index] <= prices[index - 1])index++;
 				minIndex = index - 1;
 				while (index<len&&prices[index] > prices[index - 1])index++;
 				maxIndex = index - 1;
@@ -363,13 +681,13 @@ public:
 	int maxProfit(vector<int>& prices) {
 		int len = prices.size();
 		int result = 0;
-		if (len>=2)
+		if (len >= 2)
 		{
 			int minValue = prices[0];
 			result = prices[1] - minValue;
 			for (size_t i = 2; i < len; i++)
 			{
-				minValue = min(prices[i-1],minValue);
+				minValue = min(prices[i - 1], minValue);
 				result = prices[i] - minValue > result ? prices[i] - minValue : result;
 			}
 			result = result < 0 ? 0 : result;
@@ -382,11 +700,11 @@ class Solution120 {
 public:
 	int minimumTotal(vector<vector<int> > &triangle) {
 		int len = triangle.size();
-		for (int i = len-2; i >= 0; i--)
+		for (int i = len - 2; i >= 0; i--)
 		{
 			for (int j = 0; j < triangle[i].size(); j++)
 			{
-				triangle[i][j] = min(triangle[i + 1][j], triangle[i+1][j+1])+triangle[i][j];
+				triangle[i][j] = min(triangle[i + 1][j], triangle[i + 1][j + 1]) + triangle[i][j];
 			}
 		}
 		return triangle[0][0];
