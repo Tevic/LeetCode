@@ -2,6 +2,210 @@
 #include "DataStructure.h"
 
 
+
+
+
+
+
+
+
+/*-------------------------------------------------------------------------------------*/
+class Solution152 {
+public:
+	int maxProduct(vector<int>& nums) {
+		int len = nums.size();
+		if (len==0)
+		{
+			return 0;
+		}
+		int gMax = nums[0];
+		int lMax = nums[0];
+		int lMin = nums[0];
+		for (size_t i = 1; i < len; i++)
+		{
+			int tmp = lMax;
+			lMax = max(max(nums[i],lMin*nums[i]),lMax*nums[i]);
+			lMin = min(min(nums[i], lMin*nums[i]), tmp*nums[i]);
+			gMax = max(lMax, gMax);
+		}
+		return gMax;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution151 {
+public:
+	void reverseWords(string &s)
+	{
+		string rs;
+		for (int i = s.length() - 1; i >= 0;)
+		{
+			while (i >= 0 && s[i] == ' ') i--;
+			if (i < 0) break;
+			if (!rs.empty()) rs.push_back(' ');
+			string t;
+			while (i >= 0 && s[i] != ' ') t.push_back(s[i--]);
+			reverse(t.begin(), t.end());
+			rs.append(t);
+		}
+		s = rs;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution150 {
+public:
+	int evalRPN(vector<string>& tokens) {
+		stack<int> st;
+		int len = tokens.size();
+		if (len <= 0)
+		{
+			return 0;
+		}
+		for (size_t i = 0; i < len; i++)
+		{
+			string elem = tokens[i];
+			int num1, num2;
+			if (elem == "+")
+			{
+				num2 = st.top();
+				st.pop();
+				num1 = st.top();
+				st.pop();
+				st.push(num1+num2);
+			}
+			else if (elem == "-")
+			{
+				num2 = st.top();
+				st.pop();
+				num1 = st.top();
+				st.pop();
+				st.push(num1 - num2);
+			}
+			else if (elem == "*")
+			{
+				num2 = st.top();
+				st.pop();
+				num1 = st.top();
+				st.pop();
+				st.push(num1 * num2);
+			}
+			else if (elem == "/")
+			{
+				num2 = st.top();
+				st.pop();
+				num1 = st.top();
+				st.pop();
+				st.push(num1 / num2);
+			}
+			else
+			{
+				st.push(stoi(elem));
+			}
+		}
+		return st.top();
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution148 {
+public:
+	ListNode* sortList(ListNode* head) {
+		if (!head || !head->next)
+		{
+			return head;
+		}
+		ListNode* fakeHead = new ListNode(0);
+		fakeHead->next = head;
+		ListNode* pFast = fakeHead;
+		ListNode* pSlow = fakeHead;
+		while (pFast&&pFast->next)
+		{
+			pSlow = pSlow->next;
+			pFast = pFast->next->next;
+		}
+		pFast = pSlow->next;
+		pSlow->next = NULL;
+		pSlow = sortList(head);
+		pFast = sortList(pFast);
+		return MergeList(pSlow, pFast);
+	}
+
+	ListNode* MergeList(ListNode* L1, ListNode* L2)
+	{
+		if (!L1)
+		{
+			return L2;
+		}
+		if (!L2)
+		{
+			return L1;
+		}
+		ListNode* newHead = NULL;
+		if (L1->val < L2->val)
+		{
+			newHead = L1;
+			L1 = L1->next;
+		}
+		else
+		{
+			newHead = L2;
+			L2 = L2->next;
+		}
+		ListNode* L3 = newHead;
+		while (L1&&L2)
+		{
+			if (L1->val < L2->val)
+			{
+				L3->next = L1;
+				L1 = L1->next;
+			}
+			else
+			{
+				L3->next = L2;
+				L2 = L2->next;
+			}
+			L3 = L3->next;
+		}
+		if (L1)
+		{
+			L3->next = L1;
+		}
+		if (L2)
+		{
+			L3->next = L2;
+		}
+		return newHead;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution147 {
+public:
+	ListNode* insertionSortList(ListNode* head) {
+		vector<ListNode*> vec;
+		ListNode* pCur = head;
+		while (pCur)
+		{
+			vec.push_back(pCur);
+			pCur = pCur->next;
+		}
+		sort(vec.begin(), vec.end(), Cmp);
+		if (vec.size() == 0)
+		{
+			return head;
+		}
+		head = vec[0];
+		pCur = head;
+		for (size_t i = 1; i < vec.size(); i++)
+		{
+			pCur->next = vec[i];
+			pCur = vec[i];
+		}
+		pCur->next = NULL;
+		return head;
+	}
+	static bool Cmp(ListNode* ln1, ListNode* ln2)
+	{
+		return ln1->val < ln2->val;
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution145 {
 public:
@@ -25,7 +229,7 @@ public:
 					st.push(curNode->right);
 				}
 			}
-			reverse(result.begin(),result.end());
+			reverse(result.begin(), result.end());
 		}
 		return result;
 	}
@@ -126,7 +330,7 @@ public:
 			return NULL;
 		}
 		pFast = fakeNode;
-		while (pFast!=pSlow)
+		while (pFast != pSlow)
 		{
 			pFast = pFast->next;
 			pSlow = pSlow->next;
@@ -146,7 +350,7 @@ public:
 		{
 			pSlow = pSlow->next;
 			pFast = pFast->next->next;
-			if (pSlow==pFast)
+			if (pSlow == pFast)
 			{
 				return true;
 			}
@@ -160,13 +364,13 @@ public:
 	bool wordBreak(string s, unordered_set<string>& wordDict) {
 		s = '#' + s;
 		int len = s.size();
-		vector<bool> isOK(len,false);
+		vector<bool> isOK(len, false);
 		isOK[0] = true;
 		for (size_t i = 1; i < len; i++)
 		{
 			for (size_t j = 0; j < i; j++)
 			{
-				isOK[i] = isOK[j] && (wordDict.find(s.substr(j+1,i-j))!=wordDict.end());
+				isOK[i] = isOK[j] && (wordDict.find(s.substr(j + 1, i - j)) != wordDict.end());
 				if (isOK[i])
 				{
 					break;
@@ -185,9 +389,9 @@ public:
 		{
 			mp[nums[i]]++;
 		}
-		for (auto m:mp)
+		for (auto m : mp)
 		{
-			if (m.second==1)
+			if (m.second == 1)
 			{
 				return m.first;
 			}
@@ -200,7 +404,7 @@ public:
 	int singleNumber(vector<int>& nums) {
 		int len = nums.size();
 		int res = 0;
-		if (len>0)
+		if (len > 0)
 		{
 			res = nums[0];
 			for (size_t i = 1; i < len; i++)
