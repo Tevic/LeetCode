@@ -8,10 +8,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	ListNode* L = new ListNode(1);
-	L->next = new ListNode(-1);
-	Solution147 S;
-	ListNode* L2=S.sortList(L);
+
+
 }
 
 

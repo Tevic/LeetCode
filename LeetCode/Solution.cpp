@@ -1,6 +1,74 @@
 #include "stdafx.h"
 #include "DataStructure.h"
 
+
+
+
+
+/*-------------------------------------------------------------------------------------*/
+/*Rectangle Area*/
+class Solution158 {
+public:
+	int computeArea(int A, int B, int C, int D, int E, int F, int G, int H) {
+		int X1 = max(A,E);
+		int Y1 = max(B,F);
+		int X2 = min(C,G);
+		int Y2 = min(D,H);
+		int S1 = abs(A - C)*abs(B - D);
+		int S2 = abs(E - G)*abs(F - H);
+		int S3 = abs(X1 - X2)*abs(Y1 - Y2);
+		if (X1<=X2&&Y1<=Y2)
+		{
+			return S1 + S2 - S3;
+		}
+		else
+		{
+			return S1 + S2;
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+/*Count Complete Tree Nodes*/
+class Solution157 {
+public:
+	int countNodes(TreeNode* root) {
+		if (!root)
+		{
+			return 0;
+		}
+		int L = GetLeftDepth(root->left) + 1;
+		int R = GetRightDepth(root->right) + 1;
+		if (L==R)
+		{
+			return (1 << L) - 1;
+		}
+		else
+		{
+			return countNodes(root->left) + countNodes(root->right) + 1;
+		}
+	}
+	int GetLeftDepth(TreeNode* root)
+	{
+		int count = 0;
+		while (root)
+		{
+			count++;
+			root = root->left;
+		}
+		return count;
+	}
+
+	int GetRightDepth(TreeNode* root)
+	{
+		int count = 0;
+		while (root)
+		{
+			count++;
+			root = root->right;
+		}
+		return count;
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 /*Contains Duplicate III */
 class Solution156 {
