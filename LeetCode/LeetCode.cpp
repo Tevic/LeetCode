@@ -8,8 +8,9 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Solution120 S;
-	cout<<S.minimumTotal(vector < vector<int> > {vector < int > {-1}, vector < int > {-2, -3}});
+	//Solution120 S;
+	//cout<<S.minimumTotal(vector < vector<int> > {vector < int > {-1}, vector < int > {-2, -3}});
+
 }
 
 
