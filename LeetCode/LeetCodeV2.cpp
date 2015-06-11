@@ -9,6 +9,465 @@
 
 
 
+
+
+
+
+
+/*-------------------------------------------------------------------------------------*/
+class Solution179 {
+public:
+	string largestNumber(vector<int>& nums) {
+		int len = nums.size();
+		if (len<=0)
+		{
+			return "0";
+		}
+		vector<string> strList;
+		for (size_t i = 0; i < len; i++)
+		{
+			strList.push_back(to_string(nums[i]));
+		}
+		sort(strList.begin(), strList.end(), Cmp);
+		if (strList[0]=="0")
+		{
+			return "0";
+		}
+		string res;
+		for (size_t i = 0; i < len; i++)
+		{
+			res += strList[i];
+		}
+		return res;
+	}
+
+	static bool Cmp(string s1, string s2)
+	{
+		return s1 + s2 > s2 + s1;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class BSTIterator {
+public:
+	stack<TreeNode*> st;
+	BSTIterator(TreeNode *root) {
+		while (root)
+		{
+			st.push(root);
+			root = root->left;
+		}
+	}
+
+	/** @return whether we have a next smallest number */
+	bool hasNext() {
+		return !st.empty();
+	}
+
+	/** @return the next smallest number */
+	int next() {
+		TreeNode* curNode = st.top();
+		st.pop();
+		int res = curNode->val;
+		if (curNode->right)
+		{
+			curNode = curNode->right;
+			while (curNode)
+			{
+				st.push(curNode);
+				curNode = curNode->left;
+			}
+		}
+		return res;
+	}
+};
+
+/*-------------------------------------------------------------------------------------*/
+class Solution172 {
+public:
+	int trailingZeroes(int n) {
+		int count = 0;
+		long x = 5;
+		while (x>0&&n >= x)
+		{
+			count += n / x;
+			x *= 5;
+		}
+		return count;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution171 {
+public:
+	int titleToNumber(string s) {
+		int len = s.size();
+		int res = 0;
+		for (size_t i = 0; i < len; i++)
+		{
+			res = res * 26 + (s[i] - 'A'+1);
+		}
+		return res;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution169 {
+public:
+	int majorityElement(vector<int>& nums) {
+		int len = nums.size();
+		int majElem=0;
+		if (len>0)
+		{
+			int count = 1;
+			majElem = nums[0];
+			for (size_t i = 1; i < len; i++)
+			{
+				if (!count)
+				{
+					count = 1;
+					majElem = nums[i];
+				}
+				else
+				{
+					if (majElem == nums[i])
+					{
+						count++;
+					}
+					else
+					{
+						count--;
+					}
+				}
+			}
+		}
+		return majElem;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution168 {
+public:
+	string convertToTitle(int n) {
+		string res;
+		while (n)
+		{
+			int num = (n-1) % 26;
+			res += ('A' + num);
+			n =(n-1)/ 26;
+		}
+		reverse(res.begin(),res.end());
+		return res;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution166 {
+public:
+	string fractionToDecimal(int numerator, int denominator) {
+		if (numerator == 0)
+		{
+			return "0";
+		}
+		vector<long long> integerList;
+		vector<long long> decimalList;
+		vector<long long> remainList;
+		int loopIndex = -1;
+		bool isNeg = false;
+		if (numerator<0 ^ denominator<0)
+		{
+			isNeg = true;
+		}
+		long long numerator1 = numerator;
+		numerator1 = abs(numerator1);
+		long long denominator1 = denominator;
+		denominator1 = abs(denominator1);
+		if (numerator1>denominator1)
+		{
+			integerList.push_back(numerator1 / denominator1);
+			numerator1 = numerator1 % denominator1;
+		}
+		long remain = numerator1;
+		long decimal = (remain * 10) / denominator1;
+		decimalList.push_back(decimal);
+		remainList.push_back(remain);
+		while (remain != 0)
+		{
+			remain = (remain * 10) % denominator1;
+			decimal = (remain * 10) / denominator1;
+			decimalList.push_back(decimal);
+			auto loopValue = find(remainList.begin(), remainList.end(), remain);
+			if (loopValue != remainList.end())
+			{
+				loopIndex = *loopValue;
+				break;
+			}
+			else
+			{
+				remainList.push_back(remain);
+			}
+		}
+		if (!remain || loopIndex != -1)
+		{
+			decimalList.erase(decimalList.end() - 1);
+		}
+		string res;
+		if (isNeg)
+		{
+			res += "-";
+		}
+		if (integerList.size() == 0)
+		{
+			res += "0";
+		}
+		else
+		{
+			for (size_t i = 0; i < integerList.size(); i++)
+			{
+				res += to_string(integerList[i]);
+			}
+		}
+		if (decimalList.size() != 0)
+		{
+			res += ".";
+			if (loopIndex != -1)
+			{
+				for (size_t i = 0; i < remainList.size(); i++)
+				{
+					if (loopIndex == remainList[i])
+					{
+						loopIndex = i;
+						break;
+					}
+				}
+				for (int i = 0; i < loopIndex; i++)
+				{
+					res += to_string(decimalList[i]);
+				}
+				res += "(";
+				for (int i = loopIndex; i < decimalList.size(); i++)
+				{
+					res += to_string(decimalList[i]);
+				}
+				res += ")";
+			}
+			else
+			{
+				for (size_t i = 0; i < decimalList.size(); i++)
+				{
+					res += to_string(decimalList[i]);
+				}
+			}
+		}
+		return res;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution165 {
+public:
+	int compareVersion(string version1, string version2) {
+		vector<int> vList1;
+		vector<int> vList2;
+		istringstream iss1(version1);
+		istringstream iss2(version2);
+		string strVerNum;
+		while (getline(iss1,strVerNum,'.'))
+		{
+			vList1.push_back(stoi(strVerNum));
+		}
+		while (getline(iss2, strVerNum, '.'))
+		{
+			vList2.push_back(stoi(strVerNum));
+		}
+		int len1 = vList1.size();
+		int len2 = vList2.size();
+		int diff = abs(len1-len2);
+		if (len1>len2)
+		{
+			while (diff--)
+			{
+				vList2.push_back(0);
+			}
+		}
+		else
+		{
+			while (diff--)
+			{
+				vList1.push_back(0);
+			}
+		}
+		int len = max(len1, len2);
+		int i=0;
+		while (i<len)
+		{
+			if (vList1[i]<vList2[i])
+			{
+				return -1;
+			}
+			else if (vList1[i]>vList2[i])
+			{
+				return 1;
+			}
+			i++;
+		}
+		return 0;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution162 {
+public:
+	int findPeakElement(vector<int>& nums) {
+		int L = 0;
+		int R = nums.size() - 1;
+		while (L<R)
+		{
+			int M = L + ((R - L) >> 1);
+			if (nums[M]<nums[M+1])
+			{
+				L = M + 1;
+			}
+			else
+			{
+				R = M;
+			}
+		}
+		return L;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution160 {
+public:
+	ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+		if (!headA||!headB)
+		{
+			return NULL;
+		}
+		ListNode* pA = headA;
+		ListNode* pB = headB;
+		int lenA = 0, lenB = 0;
+		while (pA)
+		{
+			lenA++;
+			pA = pA->next;
+		}
+		while (pB)
+		{
+			lenB++;
+			pB = pB->next;
+		}
+		pA = headA;
+		pB = headB;
+		if (lenA>lenB)
+		{
+			int diff = lenA - lenB;
+			while (diff--)
+			{
+				pA = pA->next;
+			}
+		}
+		else
+		{
+			int diff = lenB - lenA;
+			while (diff--)
+			{
+				pB = pB->next;
+			}
+		}
+		while (pA&&pB)
+		{
+			if (pA==pB)
+			{
+				return pA;
+			}
+			pA = pA->next;
+			pB = pB->next;
+		}
+		return NULL;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class MinStack {
+public:
+	stack<int> minST;
+	stack<int> totalST;
+	void push(int x) {
+		totalST.push(x);
+		if (minST.empty() || x <= minST.top())
+		{
+			minST.push(x);
+		}
+	}
+
+	void pop() {
+		if (!totalST.empty())
+		{
+			if (totalST.top()==minST.top())
+			{
+				minST.pop();
+			}
+			totalST.pop();
+		}
+	}
+
+	int top() {
+		return totalST.top();
+	}
+
+	int getMin() {
+		return minST.top();
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution154 {
+public:
+	int findMin(vector<int>& nums) {
+		int len = nums.size();
+		if (len==0)
+		{
+			return -1;
+		}
+		int L = 0;
+		int R = len - 1;
+		while (L<R)
+		{
+			int M = L + ((R - L) >> 1);
+			if (nums[M]<nums[R])
+			{
+				R = M;
+			}
+			else if (nums[M] > nums[R])
+			{
+				L = M+1;
+			}
+			else
+			{
+				R--;
+			}
+		}
+		return nums[L];
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution153 {
+public:
+	int findMin(vector<int>& nums) {
+		int len = nums.size();
+		if (len==0)
+		{
+			return -1;
+		}
+		int L = 0;
+		int R = len-1;
+		while (L<R)
+		{
+			int M = L + ((R - L) >> 1);
+			if (nums[M]<nums[R])
+			{
+				R = M;
+			}
+			else
+			{
+				L = M + 1;
+			}
+		}
+		return nums[L];
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution152 {
 public:
