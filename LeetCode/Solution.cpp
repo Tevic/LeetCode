@@ -4,7 +4,83 @@
 
 
 
+/*-------------------------------------------------------------------------------------*/
+/*Implement Stack using Queues*/
+class Stack {
+public:
+	queue<int> Q1;
+	queue<int> Q2;
+	// Push element x onto stack.
+	void push(int x) {
+		if (Q1.empty()&&Q2.empty())
+		{
+			Q1.push(x);
+		}
+		else if (!Q1.empty())
+		{
+			Q1.push(x);
+		}
+		else
+		{
+			Q2.push(x);
+		}
+	}
 
+	// Removes the element on top of the stack.
+	void pop() {
+		if (!Q1.empty())
+		{
+			while (Q1.size()!=1)
+			{
+				Q2.push(Q1.front());
+				Q1.pop();
+			}
+			Q1.pop();
+		}
+		else if (!Q2.empty())
+		{
+			while (Q2.size()!=1)
+			{
+				Q1.push(Q2.front());
+				Q2.pop();
+			}
+			Q2.pop();
+		}
+	}
+
+	// Get the top element.
+	int top() {
+		if (!Q1.empty())
+		{
+			while (Q1.size() != 1)
+			{
+				Q2.push(Q1.front());
+				Q1.pop();
+			}
+			int x = Q1.front();
+			Q2.push(x);
+			Q1.pop();
+			return x;
+		}
+		else if (!Q2.empty())
+		{
+			while (Q2.size() != 1)
+			{
+				Q1.push(Q2.front());
+				Q2.pop();
+			}
+			int x = Q2.front();
+			Q1.push(x);
+			Q2.pop();
+			return x;
+		}
+	}
+
+	// Return whether the stack is empty.
+	bool empty() {
+		return Q1.empty() && Q2.empty();
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 /*Rectangle Area*/
 class Solution158 {

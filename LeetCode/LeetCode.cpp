@@ -9,8 +9,8 @@
 int _tmain(int argc, _TCHAR* argv[])
 {
 
-	Solution172 S;
-	S.trailingZeroes(2147483647);
+	Solution190 S;
+	S.reverseBits(43261596);
 }
 
 

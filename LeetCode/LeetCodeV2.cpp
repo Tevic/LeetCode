@@ -14,12 +14,214 @@
 
 
 
+
+
+class Solution200 {
+public:
+	int numIslands(vector<vector<char>>& grid) {
+		int M = grid.size();
+		int N = 0;
+		if (M)
+		{
+			N = grid[0].size();
+		}
+		if (!M || !N)
+		{
+			return 0;
+		}
+		vector<vector<bool>> isVisited(M, vector<bool>(N, false));
+		int count = 0;
+		for (size_t i = 0; i < M; i++)
+		{
+			for (size_t j = 0; j < N; j++)
+			{
+				if (DFS(grid, isVisited, i, j, M, N))
+				{
+					count++;
+				}
+			}
+		}
+		return count;
+	}
+	bool DFS(vector<vector<char>>& grid, vector<vector<bool>> &isVisited, int iIndex, int jIndex, int &M, int &N)
+	{
+		if (grid[iIndex][jIndex] == '0' || isVisited[iIndex][jIndex])
+		{
+			return false;
+		}
+		isVisited[iIndex][jIndex] = true;
+		if (iIndex - 1 >= 0 && !isVisited[iIndex - 1][jIndex])
+		{
+			DFS(grid, isVisited, iIndex - 1, jIndex, M, N);
+		}
+		if (jIndex - 1 >= 0 && !isVisited[iIndex][jIndex - 1])
+		{
+			DFS(grid, isVisited, iIndex, jIndex - 1, M, N);
+		}
+		if (iIndex + 1 < M && !isVisited[iIndex + 1][jIndex])
+		{
+			DFS(grid, isVisited, iIndex + 1, jIndex, M, N);
+		}
+		if (jIndex + 1 < N && !isVisited[iIndex][jIndex + 1])
+		{
+			DFS(grid, isVisited, iIndex, jIndex + 1, M, N);
+		}
+		return true;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution199 {
+public:
+	vector<int> rightSideView(TreeNode* root) {
+		queue<TreeNode*> qu;
+		vector<int> result;
+		if (root)
+		{
+			qu.push(root);
+		}
+		int curCnt = 1;
+		int nextCnt = 0;
+		while (!qu.empty())
+		{
+			TreeNode* curNode = qu.front();
+			qu.pop();
+			curCnt--;
+			if (curNode->left)
+			{
+				nextCnt++;
+				qu.push(curNode->left);
+			}
+			if (curNode->right)
+			{
+				nextCnt++;
+				qu.push(curNode->right);
+			}
+			if (!curCnt)
+			{
+				curCnt = nextCnt;
+				nextCnt = 0;
+				result.push_back(curNode->val);
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution198 {
+public:
+	int rob(vector<int>& nums) {
+		int len = nums.size();
+		if (len == 0)
+		{
+			return 0;
+		}
+		if (len == 1)
+		{
+			return nums[0];
+		}
+		vector<int> dp(len, 0);
+		dp[0] = nums[0];
+		dp[1] = max(nums[0], nums[1]);
+		for (size_t i = 2; i < len; i++)
+		{
+			dp[i] = max(dp[i - 1], dp[i - 2] + nums[i]);
+		}
+		return dp[len - 1];
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution191 {
+public:
+	int hammingWeight(uint32_t n) {
+		int count = 0;
+		while (n)
+		{
+			count++;
+			n &= (n - 1);
+		}
+		return count;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution190 {
+public:
+	uint32_t reverseBits(uint32_t n) {
+		int res = 0;
+		for (size_t i = 0; i < 32; i++)
+		{
+			int bit = (n >> i) & 0x1;
+			res = (res << 1) | bit;
+		}
+		return res;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution189 {
+public:
+	void rotate(vector<int>& nums, int k) {
+		int len = nums.size();
+		k = k%len;
+		if (k > 0)
+		{
+			RotateRange(nums, 0, len - k - 1);
+			RotateRange(nums, len - k, len - 1);
+			RotateRange(nums, 0, len - 1);
+		}
+	}
+
+	void RotateRange(vector<int>& nums, int L, int R)
+	{
+		while (L < R)
+		{
+			swap(nums[L], nums[R]);
+			L++; R--;
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution187 {
+public:
+	vector<string> findRepeatedDnaSequences(string s) {
+		vector<string> res;
+		unordered_map<int, int> mp;
+		int len = s.size();
+		for (size_t i = 0; i + 10 <= len; i++)
+		{
+			string strKey = s.substr(i, 10);
+			int intKey = Str2Int(strKey);
+			mp[intKey]++;
+			if (mp[intKey] == 2)
+			{
+				res.push_back(strKey);
+			}
+		}
+		return res;
+	}
+
+	int Str2Int(string s)
+	{
+		int res = 0;
+		for (size_t i = 0; i < s.size(); i++)
+		{
+			switch (s[i])
+			{
+			case 'A':res = res * 4 + 0; break;
+			case 'C':res = res * 4 + 1; break;
+			case 'T':res = res * 4 + 2; break;
+			case 'G':res = res * 4 + 3; break;
+			default:
+				break;
+			}
+		}
+		return res;
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution179 {
 public:
 	string largestNumber(vector<int>& nums) {
 		int len = nums.size();
-		if (len<=0)
+		if (len <= 0)
 		{
 			return "0";
 		}
@@ -29,7 +231,7 @@ public:
 			strList.push_back(to_string(nums[i]));
 		}
 		sort(strList.begin(), strList.end(), Cmp);
-		if (strList[0]=="0")
+		if (strList[0] == "0")
 		{
 			return "0";
 		}
@@ -87,7 +289,7 @@ public:
 	int trailingZeroes(int n) {
 		int count = 0;
 		long x = 5;
-		while (x>0&&n >= x)
+		while (x > 0 && n >= x)
 		{
 			count += n / x;
 			x *= 5;
@@ -103,7 +305,7 @@ public:
 		int res = 0;
 		for (size_t i = 0; i < len; i++)
 		{
-			res = res * 26 + (s[i] - 'A'+1);
+			res = res * 26 + (s[i] - 'A' + 1);
 		}
 		return res;
 	}
@@ -113,8 +315,8 @@ class Solution169 {
 public:
 	int majorityElement(vector<int>& nums) {
 		int len = nums.size();
-		int majElem=0;
-		if (len>0)
+		int majElem = 0;
+		if (len > 0)
 		{
 			int count = 1;
 			majElem = nums[0];
@@ -148,11 +350,11 @@ public:
 		string res;
 		while (n)
 		{
-			int num = (n-1) % 26;
+			int num = (n - 1) % 26;
 			res += ('A' + num);
-			n =(n-1)/ 26;
+			n = (n - 1) / 26;
 		}
-		reverse(res.begin(),res.end());
+		reverse(res.begin(), res.end());
 		return res;
 	}
 };
@@ -169,7 +371,7 @@ public:
 		vector<long long> remainList;
 		int loopIndex = -1;
 		bool isNeg = false;
-		if (numerator<0 ^ denominator<0)
+		if (numerator < 0 ^ denominator < 0)
 		{
 			isNeg = true;
 		}
@@ -177,7 +379,7 @@ public:
 		numerator1 = abs(numerator1);
 		long long denominator1 = denominator;
 		denominator1 = abs(denominator1);
-		if (numerator1>denominator1)
+		if (numerator1 > denominator1)
 		{
 			integerList.push_back(numerator1 / denominator1);
 			numerator1 = numerator1 % denominator1;
@@ -266,7 +468,7 @@ public:
 		istringstream iss1(version1);
 		istringstream iss2(version2);
 		string strVerNum;
-		while (getline(iss1,strVerNum,'.'))
+		while (getline(iss1, strVerNum, '.'))
 		{
 			vList1.push_back(stoi(strVerNum));
 		}
@@ -276,8 +478,8 @@ public:
 		}
 		int len1 = vList1.size();
 		int len2 = vList2.size();
-		int diff = abs(len1-len2);
-		if (len1>len2)
+		int diff = abs(len1 - len2);
+		if (len1 > len2)
 		{
 			while (diff--)
 			{
@@ -292,14 +494,14 @@ public:
 			}
 		}
 		int len = max(len1, len2);
-		int i=0;
-		while (i<len)
+		int i = 0;
+		while (i < len)
 		{
-			if (vList1[i]<vList2[i])
+			if (vList1[i] < vList2[i])
 			{
 				return -1;
 			}
-			else if (vList1[i]>vList2[i])
+			else if (vList1[i] > vList2[i])
 			{
 				return 1;
 			}
@@ -314,10 +516,10 @@ public:
 	int findPeakElement(vector<int>& nums) {
 		int L = 0;
 		int R = nums.size() - 1;
-		while (L<R)
+		while (L < R)
 		{
 			int M = L + ((R - L) >> 1);
-			if (nums[M]<nums[M+1])
+			if (nums[M] < nums[M + 1])
 			{
 				L = M + 1;
 			}
@@ -333,7 +535,7 @@ public:
 class Solution160 {
 public:
 	ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
-		if (!headA||!headB)
+		if (!headA || !headB)
 		{
 			return NULL;
 		}
@@ -352,7 +554,7 @@ public:
 		}
 		pA = headA;
 		pB = headB;
-		if (lenA>lenB)
+		if (lenA > lenB)
 		{
 			int diff = lenA - lenB;
 			while (diff--)
@@ -370,7 +572,7 @@ public:
 		}
 		while (pA&&pB)
 		{
-			if (pA==pB)
+			if (pA == pB)
 			{
 				return pA;
 			}
@@ -396,7 +598,7 @@ public:
 	void pop() {
 		if (!totalST.empty())
 		{
-			if (totalST.top()==minST.top())
+			if (totalST.top() == minST.top())
 			{
 				minST.pop();
 			}
@@ -417,22 +619,22 @@ class Solution154 {
 public:
 	int findMin(vector<int>& nums) {
 		int len = nums.size();
-		if (len==0)
+		if (len == 0)
 		{
 			return -1;
 		}
 		int L = 0;
 		int R = len - 1;
-		while (L<R)
+		while (L < R)
 		{
 			int M = L + ((R - L) >> 1);
-			if (nums[M]<nums[R])
+			if (nums[M] < nums[R])
 			{
 				R = M;
 			}
 			else if (nums[M] > nums[R])
 			{
-				L = M+1;
+				L = M + 1;
 			}
 			else
 			{
@@ -447,16 +649,16 @@ class Solution153 {
 public:
 	int findMin(vector<int>& nums) {
 		int len = nums.size();
-		if (len==0)
+		if (len == 0)
 		{
 			return -1;
 		}
 		int L = 0;
-		int R = len-1;
-		while (L<R)
+		int R = len - 1;
+		while (L < R)
 		{
 			int M = L + ((R - L) >> 1);
-			if (nums[M]<nums[R])
+			if (nums[M] < nums[R])
 			{
 				R = M;
 			}
@@ -473,7 +675,7 @@ class Solution152 {
 public:
 	int maxProduct(vector<int>& nums) {
 		int len = nums.size();
-		if (len==0)
+		if (len == 0)
 		{
 			return 0;
 		}
@@ -483,7 +685,7 @@ public:
 		for (size_t i = 1; i < len; i++)
 		{
 			int tmp = lMax;
-			lMax = max(max(nums[i],lMin*nums[i]),lMax*nums[i]);
+			lMax = max(max(nums[i], lMin*nums[i]), lMax*nums[i]);
 			lMin = min(min(nums[i], lMin*nums[i]), tmp*nums[i]);
 			gMax = max(lMax, gMax);
 		}
@@ -529,7 +731,7 @@ public:
 				st.pop();
 				num1 = st.top();
 				st.pop();
-				st.push(num1+num2);
+				st.push(num1 + num2);
 			}
 			else if (elem == "-")
 			{
