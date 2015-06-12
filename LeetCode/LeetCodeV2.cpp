@@ -16,6 +16,361 @@
 
 
 
+/*-------------------------------------------------------------------------------------*/
+class Solution210 {
+public:
+	vector<int> findOrder(int numCourses, vector<pair<int, int>>& prerequisites) {
+		vector<int> inDegree(numCourses, 0);
+		vector<int> result;
+		for (size_t i = 0; i < prerequisites.size(); i++)
+		{
+			inDegree[prerequisites[i].first]++;
+		}
+		while (true)
+		{
+			int index = -1;
+			for (size_t i = 0; i < numCourses; i++)
+			{
+				if (inDegree[i] == 0)
+				{
+					index = i;
+					inDegree[i] = -1;
+					result.push_back(i);
+					break;
+				}
+			}
+			if (index == -1)
+			{
+				if (accumulate(inDegree.begin(), inDegree.end(), 0) != -numCourses)
+				{
+					result.clear();
+				}
+				return result;
+			}
+			else
+			{
+				for (size_t i = 0; i < prerequisites.size(); i++)
+				{
+					if (prerequisites[i].second == index)
+					{
+						inDegree[prerequisites[i].first]--;
+					}
+				}
+			}
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution209 {
+public:
+	int minSubArrayLen(int s, vector<int>& nums) {
+		int len = nums.size();
+		if (len == 0)
+		{
+			return 0;
+		}
+		int sum = 0;
+		int minLen = len + 1;
+		int L = 0, R = 0;
+		while (R < len)
+		{
+			while (sum < s&&R<len)
+			{
+				sum += nums[R];
+				R++;
+			}
+			while (sum >= s&&L<len)
+			{
+				minLen = min(minLen, R - L);
+				sum -= nums[L];
+				L++;
+			}
+		}
+		return minLen>len ? 0 : minLen;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class TrieNode {
+public:
+	// Initialize your data structure here.
+	TrieNode() {
+		isWord = false;
+		nextNodes.assign(26, NULL);
+	}
+	bool isWord;
+	vector<TrieNode*> nextNodes;
+};
+
+class Trie {
+public:
+	Trie() {
+		root = new TrieNode();
+	}
+
+	// Inserts a word into the trie.
+	void insert(string s) {
+		int len = s.size();
+		if (len <= 0)
+		{
+			return;
+		}
+		TrieNode* pCur = root;
+		for (size_t i = 0; i < len; i++)
+		{
+			if (!pCur->nextNodes[s[i] - 'a'])
+			{
+				pCur->nextNodes[s[i] - 'a'] = new TrieNode();
+
+			}
+			pCur = pCur->nextNodes[s[i] - 'a'];
+		}
+		pCur->isWord = true;
+	}
+
+	// Returns if the word is in the trie.
+	bool search(string key) {
+		int len = key.size();
+		if (len <= 0)
+		{
+			return true;
+		}
+		TrieNode* pCur = root;
+		for (size_t i = 0; i < len; i++)
+		{
+			pCur = pCur->nextNodes[key[i] - 'a'];
+			if (!pCur)
+			{
+				return false;
+			}
+		}
+		return pCur->isWord;
+	}
+
+	// Returns if there is any word in the trie
+	// that starts with the given prefix.
+	bool startsWith(string prefix) {
+		int len = prefix.size();
+		if (len <= 0)
+		{
+			return true;
+		}
+		TrieNode* pCur = root;
+		for (size_t i = 0; i < len; i++)
+		{
+			pCur = pCur->nextNodes[prefix[i] - 'a'];
+			if (!pCur)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+private:
+	TrieNode* root;
+};
+
+// Your Trie object will be instantiated and called as such:
+// Trie trie;
+// trie.insert("somestring");
+// trie.search("key");
+/*-------------------------------------------------------------------------------------*/
+class Solution207 {
+public:
+	bool canFinish(int numCourses, vector<pair<int, int>>& prerequisites) {
+		vector<int> inDegree(numCourses, 0);
+		for (size_t i = 0; i < prerequisites.size(); i++)
+		{
+			inDegree[prerequisites[i].first]++;
+		}
+		while (true)
+		{
+			int index = -1;
+			for (size_t i = 0; i < numCourses; i++)
+			{
+				if (inDegree[i] == 0)
+				{
+					index = i;
+					inDegree[i] = -1;
+					break;
+				}
+			}
+			if (index == -1)
+			{
+				if (accumulate(inDegree.begin(), inDegree.end(), 0) == -numCourses)
+				{
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			else
+			{
+				for (size_t i = 0; i < prerequisites.size(); i++)
+				{
+					if (prerequisites[i].second == index)
+					{
+						inDegree[prerequisites[i].first]--;
+					}
+				}
+			}
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution206 {
+public:
+	ListNode* reverseList(ListNode* head) {
+		ListNode* fakeHead = new ListNode(-1);
+		ListNode* pCur = head;
+		ListNode* pNext = head;
+		while (pCur)
+		{
+			pNext = pCur->next;
+			pCur->next = fakeHead->next;
+			fakeHead->next = pCur;
+			pCur = pNext;
+		}
+		return fakeHead->next;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution205 {
+public:
+	bool isIsomorphic(string s, string t) {
+		unordered_map<char, char> mpS;
+		unordered_map<char, char> mpT;
+		int len1 = s.size();
+		int len2 = t.size();
+		if (len1 != len2)
+		{
+			return false;
+		}
+		for (size_t i = 0; i < len1; i++)
+		{
+			if (mpS.find(s[i]) == mpS.end() && mpT.find(t[i]) == mpT.end())
+			{
+				mpS[s[i]] = t[i];
+				mpT[t[i]] = s[i];
+			}
+			else if (mpS.find(s[i]) != mpS.end())
+			{
+				if (mpS[s[i]] != t[i])
+				{
+					return false;
+				}
+			}
+			else if (mpT.find(t[i]) != mpT.end())
+			{
+				if (mpT[t[i]] != s[i])
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution204 {
+public:
+	int countPrimes(int n) {
+		if (n > 1)
+		{
+			vector<bool> isPrime(n, true);
+			isPrime[0] = false;
+			isPrime[1] = false;
+			isPrime[2] = true;
+			for (size_t i = 2; i*i < n; i++)
+			{
+				if (!isPrime[i])
+				{
+					continue;
+				}
+				for (size_t j = i*i; j < n; j += i)
+				{
+					isPrime[j] = false;
+				}
+			}
+			return count(isPrime.begin(), isPrime.end(), true);
+		}
+		else
+		{
+			return 0;
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution203 {
+public:
+	ListNode* removeElements(ListNode* head, int val) {
+		ListNode* fakeNode = new ListNode(INT_MAX);
+		fakeNode->next = head;
+		ListNode* pCur = fakeNode;
+		ListNode* pPre = fakeNode;
+		while (pCur)
+		{
+			if (pCur->val == val)
+			{
+				pPre->next = pCur->next;
+				pCur = pCur->next;
+			}
+			else
+			{
+				pPre = pCur;
+				pCur = pCur->next;
+			}
+		}
+		return fakeNode->next;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution202 {
+public:
+	bool isHappy(int n) {
+		if (n <= 0)
+		{
+			return false;
+		}
+		unordered_set<int> totalSum;
+		int square = GetSquareSum(n);
+		while (square != 1)
+		{
+			if (totalSum.find(square) != totalSum.end())
+			{
+				return false;
+			}
+			totalSum.insert(square);
+			square = GetSquareSum(square);
+		}
+		return true;
+	}
+
+	int GetSquareSum(int n)
+	{
+		int res = 0;
+		while (n)
+		{
+			res += (n % 10)*(n % 10);
+			n /= 10;
+		}
+		return res;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution201 {
+public:
+	int rangeBitwiseAnd(int m, int n) {
+		while (n > m)
+		{
+			n = n&(n - 1);
+		}
+		return m&n;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 class Solution200 {
 public:
 	int numIslands(vector<vector<char>>& grid) {

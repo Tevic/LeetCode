@@ -9,8 +9,8 @@
 int _tmain(int argc, _TCHAR* argv[])
 {
 
-	Solution190 S;
-	S.reverseBits(43261596);
+	Solution209 S;
+	S.minSubArrayLen(7, vector < int > {1, 2, 2});
 }
 
 
