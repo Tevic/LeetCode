@@ -9,9 +9,6 @@
 int _tmain(int argc, _TCHAR* argv[])
 {
 	Solution224 S;
-	//vector<string> vec = S.ConvertToRPN("(3-4*5)*(3+5)-5");
-	//copy(vec.begin(),vec.end(),ostream_iterator<int>(cout," "));
-	S.ConvertToRPN("(80 - 41)*(8  /2/1)");
 }
 
 

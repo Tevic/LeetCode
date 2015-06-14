@@ -184,30 +184,30 @@ public:
 		for (size_t i = 0; i < len; i++)
 		{
 			string elem = vecRPN[i];
-			int num1, num2;
+			int num;
 			if (elem == "+")
 			{
-				num2 = st.top();
+				num = st.top();
 				st.pop();
-				st.top() += num2;
+				st.top() += num;
 			}
 			else if (elem == "-")
 			{
-				num2 = st.top();
+				num = st.top();
 				st.pop();
-				st.top() -= num2;
+				st.top() -= num;
 			}
 			else if (elem == "*")
 			{
-				num2 = st.top();
+				num = st.top();
 				st.pop();
-				st.top() *= num2;
+				st.top() *= num;
 			}
 			else if (elem == "/")
 			{
-				num2 = st.top();
+				num = st.top();
 				st.pop();
-				st.top() /= num2;
+				st.top() /= num;
 			}
 			else
 			{
@@ -277,6 +277,50 @@ public:
 			root = root->right;
 		}
 		return count;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution221 {
+public:
+	int maximalSquare(vector<vector<char>>& matrix) {
+		int M = matrix.size();
+		if (!M)
+		{
+			return 0;
+		}
+		int N = matrix[0].size();
+		if (!N)
+		{
+			return 0;
+		}
+		int maxLen = 0;
+		vector<vector<int> > dp(M,vector<int>(N,0));
+		for (size_t i = 0; i < M; i++)
+		{
+			dp[i][0] = matrix[i][0] - '0';
+			maxLen = max(maxLen, dp[i][0]);
+		}
+		for (size_t i = 0; i < N; i++)
+		{
+			dp[0][i] = matrix[0][i] - '0';
+			maxLen = max(maxLen, dp[0][i]);
+		}
+		for (size_t i = 1; i < M; i++)
+		{
+			for (size_t j = 1; j < N; j++)
+			{
+				if (matrix[i][j]=='0')
+				{
+					dp[i][j] = 0;
+				}
+				else
+				{
+					dp[i][j] = min(min(dp[i - 1][j], dp[i][j - 1]), dp[i - 1][j - 1]) + 1;
+					maxLen = max(maxLen,dp[i][j]);
+				}
+			}
+		}
+		return maxLen*maxLen;
 	}
 };
 /*-------------------------------------------------------------------------------------*/
