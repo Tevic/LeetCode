@@ -11,11 +11,505 @@
 
 
 
+/*-------------------------------------------------------------------------------------*/
+class Solution226 {
+public:
+	TreeNode* invertTree(TreeNode* root) {
+		if (root)
+		{
+			if (root->left || root->right)
+			{
+				swap(root->left, root->right);
+				invertTree(root->left);
+				invertTree(root->right);
+			}
+		}
+		return root;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Stack {
+public:
+	queue<int> Q1;
+	queue<int> Q2;
+	// Push element x onto stack.
+	void push(int x) {
+		if (Q1.empty() && Q2.empty())
+		{
+			Q1.push(x);
+		}
+		else if (!Q1.empty())
+		{
+			Q1.push(x);
+		}
+		else
+		{
+			Q2.push(x);
+		}
+	}
+
+	// Removes the element on top of the stack.
+	void pop() {
+		if (!Q1.empty())
+		{
+			while (Q1.size() != 1)
+			{
+				Q2.push(Q1.front());
+				Q1.pop();
+			}
+			Q1.pop();
+		}
+		else if (!Q2.empty())
+		{
+			while (Q2.size() != 1)
+			{
+				Q1.push(Q2.front());
+				Q2.pop();
+			}
+			Q2.pop();
+		}
+	}
+
+	// Get the top element.
+	int top() {
+		if (!Q1.empty())
+		{
+			while (Q1.size() != 1)
+			{
+				Q2.push(Q1.front());
+				Q1.pop();
+			}
+			int x = Q1.front();
+			Q2.push(x);
+			Q1.pop();
+			return x;
+		}
+		else if (!Q2.empty())
+		{
+			while (Q2.size() != 1)
+			{
+				Q1.push(Q2.front());
+				Q2.pop();
+			}
+			int x = Q2.front();
+			Q1.push(x);
+			Q2.pop();
+			return x;
+		}
+	}
+
+	// Return whether the stack is empty.
+	bool empty() {
+		return Q1.empty() && Q2.empty();
+	}
+};
 
 
+/*-------------------------------------------------------------------------------------*/
+class Solution224 {
+public:
+	int calculate(string s) {
+		vector<string> vecRPN;
+		ConvertToRPN(s, vecRPN);
+		return EvalRPN(vecRPN);
+	}
+
+	void ConvertToRPN(string strEval, vector<string>& vecRPN)
+	{
+		unordered_map<char, int> priorityMap{
+				{ '*', 4 },
+				{ '/', 4 },
+				{ '-', 2 },
+				{ '+', 2 },
+				{ '(', 1 },
+				{ '#', 0 },
+		};
+		stack<char> S;
+		S.push('#');
+		for (size_t i = 0; i < strEval.size(); i++)
+		{
+			if (isspace(strEval[i]))
+			{
+				continue;
+			}
+			if (strEval[i] == '(')
+			{
+				S.push(strEval[i]);
+			}
+			else if (strEval[i] == ')')
+			{
+				while (S.top() != '(')
+				{
+					vecRPN.push_back(string(1, S.top()));
+					S.pop();
+				}
+				S.pop();
+			}
+			else if (isdigit(strEval[i]))
+			{
+				string num;
+				while (isdigit(strEval[i]))
+				{
+					num += strEval[i];
+					i++;
+				}
+				vecRPN.push_back(num);
+				i--;
+			}
+			else
+			{
+				while (priorityMap[strEval[i]] <= priorityMap[S.top()])
+				{
+					vecRPN.push_back(string(1, S.top()));
+					S.pop();
+				}
+				S.push(strEval[i]);
+			}
+		}
+		while (S.top() != '#')
+		{
+			vecRPN.push_back(string(1, S.top()));
+			S.pop();
+		}
+	}
+
+	int EvalRPN(vector<string> vecRPN)
+	{
+		stack<int> st;
+		int len = vecRPN.size();
+		if (len <= 0)
+		{
+			return 0;
+		}
+		for (size_t i = 0; i < len; i++)
+		{
+			string elem = vecRPN[i];
+			int num1, num2;
+			if (elem == "+")
+			{
+				num2 = st.top();
+				st.pop();
+				st.top() += num2;
+			}
+			else if (elem == "-")
+			{
+				num2 = st.top();
+				st.pop();
+				st.top() -= num2;
+			}
+			else if (elem == "*")
+			{
+				num2 = st.top();
+				st.pop();
+				st.top() *= num2;
+			}
+			else if (elem == "/")
+			{
+				num2 = st.top();
+				st.pop();
+				st.top() /= num2;
+			}
+			else
+			{
+				st.push(stoi(elem));
+			}
+		}
+		return st.top();
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution223 {
+public:
+	int computeArea(int A, int B, int C, int D, int E, int F, int G, int H) {
+		int X1 = max(A, E);
+		int Y1 = max(B, F);
+		int X2 = min(C, G);
+		int Y2 = min(D, H);
+		int A1 = abs(A - C)*abs(B - D);
+		int A2 = abs(E - G)*abs(F - H);
+		int A3 = abs(X1 - X2)*abs(Y1 - Y2);
+		if (X1 <= X2&&Y1 <= Y2)
+		{
+			return A1 + A2 - A3;
+		}
+		else
+		{
+			return A1 + A2;
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution222 {
+public:
+	int countNodes(TreeNode* root) {
+		if (!root)
+		{
+			return 0;
+		}
+		int lDepth = LeftDepth(root);
+		int rDepth = RightDepth(root);
+		if (lDepth == rDepth)
+		{
+			return (1 << (lDepth)) - 1;
+		}
+		else
+		{
+			return countNodes(root->left) + countNodes(root->right) + 1;
+		}
+	}
+
+	int LeftDepth(TreeNode* root)
+	{
+		int count = 0;
+		while (root)
+		{
+			count++;
+			root = root->left;
+		}
+		return count;
+	}
+	int RightDepth(TreeNode* root)
+	{
+		int count = 0;
+		while (root)
+		{
+			count++;
+			root = root->right;
+		}
+		return count;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution220 {
+public:
+	bool containsNearbyAlmostDuplicate(vector<int>& nums, int k, int t) {
+		map<long long, int> M;
+		int l = 0;
+		for (int r = 0; r<nums.size(); r++) {
+			if (r - l>k && M[nums[l]] == l)
+				M.erase(nums[l++]);
+			auto it = M.lower_bound(nums[r] - t);
+			if (it != M.end() && abs(it->first - nums[r]) <= t)
+				return true;
+			M[nums[r]] = r;
+		}
+		return false;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution219 {
+public:
+	bool containsNearbyDuplicate(vector<int>& nums, int k) {
+		unordered_map<int, int> ump;
+		for (size_t i = 0; i < nums.size(); i++)
+		{
+			if (ump.find(nums[i]) != ump.end())
+			{
+				if (i - ump[nums[i]] <= k)
+				{
+					return true;
+				}
+			}
+			ump[nums[i]] = i;
+		}
+		return false;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution217 {
+public:
+	bool containsDuplicate(vector<int>& nums) {
+		unordered_set<int> mp;
+		for (size_t i = 0; i < nums.size(); i++)
+		{
+			if (mp.find(nums[i]) != mp.end())
+			{
+				return true;
+			}
+			mp.insert(nums[i]);
+		}
+		return false;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution216 {
+public:
+	vector<vector<int>> combinationSum3(int k, int n) {
+		vector<vector<int>> result;
+		vector<int> vec;
+		GetComb(result, vec, k, 0, n, 0);
+		return result;
+	}
+
+	void GetComb(vector<vector<int>>& result, vector<int>& vec, int numRemain, int sum, int target, int index)
+	{
+		if (numRemain == 0)
+		{
+			if (sum == target)
+			{
+				result.push_back(vec);
+			}
+		}
+		else
+		{
+			if (sum < target)
+			{
+				for (size_t i = index + 1; i < 10; i++)
+				{
+					vec.push_back(i);
+					GetComb(result, vec, numRemain - 1, sum + i, target, i);
+				}
+			}
+		}
+		if (vec.size() > 0)
+		{
+			vec.pop_back();
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution215 {
+public:
+	int findKthLargest(vector<int>& nums, int k) {
+		priority_queue<int, vector<int>, greater<int>> pq;
+		for (size_t i = 0; i < k; i++)
+		{
+			pq.push(nums[i]);
+		}
+		for (size_t i = k; i < nums.size(); i++)
+		{
+			if (nums[i]>pq.top())
+			{
+				pq.pop();
+				pq.push(nums[i]);
+			}
+		}
+		return pq.top();
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution213 {
+public:
+	int rob(vector<int>& nums) {
+		int len = nums.size();
+		if (len <= 0)
+		{
+			return 0;
+		}
+		if (len == 1)
+		{
+			return nums[0];
+		}
+		vector<int> dp(len, 0);
+		int maxProfit = INT_MIN;
+		dp[0] = nums[0];
+		dp[1] = nums[0];
+		for (size_t i = 2; i < len - 1; i++)
+		{
+			dp[i] = max(dp[i - 1], dp[i - 2] + nums[i]);
+		}
+		maxProfit = max(maxProfit, dp[len - 2]);
+		dp[0] = 0;
+		dp[1] = nums[1];
+		for (size_t i = 2; i < len; i++)
+		{
+			dp[i] = max(dp[i - 1], dp[i - 2] + nums[i]);
+		}
+		maxProfit = max(maxProfit, dp[len - 1]);
+		return maxProfit;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class WordDictionary {
+public:
+
+	class TrieNode {
+	public:
+		// Initialize your data structure here.
+		TrieNode() {
+			isWord = false;
+			nextNodes.assign(26, NULL);
+		}
+		bool isWord;
+		vector<TrieNode*> nextNodes;
+	};
+
+	class Trie {
+	public:
+		Trie() {
+			root = new TrieNode();
+		}
+
+		// Inserts a word into the trie.
+		void insert(string s) {
+			int len = s.size();
+			if (len <= 0)
+			{
+				return;
+			}
+			TrieNode* pCur = root;
+			for (size_t i = 0; i < len; i++)
+			{
+				if (!pCur->nextNodes[s[i] - 'a'])
+				{
+					pCur->nextNodes[s[i] - 'a'] = new TrieNode();
+
+				}
+				pCur = pCur->nextNodes[s[i] - 'a'];
+			}
+			pCur->isWord = true;
+		}
+
+		// Returns if the word is in the trie.
+		bool search(string key, TrieNode* root) {
+			int len = key.size();
+			if (!root)
+			{
+				return false;
+			}
+			if (len == 0)
+			{
+				return root->isWord;
+			}
+			if (key[0] == '.')
+			{
+				for (size_t i = 0; i < 26; i++)
+				{
+					if (search(key.substr(1), root->nextNodes[i]))
+					{
+						return true;
+					}
+				}
+				return false;
+			}
+			else
+			{
+				return search(key.substr(1), root->nextNodes[key[0] - 'a']);
+			}
+		}
+
+		TrieNode* root;
+	};
 
 
+	// Adds a word into the data structure.
+	void addWord(string word) {
+		mTrieTree.insert(word);
+	}
 
+	// Returns if the word is in the data structure. A word could
+	// contain the dot character '.' to represent any one letter.
+	bool search(string word) {
+		return mTrieTree.search(word, mTrieTree.root);
+	}
+
+	Trie mTrieTree;
+};
+
+// Your WordDictionary object will be instantiated and called as such:
+// WordDictionary wordDictionary;
+// wordDictionary.addWord("word");
+// wordDictionary.search("pattern");
 /*-------------------------------------------------------------------------------------*/
 class Solution210 {
 public:
@@ -74,7 +568,7 @@ public:
 		int L = 0, R = 0;
 		while (R < len)
 		{
-			while (sum < s&&R<len)
+			while (sum < s&&R < len)
 			{
 				sum += nums[R];
 				R++;
