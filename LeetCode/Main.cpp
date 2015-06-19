@@ -7,8 +7,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Solution010 S;
-	S.isMatch("1234","2*4");
+	Solution017 S;
+	S.letterCombinations("23");
 }
 
 
