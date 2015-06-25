@@ -3,6 +3,427 @@
 
 
 
+
+
+
+
+
+
+
+/*-------------------------------------------------------------------------------------*/
+class Solution035 {
+public:
+	int searchInsert(vector<int>& nums, int target) {
+		int len = nums.size();
+		int L = 0;
+		int R = len - 1;
+		if (target>nums[R])
+		{
+			return len;
+		}
+		while (L<R)
+		{
+			int M = L + ((R - L) >> 1);
+			if (nums[M]<target)
+			{
+				L = M + 1;
+			}
+			else
+			{
+				R = M;
+			}
+		}
+		return L;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution034 {
+public:
+	vector<int> searchRange(vector<int>& nums, int target) {
+		vector<int> result;
+		result.push_back(FindFirst(nums, target));
+		result.push_back(FindLast(nums, target));
+		return result;
+	}
+
+	int FindFirst(vector<int>& nums, int target)
+	{
+		int left = 0;
+		int right = nums.size() - 1;
+		int mid;
+		while (left < right)
+		{
+			mid = left + ((right - left) >> 1);
+			if (nums[mid] < target)
+			{
+				left = mid + 1;
+			}
+			else
+			{
+				right = mid;
+			}
+		}
+		return nums[left] == target ? left : -1;
+	}
+
+	int FindLast(vector<int>& nums, int target)
+	{
+		int left = 0;
+		int right = nums.size() - 1;
+		int mid;
+		while (left < right)
+		{
+			mid = left + ((right - left + 1) >> 1);
+			if (nums[mid] > target)
+			{
+				right = mid - 1;
+			}
+			else
+			{
+				left = mid;
+			}
+		}
+		return nums[right] == target ? right : -1;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution033 {
+public:
+	int search(vector<int>& nums, int target) {
+		int len = nums.size();
+		int L = 0;
+		int R = len - 1;
+		while (L<R)
+		{
+			int M = L + ((R - L) >> 1);
+			if (nums[M]==target)
+			{
+				return M;
+			}
+			if (nums[M]>=nums[L])
+			{
+				if (target>=nums[L]&&target<nums[M])
+				{
+					R = M-1;
+				}
+				else
+				{
+					L = M + 1;
+				}
+			}
+			else
+			{
+				if (target>nums[M]&&target<=nums[R])
+				{
+					L = M + 1;
+				}
+				else
+				{
+					R = M - 1;
+				}
+			}
+		}
+		return nums[L] == target ? L : -1;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution032 {
+public:
+	int longestValidParentheses(string s) {
+		int len = s.size();
+		stack<int> st;
+		int index = -1;
+		int maxLen = 0;
+		for (int i = 0; i < len; i++)
+		{
+			if (s[i] == '(')
+			{
+				st.push(i);
+			}
+			else
+			{
+				if (!st.empty())
+				{
+					st.pop();
+					if (st.empty())
+					{
+						maxLen = max(maxLen, i - index);
+					}
+					else
+					{
+						maxLen = max(maxLen, i - st.top());
+					}
+				}
+				else
+				{
+					index = i;
+				}
+			}
+		}
+		return maxLen;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution031 {
+public:
+	void nextPermutation(vector<int>& nums) {
+		int len = nums.size();
+		for (int i = len-2; i >= 0; i--)
+		{
+			if (nums[i]<nums[i+1])
+			{
+				for (int j = len-1; j > i; j--)
+				{
+					if (nums[i]<nums[j])
+					{
+						swap(nums[i], nums[j]);
+						sort(nums.begin()+i+1,nums.end());
+						return;
+					}
+				}
+			}
+		}
+		reverse(nums.begin(), nums.end());
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution029 {
+public:
+	int divide(int dividend, int divisor) {
+		long ldividend = dividend;
+		long ldivisor = divisor;
+		if (ldivisor == 0)
+			return -1;//error
+		int bits = sizeof(int) * 8;
+		int signMask = 0x01 << (bits - 1);
+		int valMask = ~signMask;
+
+		int count = 0;
+		bool minus = false;
+		long dend = ldividend;
+		if (ldividend < 0)
+		{
+			minus = true;
+			dend = ~(dend - 1);//补码还原，先-1，再取反。（-1的补码是，将1的原码0x01取反，在+1，也就是1...1）
+		}
+		long sor = ldivisor;
+		if (ldivisor < 0)
+		{
+			minus = !minus;
+			sor = ~(sor - 1);
+		}
+		int offset = 0;
+		int mask = 0x01 << (bits - 1);
+		while ((0 == (sor&mask)) && (sor << 1) <= dend)
+		{
+			++offset;
+			sor = sor << 1;
+		}
+
+		long result = 0;
+		while (offset >= 0)
+		{
+			if (dend >= sor)
+			{
+				result += (0x01 << offset);
+				dend -= sor;
+			}
+			--offset;
+			sor = sor >> 1;
+		}
+		if (minus)
+			return 0 - result;
+		if (ldividend == INT_MIN&&ldivisor == -1)
+		{
+			result = INT_MAX;
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution028 {
+public:
+	int strStr(string haystack, string needle) {
+		int hLen = haystack.size();
+		int nLen = needle.size();
+		if (nLen>hLen)
+		{
+			return -1;
+		}
+		if (nLen ==0)
+		{
+			return 0;
+		}
+		int i = 0, j = 0;
+		vector<int> nextArray(nLen,-1);
+		GetNextArray(nextArray,needle);
+		while (i<hLen&&j<nLen)
+		{
+			if (j==-1||haystack[i]==needle[j])
+			{
+				i++;
+				j++;
+			}
+			else
+			{
+				j = nextArray[j];
+			}
+		}
+		return j == nLen ? i - j : -1;
+	}
+	void GetNextArray(vector<int>& nextArray, string needle)
+	{
+		int nLen = needle.size();
+		int j = 0, k = -1;
+		while (j < nLen - 1)
+		{
+			if (k == -1 || needle[k] == needle[j])
+			{
+				k++;
+				j++;
+				nextArray[j] = k;
+			}
+			else
+			{
+				k = nextArray[k];
+			}
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution027 {
+public:
+	int removeElement(vector<int>& nums, int val) {
+		int len = nums.size();
+		int dup = 0;
+		for (size_t i = 0; i < len; i++)
+		{
+			if (nums[i]==val)
+			{
+				dup++;
+			}
+			else
+			{
+				nums[i - dup] = nums[i];
+			}
+		}
+		return len - dup;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution026 {
+public:
+	int removeDuplicates(vector<int>& nums) {
+		int len = nums.size();
+		int dup = 0;
+		int lastNum = INT_MAX;
+		for (size_t i = 0; i < len; i++)
+		{
+			if (nums[i]==lastNum)
+			{
+				dup++;
+			}
+			else
+			{
+				nums[i - dup] = nums[i];
+				lastNum = nums[i];
+			}
+		}
+		return len - dup;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution024 {
+public:
+	ListNode* swapPairs(ListNode* head) {
+		if (!head||!head->next)
+		{
+			return head;
+		}
+		ListNode* fakeNode = new ListNode(0);
+		fakeNode->next = head;
+		ListNode* pCur = head;
+		ListNode* pPre = fakeNode;
+		while (pCur&&pCur->next)
+		{
+			ListNode* pNext = pCur->next->next;
+			pPre->next = pCur->next;
+			pCur->next->next = pCur;
+			pCur->next = pNext;
+			pPre = pCur;
+			pCur = pCur->next;
+		}
+		return fakeNode->next;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution022 {
+public:
+	vector<string> generateParenthesis(int n) {
+		vector<string> result;
+		if (n>0)
+		{
+			GenParent(result,0,0,n,"");
+		}
+		return result;
+	}
+
+	void GenParent(vector<string>& result,int leftNum,int rightNum,int totalNum,string pare)
+	{
+		if (pare.size()==2*totalNum)
+		{
+			result.push_back(pare);
+			return;
+		}
+		if (leftNum<totalNum)
+		{
+			GenParent(result, leftNum + 1, rightNum, totalNum, pare + "(");
+		}
+		if (leftNum>rightNum)
+		{
+			GenParent(result, leftNum, rightNum+1, totalNum, pare + ")");
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution021 {
+public:
+	ListNode* mergeTwoLists(ListNode* l1, ListNode* l2) {
+		if (!l1)
+		{
+			return l2;
+		}
+		if (!l2)
+		{
+			return l1;
+		}
+		ListNode* fakeNode = new ListNode(0);
+		ListNode* pCur = fakeNode;
+		while (l1&&l2)
+		{
+			if (l1->val<l2->val)
+			{
+				pCur->next = l1;
+				l1 = l1->next;
+			}
+			else
+			{
+				pCur->next = l2;
+				l2 = l2->next;
+			}
+			pCur = pCur->next;
+		}
+		if (l1)
+		{
+			pCur->next = l1;
+		}
+		if (l2)
+		{
+			pCur->next = l2;
+		}
+		return fakeNode->next;
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution020 {
 public:

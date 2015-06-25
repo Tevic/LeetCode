@@ -7,8 +7,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Solution017 S;
-	S.letterCombinations("23");
+	Solution026 S;
+	S.removeDuplicates(vector < int > {1,1,2,2,3});
 }
 
 
