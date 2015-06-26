@@ -4,12 +4,423 @@
 
 
 
+/*-------------------------------------------------------------------------------------*/
+class Solution050 {
+public:
+	double myPow(double x, int n) {
+		if (n<0)
+		{
+			return 1 / POW(x, -n);
+		}
+		return POW(x, n);
+	}
 
+	double POW(double x, int n)
+	{
+		if (x==0||x==1)
+		{
+			return x;
+		}
+		if (n==0)
+		{
+			return 1;
+		}
+		double p = POW(x, n / 2);
+		if (n%2==0)
+		{
+			return p*p;
+		}
+		else
+		{
+			return p*p*x;
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution049 {
+public:
+	vector<string> anagrams(vector<string>& strs) {
+		vector<string> result;
+		unordered_map<string, vector<int>> mp;
+		for (size_t i = 0; i < strs.size(); i++)
+		{
+			string sortedStr = strs[i];
+			sort(sortedStr.begin(), sortedStr.end());
+			mp[sortedStr].push_back(i);
+		}
+		for (auto m:mp)
+		{
+			if (m.second.size()>1)
+			{
+				for (size_t i = 0; i < m.second.size(); i++)
+				{
+					result.push_back(strs[m.second[i]]);
+				}
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution048 {
+public:
+	void rotate(vector<vector<int>>& matrix) {
+		int N = matrix.size();
+		if (N>1)
+		{
+			for (size_t i = 0; i < N; i++)
+			{
+				for (size_t j = i+1; j < N; j++)
+				{
+					swap(matrix[i][j],matrix[j][i]);
+				}
+			}
+			for (size_t i = 0; i < N; i++)
+			{
+				for (size_t j = 0; j < N/2; j++)
+				{
+					swap(matrix[i][j], matrix[i][N-j-1]);
+				}
+			}
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution047 {
+public:
+	vector<vector<int>> permuteUnique(vector<int>& nums) {
+		vector<vector<int>> result;
+		vector<int> vec;
+		int len = nums.size();
+		vector<bool> isVisited(len, false);
+		if (len>0)
+		{
+			sort(nums.begin(),nums.end());
+			GetPert(result, nums, vec, isVisited);
+		}
+		return result;
+	}
+	void GetPert(vector<vector<int>>& result, vector<int>& nums, vector<int>& vec, vector<bool>& isVisited)
+	{
+		if (vec.size() == nums.size())
+		{
+			result.push_back(vec);
+		}
+		else
+		{
+			for (int i = 0; i < nums.size(); i++)
+			{
+				if (!isVisited[i])
+				{
+					isVisited[i] = true;
+					vec.push_back(nums[i]);
+					GetPert(result, nums, vec, isVisited);
+					isVisited[i] = false;
+					while (i + 1 < nums.size() && nums[i] == nums[i + 1])i++;
+				}
+			}
+		}
+		if (vec.size()>0)
+		{
+			vec.pop_back();
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution046 {
+public:
+	vector<vector<int>> permute(vector<int>& nums) {
+		vector<vector<int>> result;
+		vector<int> vec;
+		int len = nums.size();
+		vector<bool> isVisited(len,false);
+		if (len>0)
+		{
+			GetPert(result, nums,vec, isVisited);
+		}
+		return result;
+	}
+	void GetPert(vector<vector<int>>& result, vector<int>& nums,vector<int>& vec, vector<bool>& isVisited)
+	{
+		if (vec.size()==nums.size())
+		{
+			result.push_back(vec);
+		}
+		else
+		{
+			for (int i = 0; i < nums.size(); i++)
+			{
+				if (!isVisited[i])
+				{
+					isVisited[i] = true;
+					vec.push_back(nums[i]);
+					GetPert(result, nums, vec, isVisited);
+					isVisited[i] = false;
+				}
+			}
+		}
+		if (vec.size()>0)
+		{
+			vec.pop_back();
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution042 {
+public:
+	string multiply(string num1, string num2) {
+		int len1 = num1.size();
+		int len2 = num2.size();
+		if (len1 == 0 || len2 == 0 || num1 == "0" || num2 == "0")
+		{
+			return "0";
+		}
+		if (len1>len2)
+		{
+			return multiply(num2, num1);
+		}
+		vector<int> res(len1 + len2, 0);
+		for (int i = 0; i < len1; i++)
+		{
+			for (int j = 0; j < len2; j++)
+			{
+				res[i + j] += (num1[i] - '0')*(num2[j] - '0');
+			}
+		}
+		string resStr;
+		int carry = 0;
+		for (int i = len1 + len2 - 2; i >= 0; i--)
+		{
+			resStr += ((res[i] + carry) % 10 + '0');
+			carry = (res[i] + carry) / 10;
+		}
+		if (carry != 0)
+		{
+			resStr += ((carry) % 10 + '0');
+		}
+		reverse(resStr.begin(), resStr.end());
+		return resStr;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution041 {
+public:
+	int firstMissingPositive(vector<int>& nums) {
+		int i = 0;
+		int len = nums.size();
+		while (i < len)
+		{
+			if (nums[i] != i + 1 && nums[i] >= 1 && nums[i] <= len &&nums[i] != nums[nums[i] - 1])
+			{
+				swap(nums[i], nums[nums[i] - 1]);
+			}
+			else
+			{
+				i++;
+			}
+		}
+		for (size_t i = 0; i < len; i++)
+		{
+			if (nums[i] != i + 1)
+			{
+				return i + 1;
+			}
+		}
+		return len + 1;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution040 {
+public:
+	vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
+		vector<vector<int>> result;
+		vector<int> vec;
+		if (candidates.size()>0)
+		{
+			sort(candidates.begin(), candidates.end());
+			GetComb(result, candidates, vec, 0, target, -1);
+		}
+		return result;
+	}
 
+	void GetComb(vector<vector<int>>& result, vector<int>& candidates, vector<int>& vec, int sum, int target, int index)
+	{
+		if (sum == target)
+		{
+			result.push_back(vec);
+		}
+		else if (sum < target)
+		{
+			for (int i = index + 1; i < candidates.size(); i++)
+			{
+				vec.push_back(candidates[i]);
+				GetComb(result, candidates, vec, sum + candidates[i], target, i);
+				while (i + 1 < candidates.size() && candidates[i] == candidates[i + 1])i++;
+			}
+		}
+		if (vec.size() > 0)
+		{
+			vec.pop_back();
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution039 {
+public:
+	vector<vector<int>> combinationSum(vector<int>& candidates, int target) {
+		vector<vector<int>> result;
+		vector<int> vec;
+		if (candidates.size() > 0)
+		{
+			sort(candidates.begin(), candidates.end());
+			GetComb(result, candidates, vec, 0, target, 0);
+		}
+		return result;
+	}
 
+	void GetComb(vector<vector<int>>& result, vector<int>& candidates, vector<int>& vec, int sum, int target, int index)
+	{
+		if (sum == target)
+		{
+			result.push_back(vec);
+		}
+		else if (sum < target)
+		{
+			for (int i = index; i < candidates.size(); i++)
+			{
+				vec.push_back(candidates[i]);
+				GetComb(result, candidates, vec, sum + candidates[i], target, i);
+				while (i + 1 < candidates.size() && candidates[i] == candidates[i + 1])i++;
+			}
+		}
+		if (vec.size() > 0)
+		{
+			vec.pop_back();
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution038 {
+public:
+	string countAndSay(int n) {
+		string str = "1";
+		int cnt = 0;
+		char lastCh = '1';
+		for (size_t i = 1; i < n; i++)
+		{
+			string tmp;
+			for (size_t i = 0; i <= str.size(); i++)
+			{
+				if (str[i] != lastCh || i == str.size())
+				{
+					tmp += (to_string(cnt) + lastCh);
+					lastCh = str[i];
+					cnt = 1;
+				}
+				else
+				{
+					cnt++;
+				}
+			}
+			str = tmp;
+			cnt = 0;
+			lastCh = str[0];
+		}
+		return str;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution036 {
+public:
+	bool isValidSudoku(vector<vector<char>>& board) {
+		return CheckRow(board) && CheckCol(board) && CheckBoard(board);
+	}
 
-
-
+	bool CheckRow(vector<vector<char>>& board)
+	{
+		for (size_t i = 0; i < 9; i++)
+		{
+			vector<int> cnt(9, 0);
+			for (size_t j = 0; j < 9; j++)
+			{
+				if (board[i][j] == '.')
+				{
+					continue;
+				}
+				else
+				{
+					cnt[board[i][j] - '0' - 1]++;
+				}
+			}
+			for (size_t j = 0; j < 9; j++)
+			{
+				if (cnt[j]>1)
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	bool CheckCol(vector<vector<char>>& board)
+	{
+		for (size_t i = 0; i < 9; i++)
+		{
+			vector<int> cnt(9, 0);
+			for (size_t j = 0; j < 9; j++)
+			{
+				if (board[j][i] == '.')
+				{
+					continue;
+				}
+				else
+				{
+					cnt[board[j][i] - '0' - 1]++;
+				}
+			}
+			for (size_t j = 0; j < 9; j++)
+			{
+				if (cnt[j]>1)
+				{
+					return false;
+				}
+			}
+		}
+		return true;
+	}
+	bool CheckBoard(vector<vector<char>>& board)
+	{
+		for (size_t i = 0; i < 9; i += 3)
+		{
+			for (size_t j = 0; j < 9; j += 3)
+			{
+				vector<int> cnt(9, 0);
+				for (int m = 0; m < 3; m++)
+				{
+					for (int n = 0; n < 3; n++)
+					{
+						if (board[i + m][j + n] == '.')
+						{
+							continue;
+						}
+						else
+						{
+							cnt[board[i + m][j + n] - '0' - 1]++;
+						}
+					}
+				}
+				for (size_t j = 0; j < 9; j++)
+				{
+					if (cnt[j]>1)
+					{
+						return false;
+					}
+				}
+			}
+		}
+		return true;
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution035 {
 public:
@@ -17,14 +428,14 @@ public:
 		int len = nums.size();
 		int L = 0;
 		int R = len - 1;
-		if (target>nums[R])
+		if (target > nums[R])
 		{
 			return len;
 		}
-		while (L<R)
+		while (L < R)
 		{
 			int M = L + ((R - L) >> 1);
-			if (nums[M]<target)
+			if (nums[M] < target)
 			{
 				L = M + 1;
 			}
@@ -93,18 +504,18 @@ public:
 		int len = nums.size();
 		int L = 0;
 		int R = len - 1;
-		while (L<R)
+		while (L < R)
 		{
 			int M = L + ((R - L) >> 1);
-			if (nums[M]==target)
+			if (nums[M] == target)
 			{
 				return M;
 			}
-			if (nums[M]>=nums[L])
+			if (nums[M] >= nums[L])
 			{
-				if (target>=nums[L]&&target<nums[M])
+				if (target >= nums[L] && target<nums[M])
 				{
-					R = M-1;
+					R = M - 1;
 				}
 				else
 				{
@@ -113,7 +524,7 @@ public:
 			}
 			else
 			{
-				if (target>nums[M]&&target<=nums[R])
+				if (target>nums[M] && target <= nums[R])
 				{
 					L = M + 1;
 				}
@@ -168,16 +579,16 @@ class Solution031 {
 public:
 	void nextPermutation(vector<int>& nums) {
 		int len = nums.size();
-		for (int i = len-2; i >= 0; i--)
+		for (int i = len - 2; i >= 0; i--)
 		{
-			if (nums[i]<nums[i+1])
+			if (nums[i] < nums[i + 1])
 			{
-				for (int j = len-1; j > i; j--)
+				for (int j = len - 1; j > i; j--)
 				{
-					if (nums[i]<nums[j])
+					if (nums[i] < nums[j])
 					{
 						swap(nums[i], nums[j]);
-						sort(nums.begin()+i+1,nums.end());
+						sort(nums.begin() + i + 1, nums.end());
 						return;
 					}
 				}
@@ -246,20 +657,20 @@ public:
 	int strStr(string haystack, string needle) {
 		int hLen = haystack.size();
 		int nLen = needle.size();
-		if (nLen>hLen)
+		if (nLen > hLen)
 		{
 			return -1;
 		}
-		if (nLen ==0)
+		if (nLen == 0)
 		{
 			return 0;
 		}
 		int i = 0, j = 0;
-		vector<int> nextArray(nLen,-1);
-		GetNextArray(nextArray,needle);
-		while (i<hLen&&j<nLen)
+		vector<int> nextArray(nLen, -1);
+		GetNextArray(nextArray, needle);
+		while (i < hLen&&j < nLen)
 		{
-			if (j==-1||haystack[i]==needle[j])
+			if (j == -1 || haystack[i] == needle[j])
 			{
 				i++;
 				j++;
@@ -298,7 +709,7 @@ public:
 		int dup = 0;
 		for (size_t i = 0; i < len; i++)
 		{
-			if (nums[i]==val)
+			if (nums[i] == val)
 			{
 				dup++;
 			}
@@ -319,7 +730,7 @@ public:
 		int lastNum = INT_MAX;
 		for (size_t i = 0; i < len; i++)
 		{
-			if (nums[i]==lastNum)
+			if (nums[i] == lastNum)
 			{
 				dup++;
 			}
@@ -336,7 +747,7 @@ public:
 class Solution024 {
 public:
 	ListNode* swapPairs(ListNode* head) {
-		if (!head||!head->next)
+		if (!head || !head->next)
 		{
 			return head;
 		}
@@ -361,27 +772,27 @@ class Solution022 {
 public:
 	vector<string> generateParenthesis(int n) {
 		vector<string> result;
-		if (n>0)
+		if (n > 0)
 		{
-			GenParent(result,0,0,n,"");
+			GenParent(result, 0, 0, n, "");
 		}
 		return result;
 	}
 
-	void GenParent(vector<string>& result,int leftNum,int rightNum,int totalNum,string pare)
+	void GenParent(vector<string>& result, int leftNum, int rightNum, int totalNum, string pare)
 	{
-		if (pare.size()==2*totalNum)
+		if (pare.size() == 2 * totalNum)
 		{
 			result.push_back(pare);
 			return;
 		}
-		if (leftNum<totalNum)
+		if (leftNum < totalNum)
 		{
 			GenParent(result, leftNum + 1, rightNum, totalNum, pare + "(");
 		}
-		if (leftNum>rightNum)
+		if (leftNum > rightNum)
 		{
-			GenParent(result, leftNum, rightNum+1, totalNum, pare + ")");
+			GenParent(result, leftNum, rightNum + 1, totalNum, pare + ")");
 		}
 	}
 };
@@ -401,7 +812,7 @@ public:
 		ListNode* pCur = fakeNode;
 		while (l1&&l2)
 		{
-			if (l1->val<l2->val)
+			if (l1->val < l2->val)
 			{
 				pCur->next = l1;
 				l1 = l1->next;
@@ -428,11 +839,11 @@ public:
 class Solution020 {
 public:
 	bool isValid(string s) {
-		unordered_map<char, char> chMap{ {'(',')'}, {'[',']'}, {'{','}'} };
+		unordered_map<char, char> chMap{ { '(', ')' }, { '[', ']' }, { '{', '}' } };
 		stack<char> st;
 		for (size_t i = 0; i < s.size(); i++)
 		{
-			if (chMap.find(s[i])==chMap.end())
+			if (chMap.find(s[i]) == chMap.end())
 			{
 				if (!st.empty() && s[i] == chMap[st.top()])
 				{
@@ -477,19 +888,19 @@ public:
 			sort(nums.begin(), nums.end());
 			for (int i = 0; i < len - 3; i++)
 			{
-				if ( i > 0 && nums[i] == nums[i - 1])continue;
+				if (i > 0 && nums[i] == nums[i - 1])continue;
 				for (int j = i + 1; j < len - 2; j++)
 				{
 					if (j>i + 1 && nums[j] == nums[j - 1])continue;
 					for (int k = j + 1; k < len - 1; k++)
 					{
 						if (k>j + 1 && nums[k] == nums[k - 1])continue;
-						int searchTarget = target-nums[i] - nums[j] - nums[k];
-						if (searchTarget<nums[k + 1])continue;
+						int searchTarget = target - nums[i] - nums[j] - nums[k];
+						if (searchTarget < nums[k + 1])continue;
 						int m = BinarySearch(nums, k + 1, len - 1, searchTarget);
-						if (m!=-1)
+						if (m != -1)
 						{
-							result.push_back(vector < int > {nums[i],nums[j],nums[k],nums[m]});
+							result.push_back(vector < int > {nums[i], nums[j], nums[k], nums[m]});
 						}
 					}
 				}

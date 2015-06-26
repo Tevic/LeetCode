@@ -7,8 +7,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Solution026 S;
-	S.removeDuplicates(vector < int > {1,1,2,2,3});
+	Solution047 S;
+	S.permuteUnique(vector < int > {1,2,2});
 }
 
 
