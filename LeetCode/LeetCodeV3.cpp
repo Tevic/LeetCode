@@ -4,6 +4,220 @@
 
 
 
+
+
+/*-------------------------------------------------------------------------------------*/
+class Solution060 {
+public:
+	string getPermutation(int n, int k) {
+		int i, j, data[10], sign[10];
+		data[1] = 1;
+		for (i = 2; i <= n; ++i)data[i] = data[i - 1] * i;
+		memset(sign, 0, sizeof(sign));
+		string s = "";
+		i -= 2;
+		--k;
+		while (i >= 0)
+		{
+			int temp = k / data[i];
+			for (j = 1; j < 10; ++j)
+			{
+				if (sign[j] == 0)temp--;
+				if (temp < 0)break;
+			}
+			sign[j] = 1;
+			s += j + '0';
+			k %= data[i];
+			i--;
+		}
+		return s;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution059 {
+public:
+	vector<vector<int>> generateMatrix(int n) {
+		vector<vector<int>> result(n,vector<int>(n,0));
+		if (n>0)
+		{
+			int row = 0, col = -1;
+			int M = n, N = n;
+			int index = 1;
+			while (true)
+			{
+				for (size_t i = 0; i < N; i++)
+				{
+					result[row][++col] = index++;
+				}
+				if (--M == 0)break;
+				for (size_t i = 0; i < M; i++)
+				{
+					result[++row][col] = index++;
+				}
+				if (--N == 0)break;
+				for (size_t i = 0; i < N; i++)
+				{
+					result[row][--col] = index++;
+				}
+				if (--M == 0)break;
+				for (size_t i = 0; i < M; i++)
+				{
+					result[--row][col] = index++;
+				}
+				if (--N == 0)break;
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution058 {
+public:
+	int lengthOfLastWord(string s) {
+		int len = s.size();
+		int index = len - 1;
+		while (index >= 0)
+		{
+			if (isspace(s[index]))
+			{
+				index--;
+			}
+			else
+			{
+				break;
+			}
+		}
+		int count = 0;
+		while (index >= 0)
+		{
+
+			if (isalnum(s[index]))
+			{
+				index--;
+				count++;
+			}
+			else
+			{
+				break;
+			}
+		}
+		return count;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution056 {
+public:
+	vector<Interval> merge(vector<Interval>& intervals) {
+		vector<Interval> result;
+		int len = intervals.size();
+		if (len>0)
+		{
+			sort(intervals.begin(), intervals.end(), CompareInterval);
+			int index = 0;
+			while (index<len)
+			{
+				if (index + 1<len)
+				{
+					while (index + 1<len && intervals[index].end >= intervals[index + 1].start)
+					{
+						intervals[index + 1].start = intervals[index].start;
+						intervals[index + 1].end = max(intervals[index + 1].end, intervals[index].end);
+						index++;
+					}
+				}
+				result.push_back(intervals[index]);
+				index++;
+			}
+		}
+		return result;
+	}
+
+
+	static bool CompareInterval(Interval I1, Interval I2)
+	{
+		return I1.start < I2.start;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution055 {
+public:
+	bool canJump(vector<int>& nums) {
+		int len = nums.size();
+		int last = 0;
+		last = max(0, nums[0]);
+		for (size_t i = 1; i < len; i++)
+		{
+			if (last <= 0)
+			{
+				return false;
+			}
+			last = max(last-1,nums[i]);
+		}
+		return true;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution054 {
+public:
+	vector<int> spiralOrder(vector<vector<int>>& matrix) {
+		vector<int> result;
+		int M = matrix.size();
+		int N;
+		if (M)
+		{
+			N = matrix[0].size();
+		}
+		else
+		{
+			return result;
+		}
+		int row = 0;
+		int col = -1;
+		while (true)
+		{
+			for (size_t i = 0; i < N; i++)
+			{
+				result.push_back(matrix[row][++col]);
+			}
+			if (--M == 0)break;
+			for (size_t i = 0; i < M; i++)
+			{
+				result.push_back(matrix[++row][col]);
+			}
+			if (--N == 0)break;
+			for (size_t i = 0; i < N; i++)
+			{
+				result.push_back(matrix[row][--col]);
+			}
+			if (--M == 0)break;
+			for (size_t i = 0; i < M; i++)
+			{
+				result.push_back(matrix[--row][col]);
+			}
+			if (--N == 0)break;
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution053 {
+public:
+	int maxSubArray(vector<int>& nums) {
+		int len = nums.size();
+		if (len==0)
+		{
+			return 0;
+		}
+		int maxSum = nums[0];
+		int curSum = nums[0];
+		for (size_t i = 1; i < len; i++)
+		{
+			curSum = max(nums[i],curSum+nums[i]);
+			maxSum = max(maxSum,curSum);
+		}
+		return maxSum;
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution050 {
 public:
