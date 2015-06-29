@@ -5,7 +5,290 @@
 
 
 
-
+/*-------------------------------------------------------------------------------------*/
+class Solution070 {
+public:
+	int climbStairs(int n) {
+		if (n == 1 || n == 2)
+		{
+			return n;
+		}
+		int f1 = 1;
+		int f2 = 2;
+		int f3;
+		for (size_t i = 3; i <= n; i++)
+		{
+			f3 = f1 + f2;
+			f1 = f2;
+			f2 = f3;
+		}
+		return f3;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution069 {
+public:
+	int mySqrt(int x) {
+		int L = 0;
+		int R = (x >> 1) + 1;
+		while (L<=R)
+		{
+			long long M = L + ((R - L) >> 1);
+			long long val = M*M;
+			if (val<x)
+			{
+				L = M + 1;
+			}
+			else if (val>x)
+			{
+				R = M - 1;
+			}
+			else
+			{
+				return M;
+			}
+		}
+		return R;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution067 {
+public:
+	string addBinary(string a, string b) {
+		int lenA = a.size();
+		int lenB = b.size();
+		if (lenA<lenB)
+		{
+			return addBinary(b,a);
+		}
+		reverse(a.begin(), a.end());
+		reverse(b.begin(), b.end());
+		string res;
+		int carry = 0;
+		for (size_t i = 0; i < lenB; i++)
+		{
+			int tmp = (a[i] - '0') + (b[i] - '0') + carry;
+			res += ((tmp % 2) + '0');
+			carry = tmp / 2;
+		}
+		for (size_t i = lenB; i < lenA; i++)
+		{
+			int tmp = (a[i] - '0') + carry;
+			res += ((tmp % 2) + '0');
+			carry = tmp / 2;
+		}
+		if (carry)
+		{
+			res += (carry + '0');
+		}
+		reverse(res.begin(),res.end());
+		return res;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution066 {
+public:
+	vector<int> plusOne(vector<int>& digits) {
+		vector<int> result;
+		int len = digits.size();
+		int carry = 1;
+		for (int i = len-1; i >=0 ; i--)
+		{
+			int tmp = digits[i] + carry;
+			result.push_back(tmp%10);
+			carry = tmp / 10;
+		}
+		if (carry)
+		{
+			result.push_back(carry);
+		}
+		reverse(result.begin(),result.end());
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution065 {
+public:
+	bool isNumber(string s) {
+		int index = 0;
+		int len = s.size();
+		while (index < len&&isspace(s[index]))
+		{
+			index++;
+		}
+		if (s[index] == '+' || s[index]=='-')
+		{
+			index++;
+		}
+		bool isNum = false;
+		while (index<len&&isdigit(s[index]))
+		{
+			index++;
+			isNum = true;
+		}
+		if (index<len&&s[index]=='.')
+		{
+			index++;
+			while (index<len&&isdigit(s[index]))
+			{
+				index++;
+				isNum = true;
+			}
+		}
+		if (isNum&&index<len&& tolower(s[index]) == 'e')
+		{
+			index++;
+			if (index < len && (s[index] == '+' || s[index] == '-'))
+			{
+				index++;
+			}
+			isNum = false;
+			while (index < len&&isdigit(s[index]))
+			{
+				index++;
+				isNum = true;
+			}
+		}
+		while (index < len&&isspace(s[index]))
+		{
+			index++;
+		}
+		return isNum&&index == len;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution064 {
+public:
+	int minPathSum(vector<vector<int>>& grid) {
+		int M = grid.size();
+		int N = 0;
+		if (M)
+		{
+			N = grid[0].size();
+		}
+		if (!M || !N)
+		{
+			return 0;
+		}
+		vector<vector<int>> sum(M, vector<int>(N, 0));
+		sum[0][0] = grid[0][0];
+		for (size_t i = 1; i < M; i++)
+		{
+			sum[i][0] = sum[i - 1][0]+grid[i][0];
+		}
+		for (size_t i = 1; i < N; i++)
+		{
+			sum[0][i] = sum[0][i-1] + grid[0][i];
+		}
+		for (size_t i = 1; i < M; i++)
+		{
+			for (size_t j = 1; j < N; j++)
+			{
+				sum[i][j] = min(sum[i - 1][j] , sum[i][j - 1])+grid[i][j];
+			}
+		}
+		return sum[M - 1][N - 1];
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution063 {
+public:
+	int uniquePathsWithObstacles(vector<vector<int>>& obstacleGrid) {
+		int M = obstacleGrid.size();
+		int N = 0;
+		if (M)
+		{
+			N = obstacleGrid[0].size();
+		}
+		if (!M || !N)
+		{
+			return 0;
+		}
+		vector<vector<int>> paths(M, vector<int>(N, 0));
+		paths[0][0]=obstacleGrid[0][0] == 1 ? 0 : 1;
+		for (size_t i = 1; i < M; i++)
+		{
+			paths[i][0] = obstacleGrid[i][0] == 1 ? 0 : paths[i - 1][0];
+		}
+		for (size_t i = 1; i < N; i++)
+		{
+			paths[0][i] = obstacleGrid[0][i] == 1 ? 0 : paths[0][i - 1];
+		}
+		for (size_t i = 1; i < M; i++)
+		{
+			for (size_t j = 1; j < N; j++)
+			{
+				paths[i][j] = obstacleGrid[i][j] == 1 ? 0 : paths[i - 1][j] + paths[i][j - 1];
+			}
+		}
+		return paths[M-1][N-1];
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution062 {
+public:
+	int uniquePaths(int m, int n) {
+		if (m>0 && n>0)
+		{
+			vector<vector<int>> paths(m, vector<int>(n, 0));
+			for (size_t i = 0; i < m; i++)
+			{
+				paths[i][0] = 1;
+			}
+			for (size_t i = 0; i < n; i++)
+			{
+				paths[0][i] = 1;
+			}
+			for (size_t i = 1; i < m; i++)
+			{
+				for (size_t j = 1; j < n; j++)
+				{
+					paths[i][j] = paths[i - 1][j] + paths[i][j - 1];
+				}
+			}
+			return paths[m - 1][n - 1];
+		}
+		else
+		{
+			return 0;
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution061 {
+public:
+	ListNode* rotateRight(ListNode* head, int k) {
+		if (!head)
+		{
+			return head;
+		}
+		ListNode* fakeNode = new ListNode(0);
+		fakeNode->next = head;
+		ListNode* pA = fakeNode;
+		ListNode* pB = fakeNode;
+		int len = 0;
+		ListNode* pCur = head;
+		while (pCur)
+		{
+			len++;
+			pCur = pCur->next;
+		}
+		k %= len;
+		while (k--)
+		{
+			pA = pA->next;
+		}
+		while (pA->next)
+		{
+			pA = pA->next;
+			pB = pB->next;
+		}
+		pA->next = fakeNode->next;
+		fakeNode->next = pB->next;
+		pB->next = NULL;
+		return fakeNode->next;
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution060 {
 public:
@@ -37,8 +320,8 @@ public:
 class Solution059 {
 public:
 	vector<vector<int>> generateMatrix(int n) {
-		vector<vector<int>> result(n,vector<int>(n,0));
-		if (n>0)
+		vector<vector<int>> result(n, vector<int>(n, 0));
+		if (n > 0)
 		{
 			int row = 0, col = -1;
 			int M = n, N = n;
@@ -110,15 +393,15 @@ public:
 	vector<Interval> merge(vector<Interval>& intervals) {
 		vector<Interval> result;
 		int len = intervals.size();
-		if (len>0)
+		if (len > 0)
 		{
 			sort(intervals.begin(), intervals.end(), CompareInterval);
 			int index = 0;
-			while (index<len)
+			while (index < len)
 			{
-				if (index + 1<len)
+				if (index + 1 < len)
 				{
-					while (index + 1<len && intervals[index].end >= intervals[index + 1].start)
+					while (index + 1 < len && intervals[index].end >= intervals[index + 1].start)
 					{
 						intervals[index + 1].start = intervals[index].start;
 						intervals[index + 1].end = max(intervals[index + 1].end, intervals[index].end);
@@ -151,7 +434,7 @@ public:
 			{
 				return false;
 			}
-			last = max(last-1,nums[i]);
+			last = max(last - 1, nums[i]);
 		}
 		return true;
 	}
@@ -204,7 +487,7 @@ class Solution053 {
 public:
 	int maxSubArray(vector<int>& nums) {
 		int len = nums.size();
-		if (len==0)
+		if (len == 0)
 		{
 			return 0;
 		}
@@ -212,8 +495,8 @@ public:
 		int curSum = nums[0];
 		for (size_t i = 1; i < len; i++)
 		{
-			curSum = max(nums[i],curSum+nums[i]);
-			maxSum = max(maxSum,curSum);
+			curSum = max(nums[i], curSum + nums[i]);
+			maxSum = max(maxSum, curSum);
 		}
 		return maxSum;
 	}
@@ -222,7 +505,7 @@ public:
 class Solution050 {
 public:
 	double myPow(double x, int n) {
-		if (n<0)
+		if (n < 0)
 		{
 			return 1 / POW(x, -n);
 		}
@@ -231,16 +514,16 @@ public:
 
 	double POW(double x, int n)
 	{
-		if (x==0||x==1)
+		if (x == 0 || x == 1)
 		{
 			return x;
 		}
-		if (n==0)
+		if (n == 0)
 		{
 			return 1;
 		}
 		double p = POW(x, n / 2);
-		if (n%2==0)
+		if (n % 2 == 0)
 		{
 			return p*p;
 		}
@@ -262,9 +545,9 @@ public:
 			sort(sortedStr.begin(), sortedStr.end());
 			mp[sortedStr].push_back(i);
 		}
-		for (auto m:mp)
+		for (auto m : mp)
 		{
-			if (m.second.size()>1)
+			if (m.second.size() > 1)
 			{
 				for (size_t i = 0; i < m.second.size(); i++)
 				{
@@ -280,20 +563,20 @@ class Solution048 {
 public:
 	void rotate(vector<vector<int>>& matrix) {
 		int N = matrix.size();
-		if (N>1)
+		if (N > 1)
 		{
 			for (size_t i = 0; i < N; i++)
 			{
-				for (size_t j = i+1; j < N; j++)
+				for (size_t j = i + 1; j < N; j++)
 				{
-					swap(matrix[i][j],matrix[j][i]);
+					swap(matrix[i][j], matrix[j][i]);
 				}
 			}
 			for (size_t i = 0; i < N; i++)
 			{
-				for (size_t j = 0; j < N/2; j++)
+				for (size_t j = 0; j < N / 2; j++)
 				{
-					swap(matrix[i][j], matrix[i][N-j-1]);
+					swap(matrix[i][j], matrix[i][N - j - 1]);
 				}
 			}
 		}
@@ -307,9 +590,9 @@ public:
 		vector<int> vec;
 		int len = nums.size();
 		vector<bool> isVisited(len, false);
-		if (len>0)
+		if (len > 0)
 		{
-			sort(nums.begin(),nums.end());
+			sort(nums.begin(), nums.end());
 			GetPert(result, nums, vec, isVisited);
 		}
 		return result;
@@ -334,7 +617,7 @@ public:
 				}
 			}
 		}
-		if (vec.size()>0)
+		if (vec.size() > 0)
 		{
 			vec.pop_back();
 		}
@@ -347,16 +630,16 @@ public:
 		vector<vector<int>> result;
 		vector<int> vec;
 		int len = nums.size();
-		vector<bool> isVisited(len,false);
-		if (len>0)
+		vector<bool> isVisited(len, false);
+		if (len > 0)
 		{
-			GetPert(result, nums,vec, isVisited);
+			GetPert(result, nums, vec, isVisited);
 		}
 		return result;
 	}
-	void GetPert(vector<vector<int>>& result, vector<int>& nums,vector<int>& vec, vector<bool>& isVisited)
+	void GetPert(vector<vector<int>>& result, vector<int>& nums, vector<int>& vec, vector<bool>& isVisited)
 	{
-		if (vec.size()==nums.size())
+		if (vec.size() == nums.size())
 		{
 			result.push_back(vec);
 		}
@@ -389,7 +672,7 @@ public:
 		{
 			return "0";
 		}
-		if (len1>len2)
+		if (len1 > len2)
 		{
 			return multiply(num2, num1);
 		}
