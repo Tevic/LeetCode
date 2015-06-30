@@ -5,6 +5,323 @@
 
 
 
+
+
+
+
+
+
+
+/*-------------------------------------------------------------------------------------*/
+class Solution080 {
+public:
+	int removeDuplicates(vector<int>& nums) {
+		int len = nums.size();
+		int dpCnt = 0;
+		int dup = 0;
+		int lastDigit = INT_MAX;
+		for (size_t i = 0; i < len; i++)
+		{
+			if (nums[i]==lastDigit)
+			{
+				dpCnt++;
+				if (dpCnt>2)
+				{
+					dup++;
+				}
+			}
+			else
+			{
+				dpCnt = 1;
+				lastDigit = nums[i];
+			}
+			nums[i - dup] = nums[i];
+		}
+		return len - dup;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution079 {
+public:
+	bool exist(vector<vector<char> > &board, string word) {
+		int M = board.size();
+		if (M == 0)
+		{
+			return false;
+		}
+		int N = board[0].size();
+		if (N == 0)
+		{
+			return false;
+		}
+		if (word.size() == 0)
+		{
+			return false;
+		}
+		vector<vector<bool> > isVisited(M, vector<bool>(N, false));
+		for (size_t i = 0; i < M; i++)
+		{
+			for (size_t j = 0; j < N; j++)
+			{
+				if (DFS(board, word, isVisited, i, j, 0))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+
+	bool DFS(vector<vector<char> > &board, string &word, vector<vector<bool> > &isVisited, int i, int j, int index)
+	{
+		int M = board.size();
+		int N = board[0].size();
+		isVisited[i][j] = true;
+		bool equal = word[index] == board[i][j];
+		if (!equal)
+		{
+			isVisited[i][j] = false;
+			return false;
+		}
+		if (index == word.size() - 1 && equal)
+		{
+			return true;
+		}
+		if (i - 1 >= 0 && !isVisited[i - 1][j])
+		{
+			if (DFS(board, word, isVisited, i - 1, j, index + 1))
+			{
+				return true;
+			}
+		}
+		if (j - 1 >= 0 && !isVisited[i][j - 1])
+		{
+			if (DFS(board, word, isVisited, i, j - 1, index + 1))
+			{
+				return true;
+			}
+		}
+		if (i + 1 < M && !isVisited[i + 1][j])
+		{
+			if (DFS(board, word, isVisited, i + 1, j, index + 1))
+			{
+				return true;
+			}
+		}
+		if (j + 1 < N && !isVisited[i][j + 1])
+		{
+			if (DFS(board, word, isVisited, i, j + 1, index + 1))
+			{
+				return true;
+			}
+		}
+		isVisited[i][j] = false;
+		return false;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution078 {
+public:
+	vector<vector<int>> subsets(vector<int>& nums) {
+		int len = nums.size();
+		vector<vector<int>> result;
+		vector<int> vec;
+		if (len>0)
+		{
+			sort(nums.begin(),nums.end());
+			GetSubsets(result, vec, nums, -1);
+		}
+		return result;
+	}
+
+	void GetSubsets(vector<vector<int>>& result, vector<int>& vec, vector<int>& nums,int index)
+	{
+		if (vec.size()<=nums.size())
+		{
+			result.push_back(vec);
+		}
+		if (vec.size()<nums.size())
+		{
+			for (int i = index + 1; i < nums.size(); i++)
+			{
+				vec.push_back(nums[i]);
+				GetSubsets(result, vec, nums, i);
+			}
+		}
+		if (vec.size()>0)
+		{
+			vec.pop_back();
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution077 {
+public:
+	vector<vector<int>> combine(int n, int k) {
+		vector<vector<int>> result;
+		if (n>0&&k>0&&n>=k)
+		{
+			vector<int> vec;
+			GetComb(result, vec, n, k,0);
+		}
+		return result;
+	}
+
+	void GetComb(vector<vector<int>>& result, vector<int> &vec,int n,int k,int index)
+	{
+		if (vec.size()==k)
+		{
+			result.push_back(vec);
+		}
+		else
+		{
+			for (int i = index+1; i <= n; i++)
+			{
+				vec.push_back(i);
+				GetComb(result, vec, n, k,i);
+			}
+		}
+		if (vec.size()>0)
+		{
+			vec.pop_back();
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution075 {
+public:
+	void sortColors(vector<int>& nums) {
+		int len = nums.size();
+		int L = 0;
+		int R = len - 1;
+		int index = 0;
+		while (index<R+1)
+		{
+			if (nums[index]==0)
+			{
+				swap(nums[L],nums[index]);
+				index++;
+				L++;
+			}
+			else if (nums[index]==2)
+			{
+				swap(nums[R],nums[index]);
+				R--;
+			}
+			else
+			{
+				index++;
+			}
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution073 {
+public:
+	bool searchMatrix(vector<vector<int>>& matrix, int target) {
+		int M = matrix.size();
+		int N = 0;
+		if (M)
+		{
+			N = matrix[0].size();
+		}
+		if (!M || !N)
+		{
+			return false;
+		}
+		int L = 0;
+		int R = M*N - 1;
+		while (L<=R)
+		{
+			int mid = L + ((R - L) >> 1);
+			if (target>matrix[mid/N][mid%N])
+			{
+				L = mid + 1;
+			}
+			else if (target<matrix[mid / N][mid%N])
+			{
+				R = mid - 1;
+			}
+			else
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution072 {
+public:
+	void setZeroes(vector<vector<int>>& matrix) {
+		int M = matrix.size();
+		int N = 0;
+		if (M)
+		{
+			N = matrix[0].size();
+		}
+		if (!M || !N)
+		{
+			return;
+		}
+		set<int> row;
+		set<int> col;
+		for (size_t i = 0; i < M; i++)
+		{
+			for (size_t j = 0; j < N; j++)
+			{
+				if (matrix[i][j]==0)
+				{
+					row.insert(i);
+					col.insert(j);
+				}
+			}
+		}
+		for (auto index:row)
+		{
+			matrix[index].assign(N,0);
+		}
+		for (auto index : col)
+		{
+			for (size_t i = 0; i < M; i++)
+			{
+				matrix[i][index] = 0;
+			}
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution071 {
+public:
+	string simplifyPath(string path) {
+		vector<string> pathes;
+		string seg = "";
+		for (int i = 0; i <= path.size(); ++i) {
+			if (i == path.size() || path[i] == '/') {
+				if (seg == "..") {
+					if (pathes.size() > 0) {
+						pathes.pop_back();
+					}
+				}
+				else if (seg == ".") {
+				}
+				else if (seg.size() > 0) {
+					pathes.push_back(seg);
+				}
+				seg = "";
+			}
+			else {
+				seg += path[i];
+			}
+		}
+		string ret = "/";
+		for (int i = 0; i < pathes.size(); ++i) {
+			if (i>0) ret += "/";
+			ret += pathes[i];
+		}
+		return ret;
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution070 {
 public:
