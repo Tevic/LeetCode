@@ -22,13 +22,38 @@ public:
 		vector<string> result;
 		if (len>=4)
 		{
-
+			GetIP(result, s, "", 0, 0);
+		}
+		for (size_t i = 0; i < result.size(); i++)
+		{
+			result[i].pop_back();
 		}
 		return result;
 	}
 
-	void GetIP()
+	void GetIP(vector<string>& result, string& s,string curIP,int cnt,int index)
 	{
+		if (cnt==4)
+		{
+			if (index==s.size())
+			{
+				result.push_back(curIP);
+			}
+		}
+		else
+		{
+			for (int i = 1; i <= 3; i++)
+			{
+				if (index+i<=s.size())
+				{
+					string ip = s.substr(index, i);
+					if (IsValidNum(ip))
+					{
+						GetIP(result, s, curIP + ip + ".", cnt + 1, index+i);
+					}
+				}
+			}
+		}
 	}
 
 	bool IsValidNum(string s)
