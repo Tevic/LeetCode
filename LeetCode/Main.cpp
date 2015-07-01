@@ -7,8 +7,11 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Solution080 S;
-	S.removeDuplicates(vector < int > {1, 1, 1, 1, 3, 3});
+	Solution083 S;
+	ListNode* L1 = new ListNode(1);
+	ListNode* L2 = new ListNode(2);
+	L1->next = L2;
+	S.deleteDuplicates(L1);
 }
 
 

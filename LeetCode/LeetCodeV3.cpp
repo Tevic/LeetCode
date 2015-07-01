@@ -12,6 +12,367 @@
 
 
 
+
+
+/*-------------------------------------------------------------------------------------*/
+class Solution093 {
+public:
+	vector<string> restoreIpAddresses(string s) {
+		int len = s.size();
+		vector<string> result;
+		if (len>=4)
+		{
+
+		}
+		return result;
+	}
+
+	void GetIP()
+	{
+	}
+
+	bool IsValidNum(string s)
+	{
+		if (s[0]=='0')
+		{
+			return s.size() == 1;
+		}
+		else
+		{
+			int num = stoi(s);
+			if (num>=1&&num<=255)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution092 {
+public:
+	ListNode* reverseBetween(ListNode* head, int m, int n) {
+		ListNode* newHead = new ListNode(0);
+		newHead->next = head;
+		int dist = n - m + 1;
+		ListNode* pCur = newHead;
+		ListNode* pPre = newHead;
+		while (m--)
+		{
+			pPre = pCur;
+			pCur = pCur->next;
+		}
+		ListNode* pCurPre = pPre->next;
+		pPre->next = NULL;
+		ListNode* pNext = NULL;
+
+		while (dist--)
+		{
+			pNext = pCur->next;
+			pCur->next = pPre->next;
+			pPre->next = pCur;
+			pCur = pNext;
+		}
+		if (pCurPre)
+		{
+			pCurPre->next = pNext;
+		}
+		return newHead->next;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution091 {
+public:
+	int numDecodings(string s) {
+		int len = s.size();
+		if (len==0)
+		{
+			return 0;
+		}
+		vector<int> dp(len+1,0);
+		dp[0] = 1;
+		if (CheckOne(s, 0))
+		{
+			dp[1] = 1;
+		}
+		if (len==1)
+		{
+			return dp[1];
+		}
+		for (size_t i = 2; i <= len; i++)
+		{
+			if (CheckOne(s,i-1))
+			{
+				if (CheckTwo(s,i-1))
+				{
+					dp[i] = dp[i - 1] + dp[i - 2];
+				}
+				else
+				{
+					dp[i] = dp[i - 1];
+				}
+			}
+			else
+			{
+				if (CheckTwo(s, i-1))
+				{
+					dp[i] = dp[i - 2];
+				}
+				else
+				{
+					dp[i] = 0;
+				}
+			}
+		}
+		return dp[len];
+	}
+
+	bool CheckOne(string& s,int index)
+	{
+		if (s[index]>='1'&&s[index]<='9')
+		{
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+
+	bool CheckTwo(string& s, int index)
+	{
+		if (s[index-1] =='1')
+		{
+			return s[index] >= '0'&&s[index] <= '9';
+		}
+		if (s[index - 1] == '2')
+		{
+			return s[index] >= '0'&&s[index] <= '6';
+		}
+		return false;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution090 {
+public:
+	vector<vector<int>> subsetsWithDup(vector<int>& nums) {
+		int len = nums.size();
+		vector<vector<int>> result;
+		vector<int> vec;
+		if (len>0)
+		{
+			sort(nums.begin(), nums.end());
+			GetSubsets(result, vec, nums, -1);
+		}
+		return result;
+	}
+
+	void GetSubsets(vector<vector<int>>& result, vector<int>& vec, vector<int>& nums, int index)
+	{
+		if (vec.size() <= nums.size())
+		{
+			result.push_back(vec);
+		}
+		if (vec.size()<nums.size())
+		{
+			for (int i = index + 1; i < nums.size(); i++)
+			{
+				vec.push_back(nums[i]);
+				GetSubsets(result, vec, nums, i);
+				while (i + 1 < nums.size() && nums[i] == nums[i + 1])i++;
+			}
+		}
+		if (vec.size()>0)
+		{
+			vec.pop_back();
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution089 {
+public:
+	vector<int> grayCode(int n) {
+		vector<int> result;
+		result.push_back(0);
+		for (int i = 0; i< n; i++)
+		{
+			int highestBit = 1 << i;
+			int len = result.size();
+			for (int j = len - 1; j >= 0; j--)
+			{
+				result.push_back(highestBit + result[j]);
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution088 {
+public:
+	void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+		int k = m + n - 1;
+		int i = m-1, j = n-1;
+		while (i>=0&&j>=0)
+		{
+			if (nums1[i]>nums2[j])
+			{
+				nums1[k--] = nums1[i--];
+			}
+			else
+			{
+				nums1[k--] = nums2[j--];
+			}
+		}
+		while (i>=0)
+		{
+			nums1[k--] = nums1[i--];
+		}
+		while (j >= 0)
+		{
+			nums1[k--] = nums2[j--];
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution086 {
+public:
+	ListNode* partition(ListNode* head, int x) {
+		ListNode* pLessHead = new ListNode(0);
+		ListNode* pGreaterHead = new ListNode(0);
+		ListNode* pLess = pLessHead;
+		ListNode* pGreater = pGreaterHead;
+		ListNode* pCur = head;
+		while (pCur)
+		{
+			if (pCur->val<x)
+			{
+				pLess->next = pCur;
+				pLess = pLess->next;
+			}
+			else
+			{
+				pGreater->next = pCur;
+				pGreater = pGreater->next;
+			}
+			pCur = pCur->next;
+		}
+		if (!pLessHead->next)
+		{
+			return pGreaterHead->next;
+		}
+		pLess->next = pGreaterHead->next;
+		pGreater->next = NULL;
+		return pLessHead->next;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution083 {
+public:
+	ListNode* deleteDuplicates(ListNode* head) {
+		ListNode* fakeNode = new ListNode(0);
+		int lastDigit = INT_MAX;
+		int dup = 0;
+		ListNode* pCur = head;
+		ListNode* pPre = fakeNode;
+		ListNode* pNewCur = fakeNode;
+		while (pCur)
+		{
+			if (pCur->val==lastDigit)
+			{
+				dup++;
+			}
+			else
+			{
+				if (dup==1)
+				{
+					pPre->next = NULL;
+					pNewCur->next = pPre;
+					pNewCur = pNewCur->next;
+				}
+				dup = 1;
+				lastDigit = pCur->val;
+			}
+			pPre = pCur;
+			pCur = pCur->next;
+		}
+		if (dup==1)
+		{
+			pPre->next = NULL;
+			pNewCur->next = pPre;
+		}
+		return fakeNode->next;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution082 {
+public:
+	ListNode* deleteDuplicates(ListNode* head) {
+		ListNode* fakeNode = new ListNode(0);
+		fakeNode->next = head;
+		int lastDigit = INT_MAX;
+		ListNode* pCur = fakeNode;
+		while (pCur->next)
+		{
+			if (lastDigit==pCur->next->val)
+			{
+				pCur->next = pCur->next->next;
+			}
+			else
+			{
+				pCur = pCur->next;
+				lastDigit = pCur->val;
+			}
+		}
+		return fakeNode->next;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution081 {
+public:
+	bool search(vector<int>& nums, int target) {
+		int len = nums.size();
+		int L = 0;
+		int R = len - 1;
+		while (L<=R)
+		{
+			int M = L + ((R - L) >> 1);
+			if (nums[M]==target)
+			{
+				return true;
+			}
+			if (nums[M]>nums[L])
+			{
+				if (target>=nums[L]&&target<nums[M])
+				{
+					R = M - 1;
+				}
+				else
+				{
+					L = M + 1;
+				}
+			}
+			else if (nums[M]<nums[L])
+			{
+				if (target>nums[M]&&target<=nums[R])
+				{
+					L = M + 1;
+				}
+				else
+				{
+					R = M - 1;
+				}
+			}
+			else
+			{
+				L++;
+			}
+		}
+		return false;
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution080 {
 public:
