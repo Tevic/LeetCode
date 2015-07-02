@@ -15,6 +15,80 @@
 
 
 /*-------------------------------------------------------------------------------------*/
+class Solution096 {
+public:
+	int numTrees(int n) {
+		vector<int> count(n + 1, 0);
+		count[0] = 1;
+		count[1] = 1;
+		for (int i = 2; i <= n; i++)
+		{
+			for (int j = 0; j < i; j++)
+			{
+				count[i] += count[j] * count[i - j - 1];
+			}
+		}
+		return count[n];
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution095 {
+public:
+	vector<TreeNode *> generateTrees(int n) {
+		if (n == 0) return *generate(1, 0);
+		return *generate(1, n);
+	}
+	vector<TreeNode *>* generate(int start, int end)
+	{
+		vector<TreeNode *> *subTree = new vector<TreeNode*>();
+		if (start>end)
+		{
+			subTree->push_back(NULL);
+			return subTree;
+		}
+		for (int i = start; i <= end; i++)
+		{
+			vector<TreeNode*> *leftSubs = generate(start, i - 1);
+			vector<TreeNode*> *rightSubs = generate(i + 1, end);
+			for (int j = 0; j< leftSubs->size(); j++)
+			{
+				for (int k = 0; k<rightSubs->size(); k++)
+				{
+					TreeNode *node = new TreeNode(i);
+					node->left = (*leftSubs)[j];
+					node->right = (*rightSubs)[k];
+					subTree->push_back(node);
+				}
+			}
+		}
+		return subTree;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution094 {
+public:
+	vector<int> inorderTraversal(TreeNode* root) {
+		stack<TreeNode*> st;
+		vector<int> result;
+		TreeNode* pCur = root;
+		while (!st.empty()||pCur)
+		{
+			if (pCur)
+			{
+				st.push(pCur);
+				pCur = pCur->left;
+			}
+			else
+			{
+				result.push_back(st.top()->val);
+				pCur = st.top()->right;
+				st.pop();
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 class Solution093 {
 public:
 	vector<string> restoreIpAddresses(string s) {
@@ -27,7 +101,7 @@ public:
 		return result;
 	}
 
-	void GetIP()
+	void GetIP(vector<string>& result)
 	{
 	}
 
