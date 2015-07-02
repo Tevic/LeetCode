@@ -5,20 +5,424 @@
 
 
 
+/*-------------------------------------------------------------------------------------*/
+class Solution116 {
+public:
+	void connect(TreeLinkNode *root) {
+		if (root)
+		{
+			if (root->left&&root->right)
+			{
+				root->left->next = root->right;
+				if (root->right&&root->next)
+				{
+					root->right->next = root->next->left;
+				}
+				connect(root->left);
+				connect(root->right);
+			}
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution114 {
+public:
+	TreeNode* lastNode = NULL;
+	void flatten(TreeNode* root) {
+		if (!root)
+		{
+			return;
+		}
+		TreeNode* rightNode = root->right;
+		if (lastNode)
+		{
+			lastNode->left = NULL;
+			lastNode->right = root;
+		}
+		lastNode = root;
+		flatten(root->left);
+		flatten(rightNode);
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution113 {
+public:
+	vector<vector<int>> pathSum(TreeNode* root, int sum) {
+		vector<vector<int>> result;
+		vector<int> vec;
+		if (root)
+		{
+			GetPath(result, vec, sum, root, 0);
+		}
+		return result;
+	}
 
+	void GetPath(vector<vector<int>>& result, vector<int>& vec, int target, TreeNode* root, int sum)
+	{
+		vec.push_back(root->val);
+		if (sum + root->val == target&&!root->left&&!root->right)
+		{
+			result.push_back(vec);
+		}
+		else
+		{
+			if (root->left)
+			{
+				GetPath(result, vec, target, root->left, sum + root->val);
+			}
+			if (root->right)
+			{
+				GetPath(result, vec, target, root->right, sum + root->val);
+			}
+		}
+		vec.pop_back();
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution112 {
+public:
+	bool hasPathSum(TreeNode* root, int sum) {
+		if (!root)
+		{
+			return false;
+		}
+		return hasPathSum(root, sum, 0);
+	}
 
+	bool hasPathSum(TreeNode* root, int target, int sum) {
+		if (!root&&sum == target)
+		{
+			return true;
+		}
+		else
+		{
+			if (!root)
+			{
+				return false;
+			}
+			else
+			{
+				if (!root->left)
+				{
+					return hasPathSum(root->right, target, sum + root->val);
+				}
+				if (!root->right)
+				{
+					return hasPathSum(root->left, target, sum + root->val);
+				}
+				return hasPathSum(root->left, target, sum + root->val) || hasPathSum(root->right, target, sum + root->val);
+			}
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution111 {
+public:
+	int minDepth(TreeNode* root) {
+		if (!root)
+		{
+			return 0;
+		}
+		if (!root->left)
+		{
+			return minDepth(root->right) + 1;
+		}
+		if (!root->right)
+		{
+			return minDepth(root->left) + 1;
+		}
+		return min(minDepth(root->left), minDepth(root->right)) + 1;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution110 {
+public:
+	bool isBalanced(TreeNode* root) {
+		if (!root)
+		{
+			return true;
+		}
+		if (abs(Depth(root->left) - Depth(root->right)) > 1)
+		{
+			return false;
+		}
+		return isBalanced(root->left) && isBalanced(root->right);
+	}
 
+	int Depth(TreeNode* root)
+	{
+		if (!root)
+		{
+			return NULL;
+		}
+		return max(Depth(root->left), Depth(root->right)) + 1;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution109 {
+public:
+	TreeNode* sortedListToBST(ListNode* head) {
+		int len = 0;
+		ListNode* pCur = head;
+		while (pCur)
+		{
+			len++;
+			pCur = pCur->next;
+		}
+		return BuildBST(head, 0, len - 1);
+	}
 
+	TreeNode* BuildBST(ListNode*& head, int L, int R)
+	{
+		if (L > R)
+		{
+			return NULL;
+		}
+		int M = L + ((R - L) >> 1);
+		TreeNode* left = BuildBST(head, L, M - 1);
+		TreeNode* root = new TreeNode(head->val);
+		root->left = left;
+		head = head->next;
+		root->right = BuildBST(head, M + 1, R);
+		return root;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution108 {
+public:
+	TreeNode* sortedArrayToBST(vector<int>& nums) {
+		return BuildBST(nums, 0, nums.size() - 1);
+	}
+	TreeNode* BuildBST(vector<int>& nums, int L, int R)
+	{
+		if (L > R)
+		{
+			return NULL;
+		}
+		int M = L + ((R - L) >> 1);
+		TreeNode* root = new TreeNode(nums[M]);
+		root->left = BuildBST(nums, L, M - 1);
+		root->right = BuildBST(nums, M + 1, R);
+		return root;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution107 {
+public:
+	vector<vector<int>> levelOrderBottom(TreeNode* root) {
+		queue<TreeNode*> qu;
+		vector<vector<int>> result;
+		if (root)
+		{
+			int curCnt = 1;
+			int nextCnt = 0;
+			qu.push(root);
+			vector<int> levelNodes;
+			while (!qu.empty())
+			{
+				TreeNode* pCur = qu.front();
+				qu.pop();
+				curCnt--;
+				levelNodes.push_back(pCur->val);
+				if (pCur->left)
+				{
+					qu.push(pCur->left);
+					nextCnt++;
+				}
+				if (pCur->right)
+				{
+					qu.push(pCur->right);
+					nextCnt++;
+				}
+				if (curCnt == 0)
+				{
+					result.push_back(levelNodes);
+					curCnt = nextCnt;
+					nextCnt = 0;
+					levelNodes.clear();
+				}
+			}
+		}
+		reverse(result.begin(), result.end());
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution106 {
+public:
+	TreeNode* buildTree(vector<int>& inorder, vector<int>& postorder) {
+		return Build(inorder, postorder, 0, inorder.size() - 1, 0, postorder.size() - 1);
+	}
 
+	TreeNode* Build(vector<int>& inorder, vector<int>& postorder, int iS, int iE, int pS, int pE)
+	{
+		if (pS > pE)
+		{
+			return NULL;
+		}
+		TreeNode* root = new TreeNode(postorder[pE]);
+		int index = -1;
+		for (int i = iS; i <= iE; i++)
+		{
+			if (postorder[pE] == inorder[i])
+			{
+				index = i;
+				break;
+			}
+		}
+		root->left = Build(inorder, postorder, iS, index - 1, pS, index - 1 - iS + pS);
+		root->right = Build(inorder, postorder, index + 1, iE, pE - iE + index, pE - 1);
+		return root;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution105 {
+public:
+	TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
+		return Build(preorder, inorder, 0, preorder.size() - 1, 0, inorder.size() - 1);
+	}
 
-
-
-
-
-
-
-
-
+	TreeNode* Build(vector<int>& preorder, vector<int>& inorder, int pS, int pE, int iS, int iE)
+	{
+		if (pS > pE)
+		{
+			return NULL;
+		}
+		TreeNode* root = new TreeNode(preorder[pS]);
+		int index = -1;
+		for (int i = iS; i <= iE; i++)
+		{
+			if (preorder[pS] == inorder[i])
+			{
+				index = i;
+				break;
+			}
+		}
+		root->left = Build(preorder, inorder, pS + 1, index - iS + pS, iS, index - 1);
+		root->right = Build(preorder, inorder, pE - iE + index + 1, pE, index + 1, iE);
+		return root;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution104 {
+public:
+	int maxDepth(TreeNode* root) {
+		if (!root)
+		{
+			return 0;
+		}
+		return max(maxDepth(root->left), maxDepth(root->right)) + 1;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution103 {
+public:
+	vector<vector<int>> zigzagLevelOrder(TreeNode* root) {
+		queue<TreeNode*> qu;
+		if (root)
+		{
+			qu.push(root);
+		}
+		vector<vector<int>> result;
+		vector<int> vec;
+		int curCnt = 1;
+		int nextCnt = 0;
+		bool isReversed = false;
+		while (!qu.empty())
+		{
+			TreeNode* pCur = qu.front();
+			qu.pop();
+			vec.push_back(pCur->val);
+			curCnt--;
+			if (pCur->left)
+			{
+				qu.push(pCur->left);
+				nextCnt++;
+			}
+			if (pCur->right)
+			{
+				qu.push(pCur->right);
+				nextCnt++;
+			}
+			if (!curCnt)
+			{
+				if (isReversed)
+				{
+					reverse(vec.begin(), vec.end());
+				}
+				isReversed = !isReversed;
+				curCnt = nextCnt;
+				nextCnt = 0;
+				result.push_back(vec);
+				vec.clear();
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution102 {
+public:
+	vector<vector<int>> levelOrder(TreeNode* root) {
+		queue<TreeNode*> qu;
+		if (root)
+		{
+			qu.push(root);
+		}
+		vector<vector<int>> result;
+		vector<int> vec;
+		int curCnt = 1;
+		int nextCnt = 0;
+		while (!qu.empty())
+		{
+			TreeNode* pCur = qu.front();
+			qu.pop();
+			vec.push_back(pCur->val);
+			curCnt--;
+			if (pCur->left)
+			{
+				qu.push(pCur->left);
+				nextCnt++;
+			}
+			if (pCur->right)
+			{
+				qu.push(pCur->right);
+				nextCnt++;
+			}
+			if (!curCnt)
+			{
+				curCnt = nextCnt;
+				nextCnt = 0;
+				result.push_back(vec);
+				vec.clear();
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution101 {
+public:
+	bool isSymmetric(TreeNode* root) {
+		if (!root)
+		{
+			return true;
+		}
+		return CheckSymmetric(root->left, root->right);
+	}
+	bool CheckSymmetric(TreeNode* left, TreeNode* right)
+	{
+		if ((left&&!right) || (!left&&right))
+		{
+			return false;
+		}
+		if (!left&&!right)
+		{
+			return true;
+		}
+		return (left->val == right->val) && CheckSymmetric(left->left, right->right) && CheckSymmetric(left->right, right->left);
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution100 {
 public:
@@ -27,15 +431,15 @@ public:
 		{
 			return true;
 		}
-		if ((p&&!q)||(!p&&q))
+		if ((p&&!q) || (!p&&q))
 		{
 			return false;
 		}
-		if (p->val!=q->val)
+		if (p->val != q->val)
 		{
 			return false;
 		}
-		return isSameTree(p->left,q->left)&&isSameTree(p->right,q->right);
+		return isSameTree(p->left, q->left) && isSameTree(p->right, q->right);
 	}
 };
 /*-------------------------------------------------------------------------------------*/
@@ -78,14 +482,14 @@ public:
 	bool isValidBST(TreeNode* root) {
 		vector<int> seq;
 		InOrder(root, seq);
-		return is_sorted(seq.begin(),seq.end(),less_equal<int>());
+		return is_sorted(seq.begin(), seq.end(), less_equal<int>());
 	}
 
-	void InOrder(TreeNode* root,vector<int>& seq)
+	void InOrder(TreeNode* root, vector<int>& seq)
 	{
 		TreeNode* pCur = root;
 		stack<TreeNode*> st;
-		while (!st.empty()||pCur)
+		while (!st.empty() || pCur)
 		{
 			if (pCur)
 			{
@@ -175,7 +579,7 @@ public:
 	vector<TreeNode *>* generate(int start, int end)
 	{
 		vector<TreeNode *> *subTree = new vector<TreeNode*>();
-		if (start>end)
+		if (start > end)
 		{
 			subTree->push_back(NULL);
 			return subTree;
@@ -184,9 +588,9 @@ public:
 		{
 			vector<TreeNode*> *leftSubs = generate(start, i - 1);
 			vector<TreeNode*> *rightSubs = generate(i + 1, end);
-			for (int j = 0; j< leftSubs->size(); j++)
+			for (int j = 0; j < leftSubs->size(); j++)
 			{
-				for (int k = 0; k<rightSubs->size(); k++)
+				for (int k = 0; k < rightSubs->size(); k++)
 				{
 					TreeNode *node = new TreeNode(i);
 					node->left = (*leftSubs)[j];
@@ -205,7 +609,7 @@ public:
 		stack<TreeNode*> st;
 		vector<int> result;
 		TreeNode* pCur = root;
-		while (!st.empty()||pCur)
+		while (!st.empty() || pCur)
 		{
 			if (pCur)
 			{
@@ -228,7 +632,7 @@ public:
 	vector<string> restoreIpAddresses(string s) {
 		int len = s.size();
 		vector<string> result;
-		if (len>=4)
+		if (len >= 4)
 		{
 			GetIP(result, s, "", 0, 0);
 		}
@@ -239,11 +643,11 @@ public:
 		return result;
 	}
 
-	void GetIP(vector<string>& result, string& s,string curIP,int cnt,int index)
+	void GetIP(vector<string>& result, string& s, string curIP, int cnt, int index)
 	{
-		if (cnt==4)
+		if (cnt == 4)
 		{
-			if (index==s.size())
+			if (index == s.size())
 			{
 				result.push_back(curIP);
 			}
@@ -252,12 +656,12 @@ public:
 		{
 			for (int i = 1; i <= 3; i++)
 			{
-				if (index+i<=s.size())
+				if (index + i <= s.size())
 				{
 					string ip = s.substr(index, i);
 					if (IsValidNum(ip))
 					{
-						GetIP(result, s, curIP + ip + ".", cnt + 1, index+i);
+						GetIP(result, s, curIP + ip + ".", cnt + 1, index + i);
 					}
 				}
 			}
@@ -266,14 +670,14 @@ public:
 
 	bool IsValidNum(string s)
 	{
-		if (s[0]=='0')
+		if (s[0] == '0')
 		{
 			return s.size() == 1;
 		}
 		else
 		{
 			int num = stoi(s);
-			if (num>=1&&num<=255)
+			if (num >= 1 && num <= 255)
 			{
 				return true;
 			}
@@ -321,25 +725,25 @@ class Solution091 {
 public:
 	int numDecodings(string s) {
 		int len = s.size();
-		if (len==0)
+		if (len == 0)
 		{
 			return 0;
 		}
-		vector<int> dp(len+1,0);
+		vector<int> dp(len + 1, 0);
 		dp[0] = 1;
 		if (CheckOne(s, 0))
 		{
 			dp[1] = 1;
 		}
-		if (len==1)
+		if (len == 1)
 		{
 			return dp[1];
 		}
 		for (size_t i = 2; i <= len; i++)
 		{
-			if (CheckOne(s,i-1))
+			if (CheckOne(s, i - 1))
 			{
-				if (CheckTwo(s,i-1))
+				if (CheckTwo(s, i - 1))
 				{
 					dp[i] = dp[i - 1] + dp[i - 2];
 				}
@@ -350,7 +754,7 @@ public:
 			}
 			else
 			{
-				if (CheckTwo(s, i-1))
+				if (CheckTwo(s, i - 1))
 				{
 					dp[i] = dp[i - 2];
 				}
@@ -363,9 +767,9 @@ public:
 		return dp[len];
 	}
 
-	bool CheckOne(string& s,int index)
+	bool CheckOne(string& s, int index)
 	{
-		if (s[index]>='1'&&s[index]<='9')
+		if (s[index] >= '1'&&s[index] <= '9')
 		{
 			return true;
 		}
@@ -377,7 +781,7 @@ public:
 
 	bool CheckTwo(string& s, int index)
 	{
-		if (s[index-1] =='1')
+		if (s[index - 1] == '1')
 		{
 			return s[index] >= '0'&&s[index] <= '9';
 		}
@@ -395,7 +799,7 @@ public:
 		int len = nums.size();
 		vector<vector<int>> result;
 		vector<int> vec;
-		if (len>0)
+		if (len > 0)
 		{
 			sort(nums.begin(), nums.end());
 			GetSubsets(result, vec, nums, -1);
@@ -409,7 +813,7 @@ public:
 		{
 			result.push_back(vec);
 		}
-		if (vec.size()<nums.size())
+		if (vec.size() < nums.size())
 		{
 			for (int i = index + 1; i < nums.size(); i++)
 			{
@@ -418,7 +822,7 @@ public:
 				while (i + 1 < nums.size() && nums[i] == nums[i + 1])i++;
 			}
 		}
-		if (vec.size()>0)
+		if (vec.size() > 0)
 		{
 			vec.pop_back();
 		}
@@ -447,8 +851,8 @@ class Solution088 {
 public:
 	void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
 		int k = m + n - 1;
-		int i = m-1, j = n-1;
-		while (i>=0&&j>=0)
+		int i = m - 1, j = n - 1;
+		while (i >= 0 && j >= 0)
 		{
 			if (nums1[i]>nums2[j])
 			{
@@ -459,7 +863,7 @@ public:
 				nums1[k--] = nums2[j--];
 			}
 		}
-		while (i>=0)
+		while (i >= 0)
 		{
 			nums1[k--] = nums1[i--];
 		}
@@ -480,7 +884,7 @@ public:
 		ListNode* pCur = head;
 		while (pCur)
 		{
-			if (pCur->val<x)
+			if (pCur->val < x)
 			{
 				pLess->next = pCur;
 				pLess = pLess->next;
@@ -513,13 +917,13 @@ public:
 		ListNode* pNewCur = fakeNode;
 		while (pCur)
 		{
-			if (pCur->val==lastDigit)
+			if (pCur->val == lastDigit)
 			{
 				dup++;
 			}
 			else
 			{
-				if (dup==1)
+				if (dup == 1)
 				{
 					pPre->next = NULL;
 					pNewCur->next = pPre;
@@ -531,7 +935,7 @@ public:
 			pPre = pCur;
 			pCur = pCur->next;
 		}
-		if (dup==1)
+		if (dup == 1)
 		{
 			pPre->next = NULL;
 			pNewCur->next = pPre;
@@ -549,7 +953,7 @@ public:
 		ListNode* pCur = fakeNode;
 		while (pCur->next)
 		{
-			if (lastDigit==pCur->next->val)
+			if (lastDigit == pCur->next->val)
 			{
 				pCur->next = pCur->next->next;
 			}
@@ -569,16 +973,16 @@ public:
 		int len = nums.size();
 		int L = 0;
 		int R = len - 1;
-		while (L<=R)
+		while (L <= R)
 		{
 			int M = L + ((R - L) >> 1);
-			if (nums[M]==target)
+			if (nums[M] == target)
 			{
 				return true;
 			}
-			if (nums[M]>nums[L])
+			if (nums[M] > nums[L])
 			{
-				if (target>=nums[L]&&target<nums[M])
+				if (target >= nums[L] && target < nums[M])
 				{
 					R = M - 1;
 				}
@@ -589,7 +993,7 @@ public:
 			}
 			else if (nums[M]<nums[L])
 			{
-				if (target>nums[M]&&target<=nums[R])
+				if (target>nums[M] && target <= nums[R])
 				{
 					L = M + 1;
 				}
@@ -616,10 +1020,10 @@ public:
 		int lastDigit = INT_MAX;
 		for (size_t i = 0; i < len; i++)
 		{
-			if (nums[i]==lastDigit)
+			if (nums[i] == lastDigit)
 			{
 				dpCnt++;
-				if (dpCnt>2)
+				if (dpCnt > 2)
 				{
 					dup++;
 				}
@@ -720,21 +1124,21 @@ public:
 		int len = nums.size();
 		vector<vector<int>> result;
 		vector<int> vec;
-		if (len>0)
+		if (len > 0)
 		{
-			sort(nums.begin(),nums.end());
+			sort(nums.begin(), nums.end());
 			GetSubsets(result, vec, nums, -1);
 		}
 		return result;
 	}
 
-	void GetSubsets(vector<vector<int>>& result, vector<int>& vec, vector<int>& nums,int index)
+	void GetSubsets(vector<vector<int>>& result, vector<int>& vec, vector<int>& nums, int index)
 	{
-		if (vec.size()<=nums.size())
+		if (vec.size() <= nums.size())
 		{
 			result.push_back(vec);
 		}
-		if (vec.size()<nums.size())
+		if (vec.size() < nums.size())
 		{
 			for (int i = index + 1; i < nums.size(); i++)
 			{
@@ -742,7 +1146,7 @@ public:
 				GetSubsets(result, vec, nums, i);
 			}
 		}
-		if (vec.size()>0)
+		if (vec.size() > 0)
 		{
 			vec.pop_back();
 		}
@@ -753,29 +1157,29 @@ class Solution077 {
 public:
 	vector<vector<int>> combine(int n, int k) {
 		vector<vector<int>> result;
-		if (n>0&&k>0&&n>=k)
+		if (n > 0 && k > 0 && n >= k)
 		{
 			vector<int> vec;
-			GetComb(result, vec, n, k,0);
+			GetComb(result, vec, n, k, 0);
 		}
 		return result;
 	}
 
-	void GetComb(vector<vector<int>>& result, vector<int> &vec,int n,int k,int index)
+	void GetComb(vector<vector<int>>& result, vector<int> &vec, int n, int k, int index)
 	{
-		if (vec.size()==k)
+		if (vec.size() == k)
 		{
 			result.push_back(vec);
 		}
 		else
 		{
-			for (int i = index+1; i <= n; i++)
+			for (int i = index + 1; i <= n; i++)
 			{
 				vec.push_back(i);
-				GetComb(result, vec, n, k,i);
+				GetComb(result, vec, n, k, i);
 			}
 		}
-		if (vec.size()>0)
+		if (vec.size() > 0)
 		{
 			vec.pop_back();
 		}
@@ -789,17 +1193,17 @@ public:
 		int L = 0;
 		int R = len - 1;
 		int index = 0;
-		while (index<R+1)
+		while (index < R + 1)
 		{
-			if (nums[index]==0)
+			if (nums[index] == 0)
 			{
-				swap(nums[L],nums[index]);
+				swap(nums[L], nums[index]);
 				index++;
 				L++;
 			}
-			else if (nums[index]==2)
+			else if (nums[index] == 2)
 			{
-				swap(nums[R],nums[index]);
+				swap(nums[R], nums[index]);
 				R--;
 			}
 			else
@@ -825,14 +1229,14 @@ public:
 		}
 		int L = 0;
 		int R = M*N - 1;
-		while (L<=R)
+		while (L <= R)
 		{
 			int mid = L + ((R - L) >> 1);
-			if (target>matrix[mid/N][mid%N])
+			if (target > matrix[mid / N][mid%N])
 			{
 				L = mid + 1;
 			}
-			else if (target<matrix[mid / N][mid%N])
+			else if (target < matrix[mid / N][mid%N])
 			{
 				R = mid - 1;
 			}
@@ -864,16 +1268,16 @@ public:
 		{
 			for (size_t j = 0; j < N; j++)
 			{
-				if (matrix[i][j]==0)
+				if (matrix[i][j] == 0)
 				{
 					row.insert(i);
 					col.insert(j);
 				}
 			}
 		}
-		for (auto index:row)
+		for (auto index : row)
 		{
-			matrix[index].assign(N,0);
+			matrix[index].assign(N, 0);
 		}
 		for (auto index : col)
 		{
@@ -942,15 +1346,15 @@ public:
 	int mySqrt(int x) {
 		int L = 0;
 		int R = (x >> 1) + 1;
-		while (L<=R)
+		while (L <= R)
 		{
 			long long M = L + ((R - L) >> 1);
 			long long val = M*M;
-			if (val<x)
+			if (val < x)
 			{
 				L = M + 1;
 			}
-			else if (val>x)
+			else if (val > x)
 			{
 				R = M - 1;
 			}
@@ -968,9 +1372,9 @@ public:
 	string addBinary(string a, string b) {
 		int lenA = a.size();
 		int lenB = b.size();
-		if (lenA<lenB)
+		if (lenA < lenB)
 		{
-			return addBinary(b,a);
+			return addBinary(b, a);
 		}
 		reverse(a.begin(), a.end());
 		reverse(b.begin(), b.end());
@@ -992,7 +1396,7 @@ public:
 		{
 			res += (carry + '0');
 		}
-		reverse(res.begin(),res.end());
+		reverse(res.begin(), res.end());
 		return res;
 	}
 };
@@ -1003,17 +1407,17 @@ public:
 		vector<int> result;
 		int len = digits.size();
 		int carry = 1;
-		for (int i = len-1; i >=0 ; i--)
+		for (int i = len - 1; i >= 0; i--)
 		{
 			int tmp = digits[i] + carry;
-			result.push_back(tmp%10);
+			result.push_back(tmp % 10);
 			carry = tmp / 10;
 		}
 		if (carry)
 		{
 			result.push_back(carry);
 		}
-		reverse(result.begin(),result.end());
+		reverse(result.begin(), result.end());
 		return result;
 	}
 };
@@ -1027,26 +1431,26 @@ public:
 		{
 			index++;
 		}
-		if (s[index] == '+' || s[index]=='-')
+		if (s[index] == '+' || s[index] == '-')
 		{
 			index++;
 		}
 		bool isNum = false;
-		while (index<len&&isdigit(s[index]))
+		while (index < len&&isdigit(s[index]))
 		{
 			index++;
 			isNum = true;
 		}
-		if (index<len&&s[index]=='.')
+		if (index < len&&s[index] == '.')
 		{
 			index++;
-			while (index<len&&isdigit(s[index]))
+			while (index < len&&isdigit(s[index]))
 			{
 				index++;
 				isNum = true;
 			}
 		}
-		if (isNum&&index<len&& tolower(s[index]) == 'e')
+		if (isNum&&index < len&& tolower(s[index]) == 'e')
 		{
 			index++;
 			if (index < len && (s[index] == '+' || s[index] == '-'))
@@ -1085,17 +1489,17 @@ public:
 		sum[0][0] = grid[0][0];
 		for (size_t i = 1; i < M; i++)
 		{
-			sum[i][0] = sum[i - 1][0]+grid[i][0];
+			sum[i][0] = sum[i - 1][0] + grid[i][0];
 		}
 		for (size_t i = 1; i < N; i++)
 		{
-			sum[0][i] = sum[0][i-1] + grid[0][i];
+			sum[0][i] = sum[0][i - 1] + grid[0][i];
 		}
 		for (size_t i = 1; i < M; i++)
 		{
 			for (size_t j = 1; j < N; j++)
 			{
-				sum[i][j] = min(sum[i - 1][j] , sum[i][j - 1])+grid[i][j];
+				sum[i][j] = min(sum[i - 1][j], sum[i][j - 1]) + grid[i][j];
 			}
 		}
 		return sum[M - 1][N - 1];
@@ -1116,7 +1520,7 @@ public:
 			return 0;
 		}
 		vector<vector<int>> paths(M, vector<int>(N, 0));
-		paths[0][0]=obstacleGrid[0][0] == 1 ? 0 : 1;
+		paths[0][0] = obstacleGrid[0][0] == 1 ? 0 : 1;
 		for (size_t i = 1; i < M; i++)
 		{
 			paths[i][0] = obstacleGrid[i][0] == 1 ? 0 : paths[i - 1][0];
@@ -1132,7 +1536,7 @@ public:
 				paths[i][j] = obstacleGrid[i][j] == 1 ? 0 : paths[i - 1][j] + paths[i][j - 1];
 			}
 		}
-		return paths[M-1][N-1];
+		return paths[M - 1][N - 1];
 	}
 };
 /*-------------------------------------------------------------------------------------*/
