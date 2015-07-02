@@ -10,7 +10,46 @@
 
 
 
-
+/*-------------------------------------------------------------------------------------*/
+class Solution228 {
+public:
+	vector<string> summaryRanges(vector<int>& nums) {
+		vector<string> result;
+		int len = nums.size();
+		if (len>0)
+		{
+			int lastDigit = nums[0];
+			string A=to_string(nums[0]), B;
+			for (int i = 1; i <= len; i++)
+			{
+				if (nums[i]!=lastDigit+1||i==len)
+				{
+					if (B != "")
+					{
+						result.push_back(A + "->" + B);
+					}
+					else
+					{
+						result.push_back(A);
+					}
+					if (i==len)
+					{
+						break;
+					}
+					lastDigit = nums[i];
+					A = to_string(nums[i]);
+					B = "";
+				}
+				else
+				{
+					B = to_string(nums[i]);
+					lastDigit = nums[i];
+				}
+			}
+		}
+		return result;
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution226 {
 public:
