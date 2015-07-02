@@ -14,6 +14,140 @@
 
 
 
+
+
+
+
+
+/*-------------------------------------------------------------------------------------*/
+class Solution100 {
+public:
+	bool isSameTree(TreeNode* p, TreeNode* q) {
+		if (!p&&!q)
+		{
+			return true;
+		}
+		if ((p&&!q)||(!p&&q))
+		{
+			return false;
+		}
+		if (p->val!=q->val)
+		{
+			return false;
+		}
+		return isSameTree(p->left,q->left)&&isSameTree(p->right,q->right);
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution099 {
+public:
+	void recoverTree(TreeNode* root) {
+		vector<TreeNode*> result;
+		InOrder(root, result);
+		int L = 0;
+		int R = result.size() - 1;
+		while (result[L]->val < result[L + 1]->val)L++;
+		while (result[R]->val > result[R - 1]->val)R--;
+		swap(result[L]->val, result[R]->val);
+	}
+
+	void InOrder(TreeNode* root, vector<TreeNode*>& result)
+	{
+		stack<TreeNode*> st;
+		TreeNode* pCur = root;
+		while (!st.empty() || pCur)
+		{
+			if (pCur)
+			{
+				st.push(pCur);
+				pCur = pCur->left;
+			}
+			else
+			{
+				pCur = st.top();
+				st.pop();
+				result.push_back(pCur);
+				pCur = pCur->right;
+			}
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution098 {
+public:
+	bool isValidBST(TreeNode* root) {
+		vector<int> seq;
+		InOrder(root, seq);
+		return is_sorted(seq.begin(),seq.end(),less_equal<int>());
+	}
+
+	void InOrder(TreeNode* root,vector<int>& seq)
+	{
+		TreeNode* pCur = root;
+		stack<TreeNode*> st;
+		while (!st.empty()||pCur)
+		{
+			if (pCur)
+			{
+				st.push(pCur);
+				pCur = pCur->left;
+			}
+			else
+			{
+				seq.push_back(st.top()->val);
+				pCur = st.top()->right;
+				st.pop();
+			}
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution097 {
+public:
+	bool isInterleave(string s1, string s2, string s3) {
+		if (s3.size() != s1.size() + s2.size())
+			return false;
+		//create indicator
+		vector<vector<bool> > match(s1.size() + 1, vector<bool>(s2.size() + 1, false));
+		//initialization the first row and the first column
+		match[0][0] = true;
+		for (int l1 = 1; l1 <= s1.size(); ++l1) {
+			char c1 = s1[l1 - 1];
+			char c3 = s3[l1 - 1];
+			if (c1 == c3) {
+				match[l1][0] = true;
+			}
+			else
+				break;
+		}
+		for (int l2 = 1; l2 <= s2.size(); ++l2) {
+			char c2 = s2[l2 - 1];
+			char c3 = s3[l2 - 1];
+			if (c2 == c3) {
+				match[0][l2] = true;
+			}
+			else
+				break;
+		}
+		//work through the rest of matrix using the formula
+		for (int l1 = 1; l1 <= s1.size(); ++l1) {
+			char c1 = s1[l1 - 1];
+			for (int l2 = 1; l2 <= s2.size(); ++l2) {
+				char c2 = s2[l2 - 1];
+				int l3 = l1 + l2;
+				char c3 = s3[l3 - 1];
+				if (c1 == c3) {
+					match[l1][l2] = match[l1 - 1][l2] || match[l1][l2];
+				}
+				if (c2 == c3) {
+					match[l1][l2] = match[l1][l2 - 1] || match[l1][l2];
+				}
+			}
+		}
+		//the last element is the result
+		return match[s1.size()][s2.size()];
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution096 {
 public:
