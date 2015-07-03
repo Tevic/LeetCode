@@ -5,6 +5,82 @@
 
 
 
+
+
+/*-------------------------------------------------------------------------------------*/
+class Solution119 {
+public:
+	vector<int> getRow(int rowIndex) {
+		vector<int> result(rowIndex+1,1);
+		if (rowIndex>=0)
+		{
+			for (int i = 2; i <= rowIndex+1; i++)
+			{
+				for (int j = i-2; j >=1; j--)
+				{
+					result[j] = result[j] + result[j - 1];
+				}
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution118 {
+public:
+	vector<vector<int>> generate(int numRows) {
+		vector<vector<int>> result;
+		if (numRows>0)
+		{
+			result.push_back(vector < int > {1});
+			for (int i = 2; i <= numRows; i++)
+			{
+				int index = result.size() - 1;
+				vector<int> vec(i,1);
+				for (int j = 0; j < i-2; j++)
+				{
+					vec[j+1]=result[index][j]+result[index][j+1];
+				}
+				result.push_back(vec);
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution117 {
+public:
+	void connect(TreeLinkNode *root) {
+		if (root)
+		{
+			TreeLinkNode* p = root->next;
+			while (p)
+			{
+				if (p->left)
+				{
+					p = p->left;
+					break;
+				}
+				if (p->right)
+				{
+					p = p->right;
+					break;
+				}
+				p = p->next;
+			}
+			if (root->right)
+			{
+				root->right->next = p;
+			}
+			if (root->left)
+			{
+				root->left->next = root->right ? root->right : p;
+			}
+			connect(root->right);
+			connect(root->left);
+		}
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution116 {
 public:
