@@ -7,6 +7,130 @@
 
 
 
+
+
+
+
+
+
+
+
+
+/*-------------------------------------------------------------------------------------*/
+class Solution124 {
+public:
+	int maxVal = INT_MIN;
+	int maxPathSum(TreeNode* root) {
+		GetMax(root);
+		return maxVal;
+	}
+
+	int GetMax(TreeNode* root)
+	{
+		if (!root)
+		{
+			return 0;
+		}
+		int lMax = GetMax(root->left);
+		int rMax = GetMax(root->right);
+		maxVal = max(lMax + rMax + root->val, maxVal);
+		int ret = max(lMax, rMax) + root->val;
+		return ret > 0 ? ret : 0;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution123 {
+public:
+	int maxProfit(vector<int>& prices) {
+		int len = prices.size();
+		if (len <= 1)
+		{
+			return 0;
+		}
+		vector<int> maxFromHead(len, 0);
+		int minprice = prices[0], maxprofit = 0;
+		for (int i = 1; i < len; i++)
+		{
+			minprice = min(prices[i - 1], minprice);
+			if (prices[i] - minprice > maxprofit)
+			{
+				maxprofit = prices[i] - minprice;
+			}
+			maxFromHead[i] = maxprofit;
+		}
+		int maxprice = prices[len - 1];
+		int res = maxFromHead[len - 1];
+		maxprofit = 0;
+		for (int i = len - 2; i >= 0; i--)
+		{
+			maxprice = max(maxprice, prices[i + 1]);
+			if (maxprofit < maxprice - prices[i])
+			{
+				maxprofit = maxprice - prices[i];
+			}
+			if (res < maxFromHead[i] + maxprofit)
+				res = maxFromHead[i] + maxprofit;
+		}
+		return res;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution122 {
+public:
+	int maxProfit(vector<int>& prices) {
+		int len = prices.size();
+		int res = 0;
+		if (len>=2)
+		{
+			int index = 1;
+			while (index<len)
+			{
+				int minIndex;
+				int maxIndex;
+				while (index < len&&prices[index] <= prices[index - 1])index++;
+				minIndex = index - 1;
+				while (index < len&&prices[index] >= prices[index - 1])index++;
+				maxIndex = index - 1;
+				res += (prices[maxIndex]-prices[minIndex]);
+			}
+		}
+		return res;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution121 {
+public:
+	int maxProfit(vector<int>& prices) {
+		int len = prices.size();
+		if (len<=1)
+		{
+			return 0;
+		}
+		int minVal = prices[0];
+		int result = prices[1] - minVal;
+		for (size_t i = 2; i < len; i++)
+		{
+			minVal = min(minVal,prices[i-1]);
+			result = prices[i] - minVal > result ? prices[i] - minVal : result;
+		}
+		return result > 0 ? result : 0;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution120 {
+public:
+	int minimumTotal(vector<vector<int>>& triangle) {
+		int len = triangle.size();
+		for (int i = len-2; i >=0; i--)
+		{
+			for (int j = 0; j < triangle[i].size(); j++)
+			{
+				triangle[i][j] += min(triangle[i+1][j],triangle[i+1][j+1]);
+			}
+		}
+		return triangle[0][0];
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution119 {
 public:
