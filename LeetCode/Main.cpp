@@ -7,8 +7,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Solution119 S;
-	S.getRow(4);
+	Solution131 S;
+	S.partition("aab");
 }
 
 
