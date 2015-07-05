@@ -14,12 +14,548 @@
 
 
 
+/*-------------------------------------------------------------------------------------*/
+class Solution {
+public:
+	int titleToNumber(string s) {
+		int res = 0;
+		for (int i = 0; i < s.size(); i++)
+		{
+			res = res*26+(s[i]-'A'+1);
+		}
+		return res;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution169 {
+public:
+	int majorityElement(vector<int>& nums) {
+		int maj = nums[0];
+		int cnt = 1;
+		for (size_t i = 1; i < nums.size(); i++)
+		{
+			if (nums[i]==maj)
+			{
+				cnt++;
+			}
+			else
+			{
+				if (cnt==0)
+				{
+					maj = nums[i];
+					cnt++;
+				}
+				else
+				{
+					cnt--;
+				}
+			}
+		}
+		return maj;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution168 {
+public:
+	string convertToTitle(int n) {
+		string res;
+		while (n)
+		{
+			res += ((n - 1) % 26 + 'A');
+			n = (n - 1) / 26;
+		}
+		reverse(res.begin(),res.end());
+		return res;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution166 {
+public:
+	string fractionToDecimal(int numerator, int denominator) {
+		if (numerator == 0)
+		{
+			return "0";
+		}
+		vector<long long> integerList;
+		vector<long long> decimalList;
+		vector<long long> remainList;
+		int loopIndex = -1;
+		bool isNeg = false;
+		if (numerator<0 ^ denominator<0)
+		{
+			isNeg = true;
+		}
+		long long numerator1 = numerator;
+		numerator1 = abs(numerator1);
+		long long denominator1 = denominator;
+		denominator1 = abs(denominator1);
+		if (numerator1>denominator1)
+		{
+			integerList.push_back(numerator1 / denominator1);
+			numerator1 = numerator1 % denominator1;
+		}
+		long remain = numerator1;
+		long decimal = (remain * 10) / denominator1;
+		decimalList.push_back(decimal);
+		remainList.push_back(remain);
+		while (remain != 0)
+		{
+			remain = (remain * 10) % denominator1;
+			decimal = (remain * 10) / denominator1;
+			decimalList.push_back(decimal);
+			auto loopValue = find(remainList.begin(), remainList.end(), remain);
+			if (loopValue != remainList.end())
+			{
+				loopIndex = *loopValue;
+				break;
+			}
+			else
+			{
+				remainList.push_back(remain);
+			}
+		}
+		if (!remain || loopIndex != -1)
+		{
+			decimalList.erase(decimalList.end() - 1);
+		}
+		string res;
+		if (isNeg)
+		{
+			res += "-";
+		}
+		if (integerList.size() == 0)
+		{
+			res += "0";
+		}
+		else
+		{
+			for (size_t i = 0; i < integerList.size(); i++)
+			{
+				res += to_string(integerList[i]);
+			}
+		}
+		if (decimalList.size() != 0)
+		{
+			res += ".";
+			if (loopIndex != -1)
+			{
+				for (size_t i = 0; i < remainList.size(); i++)
+				{
+					if (loopIndex == remainList[i])
+					{
+						loopIndex = i;
+						break;
+					}
+				}
+				for (int i = 0; i < loopIndex; i++)
+				{
+					res += to_string(decimalList[i]);
+				}
+				res += "(";
+				for (int i = loopIndex; i < decimalList.size(); i++)
+				{
+					res += to_string(decimalList[i]);
+				}
+				res += ")";
+			}
+			else
+			{
+				for (size_t i = 0; i < decimalList.size(); i++)
+				{
+					res += to_string(decimalList[i]);
+				}
+			}
+		}
+		return res;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution165 {
+public:
+	int compareVersion(string version1, string version2) {
+		vector<int> vList1;
+		vector<int> vList2;
+		istringstream iss1(version1);
+		istringstream iss2(version2);
+		string strVerNum;
+		while (getline(iss1, strVerNum, '.'))
+		{
+			vList1.push_back(stoi(strVerNum));
+		}
+		while (getline(iss2, strVerNum, '.'))
+		{
+			vList2.push_back(stoi(strVerNum));
+		}
+		int len1 = vList1.size();
+		int len2 = vList2.size();
+		int diff = abs(len1 - len2);
+		if (len1>len2)
+		{
+			while (diff--)
+			{
+				vList2.push_back(0);
+			}
+		}
+		else
+		{
+			while (diff--)
+			{
+				vList1.push_back(0);
+			}
+		}
+		int len = max(len1, len2);
+		int i = 0;
+		while (i<len)
+		{
+			if (vList1[i]<vList2[i])
+			{
+				return -1;
+			}
+			else if (vList1[i]>vList2[i])
+			{
+				return 1;
+			}
+			i++;
+		}
+		return 0;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution162 {
+public:
+	int findPeakElement(vector<int>& nums) {
+		int L = 0;
+		int R = nums.size() - 1;
+		while (L<R)
+		{
+			int M = L + ((R - L) >> 1);
+			if (nums[M]<nums[M + 1])
+			{
+				L = M + 1;
+			}
+			else
+			{
+				R = M;
+			}
+		}
+		return L;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution160 {
+public:
+	ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
+		if (!headA||!headB)
+		{
+			return NULL;
+		}
+		int lenA = 0;
+		int lenB = 0;
+		ListNode* pA = headA;
+		ListNode* pB = headB;
+		while (pA)
+		{
+			lenA++;
+			pA = pA->next;
+		}
+		while (pB)
+		{
+			lenB++;
+			pB = pB->next;
+		}
+		ListNode* pL = NULL;
+		ListNode* pS = NULL;
+		if (lenA>lenB)
+		{
+			pL = headA;
+			pS = headB;
+		}
+		else
+		{
+			pL = headB;
+			pS = headA;
+		}
+		int dist = abs(lenA-lenB);
+		while (dist--)
+		{
+			pL = pL->next;
+		}
+		while (pL)
+		{
+			if (pL==pS)
+			{
+				break;
+			}
+			pL = pL->next;
+			pS = pS->next;
+		}
+		return pL;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class MinStack {
+public:
+	stack<int> st;
+	stack<int> stMin;
 
+	void push(int x) {
+		st.push(x);
+		if (stMin.empty()||x<=stMin.top())
+		{
+			stMin.push(x);
+		}
+	}
 
+	void pop() {
+		if (!st.empty())
+		{
+			if (st.top()==stMin.top())
+			{
+				stMin.pop();
+			}
+			st.pop();
+		}
+	}
 
+	int top() {
+		if (!st.empty())
+		{
+			return st.top();
+		}
+	}
 
+	int getMin() {
+		if (!stMin.empty())
+		{
+			return stMin.top();
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution154 {
+public:
+	int findMin(vector<int>& nums) {
+		int L = 0;
+		int R = nums.size() - 1;
+		while (L < R)
+		{
+			int M = L + ((R - L) >> 1);
+			if (nums[M] < nums[R])
+			{
+				R = M;
+			}
+			else if (nums[M] > nums[R])
+			{
+				L = M + 1;
+			}
+			else
+			{
+				R--;
+			}
+		}
+		return nums[L];
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution153 {
+public:
+	int findMin(vector<int>& nums) {
+		int L = 0;
+		int R = nums.size() - 1;
+		while (L < R)
+		{
+			int M = L + ((R - L) >> 1);
+			if (nums[M] < nums[R])
+			{
+				R = M;
+			}
+			else
+			{
+				L = M + 1;
+			}
+		}
+		return nums[L];
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution152 {
+public:
+	int maxProduct(vector<int>& nums) {
+		int gMax = nums[0];
+		int lMax = nums[0];
+		int lMin = nums[0];
+		int len = nums.size();
+		for (int i = 1; i < len; i++)
+		{
+			int tmpMin = lMin;
+			lMin = min(nums[i], min(lMax*nums[i], lMin*nums[i]));
+			lMax = max(lMax*nums[i], max(tmpMin*nums[i], nums[i]));
+			gMax = max(gMax, lMax);
+		}
+		return gMax;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution151 {
+public:
+	void reverseWords(string &s)
+	{
+		string rs;
+		for (int i = s.length() - 1; i >= 0;)
+		{
+			while (i >= 0 && s[i] == ' ') i--;
+			if (i < 0) break;
+			if (!rs.empty()) rs.push_back(' ');
+			string t;
+			while (i >= 0 && s[i] != ' ') t.push_back(s[i--]);
+			reverse(t.begin(), t.end());
+			rs.append(t);
+		}
+		s = rs;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution149 {
+public:
+	int evalRPN(vector<string>& tokens) {
+		stack<int> st;
+		int len = tokens.size();
+		if (len > 0)
+		{
+			for (size_t i = 0; i < len; i++)
+			{
+				if (tokens[i] == "+")
+				{
+					int Op2 = st.top();
+					st.pop();
+					int Op1 = st.top();
+					st.pop();
+					st.push(Op1 + Op2);
+				}
+				else if (tokens[i] == "-")
+				{
+					int Op2 = st.top();
+					st.pop();
+					int Op1 = st.top();
+					st.pop();
+					st.push(Op1 - Op2);
+				}
+				else if (tokens[i] == "*")
+				{
+					int Op2 = st.top();
+					st.pop();
+					int Op1 = st.top();
+					st.pop();
+					st.push(Op1 * Op2);
+				}
+				else if (tokens[i] == "/")
+				{
+					int Op2 = st.top();
+					st.pop();
+					int Op1 = st.top();
+					st.pop();
+					st.push(Op1 / Op2);
+				}
+				else
+				{
+					st.push(stoi(tokens[i]));
+				}
+			}
+		}
+		return st.empty() ? -1 : st.top();
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution148 {
+public:
+	ListNode* sortList(ListNode* head) {
+		if (!head || !head->next)
+		{
+			return head;
+		}
+		ListNode* fakeNode = new ListNode(0);
+		fakeNode->next = head;
+		ListNode* pSlow = fakeNode;
+		ListNode* pFast = fakeNode;
+		while (pFast&&pFast->next)
+		{
+			pSlow = pSlow->next;
+			pFast = pFast->next->next;
+		}
+		pFast = sortList(pSlow->next);
+		pSlow->next = NULL;
+		pSlow = sortList(head);
+		return Merge(pSlow, pFast);
+	}
 
-
+	ListNode* Merge(ListNode* L1, ListNode* L2)
+	{
+		if (!L1)
+		{
+			return L2;
+		}
+		if (!L2)
+		{
+			return L1;
+		}
+		ListNode* fakeNode = new ListNode(0);
+		ListNode* pCur = fakeNode;
+		while (L1&&L2)
+		{
+			if (L1->val < L2->val)
+			{
+				pCur->next = L1;
+				L1 = L1->next;
+			}
+			else
+			{
+				pCur->next = L2;
+				L2 = L2->next;
+			}
+			pCur = pCur->next;
+		}
+		if (L1)
+		{
+			pCur->next = L1;
+		}
+		if (L2)
+		{
+			pCur->next = L2;
+		}
+		return fakeNode->next;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution147 {
+public:
+	ListNode* insertionSortList(ListNode* head) {
+		vector<ListNode*> vec;
+		ListNode* pCur = head;
+		while (pCur)
+		{
+			vec.push_back(pCur);
+			pCur = pCur->next;
+		}
+		sort(vec.begin(), vec.end(), Cmp);
+		if (vec.size() == 0)
+		{
+			return head;
+		}
+		head = vec[0];
+		pCur = head;
+		for (size_t i = 1; i < vec.size(); i++)
+		{
+			pCur->next = vec[i];
+			pCur = vec[i];
+		}
+		pCur->next = NULL;
+		return head;
+	}
+	static bool Cmp(ListNode* ln1, ListNode* ln2)
+	{
+		return ln1->val < ln2->val;
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution145 {
 public:
@@ -44,7 +580,7 @@ public:
 				}
 			}
 		}
-		reverse(res.begin(),res.end());
+		reverse(res.begin(), res.end());
 		return res;
 	}
 };
