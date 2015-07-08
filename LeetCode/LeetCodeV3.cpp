@@ -13,6 +13,341 @@
 
 
 /*-------------------------------------------------------------------------------------*/
+class Solution215 {
+public:
+	int findKthLargest(vector<int>& nums, int k) {
+		priority_queue<int, vector<int>, greater<int>> heap;
+		int len = nums.size();
+		for (size_t i = 0; i < k; i++)
+		{
+			heap.push(nums[i]);
+		}
+		for (size_t i = k; i < len; i++)
+		{
+			if (nums[i]>heap.top())
+			{
+				heap.pop();
+				heap.push(nums[i]);
+			}
+		}
+		return heap.top();
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution213 {
+public:
+	int rob(vector<int>& nums) {
+		int len = nums.size();
+		int maxProf = 0;
+		if (len>0)
+		{
+			vector<int> dp(len,0);
+			dp[0] = nums[0];
+			if (len==1)
+			{
+				return dp[0];
+			}
+			dp[1] = nums[0];
+			for (size_t i = 2; i < len-1; i++)
+			{
+				dp[i] = max(dp[i-1],dp[i-2]+nums[i]);
+			}
+			maxProf = dp[len - 2];
+			dp[0] = 0;
+			dp[1] = nums[1];
+			for (size_t i = 2; i < len; i++)
+			{
+				dp[i] = max(dp[i - 1], dp[i - 2] + nums[i]);
+			}
+			maxProf = max(maxProf,dp[len-1]);
+		}
+		return maxProf;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class WordDictionary {
+public:
+
+	class TrieNode {
+	public:
+		// Initialize your data structure here.
+		TrieNode() {
+			isWord = false;
+			nextNodes.assign(26, NULL);
+		}
+		bool isWord;
+		vector<TrieNode*> nextNodes;
+	};
+
+	class Trie {
+	public:
+		Trie() {
+			root = new TrieNode();
+		}
+
+		// Inserts a word into the trie.
+		void insert(string s) {
+			int len = s.size();
+			if (len <= 0)
+			{
+				return;
+			}
+			TrieNode* pCur = root;
+			for (size_t i = 0; i < len; i++)
+			{
+				if (!pCur->nextNodes[s[i] - 'a'])
+				{
+					pCur->nextNodes[s[i] - 'a'] = new TrieNode();
+
+				}
+				pCur = pCur->nextNodes[s[i] - 'a'];
+			}
+			pCur->isWord = true;
+		}
+
+		// Returns if the word is in the trie.
+		bool search(string key, TrieNode* root) {
+			int len = key.size();
+			if (!root)
+			{
+				return false;
+			}
+			if (len == 0)
+			{
+				return root->isWord;
+			}
+			if (key[0] == '.')
+			{
+				for (size_t i = 0; i < 26; i++)
+				{
+					if (search(key.substr(1), root->nextNodes[i]))
+					{
+						return true;
+					}
+				}
+				return false;
+			}
+			else
+			{
+				return search(key.substr(1), root->nextNodes[key[0] - 'a']);
+			}
+		}
+
+		TrieNode* root;
+	};
+
+
+	// Adds a word into the data structure.
+	void addWord(string word) {
+		mTrieTree.insert(word);
+	}
+
+	// Returns if the word is in the data structure. A word could
+	// contain the dot character '.' to represent any one letter.
+	bool search(string word) {
+		return mTrieTree.search(word, mTrieTree.root);
+	}
+
+	Trie mTrieTree;
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution210 {
+public:
+	vector<int> findOrder(int numCourses, vector<pair<int, int>>& prerequisites) {
+		vector<int> result;
+		vector<int> inDegree(numCourses, 0);
+		int len = prerequisites.size();
+		for (size_t i = 0; i < len; i++)
+		{
+			inDegree[prerequisites[i].first]++;
+		}
+		while (true)
+		{
+			int index = -1;
+			for (int i = 0; i < numCourses; i++)
+			{
+				if (inDegree[i] == 0)
+				{
+					index = i;
+					result.push_back(i);
+					inDegree[i] = -1;
+					break;
+				}
+			}
+			if (index == -1)
+			{
+				if (accumulate(inDegree.begin(), inDegree.end(), 0) != -numCourses)
+				{
+					result.clear();
+				}
+				return result;
+			}
+			else
+			{
+				for (size_t i = 0; i < len; i++)
+				{
+					if (prerequisites[i].second == index)
+					{
+						inDegree[prerequisites[i].first]--;
+					}
+				}
+			}
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution209 {
+public:
+	int minSubArrayLen(int s, vector<int>& nums) {
+		int len = nums.size();
+		if (len == 0)
+		{
+			return 0;
+		}
+		int sum = 0;
+		int minLen = len + 1;
+		int L = 0, R = 0;
+		while (R < len)
+		{
+			while (sum < s&&R < len)
+			{
+				sum += nums[R];
+				R++;
+			}
+			while (sum >= s&&L<len)
+			{
+				minLen = min(minLen, R - L);
+				sum -= nums[L];
+				L++;
+			}
+		}
+		return minLen>len ? 0 : minLen;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class TrieNode {
+public:
+	// Initialize your data structure here.
+	TrieNode() {
+		isWord = false;
+		nextNodes.assign(26, NULL);
+	}
+	bool isWord;
+	vector<TrieNode*> nextNodes;
+};
+
+class Trie {
+public:
+	Trie() {
+		root = new TrieNode();
+	}
+
+	// Inserts a word into the trie.
+	void insert(string s) {
+		int len = s.size();
+		if (len <= 0)
+		{
+			return;
+		}
+		TrieNode* pCur = root;
+		for (size_t i = 0; i < len; i++)
+		{
+			if (!pCur->nextNodes[s[i] - 'a'])
+			{
+				pCur->nextNodes[s[i] - 'a'] = new TrieNode();
+
+			}
+			pCur = pCur->nextNodes[s[i] - 'a'];
+		}
+		pCur->isWord = true;
+	}
+
+	// Returns if the word is in the trie.
+	bool search(string key) {
+		int len = key.size();
+		if (len <= 0)
+		{
+			return true;
+		}
+		TrieNode* pCur = root;
+		for (size_t i = 0; i < len; i++)
+		{
+			pCur = pCur->nextNodes[key[i] - 'a'];
+			if (!pCur)
+			{
+				return false;
+			}
+		}
+		return pCur->isWord;
+	}
+
+	// Returns if there is any word in the trie
+	// that starts with the given prefix.
+	bool startsWith(string prefix) {
+		int len = prefix.size();
+		if (len <= 0)
+		{
+			return true;
+		}
+		TrieNode* pCur = root;
+		for (size_t i = 0; i < len; i++)
+		{
+			pCur = pCur->nextNodes[prefix[i] - 'a'];
+			if (!pCur)
+			{
+				return false;
+			}
+		}
+		return true;
+	}
+
+private:
+	TrieNode* root;
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution207 {
+public:
+	bool canFinish(int numCourses, vector<pair<int, int>>& prerequisites) {
+		if (numCourses > 1)
+		{
+			vector<int> inDegree(numCourses, 0);
+			int len = prerequisites.size();
+			for (size_t i = 0; i < len; i++)
+			{
+				inDegree[prerequisites[i].first]++;
+			}
+			while (true)
+			{
+				int index = -1;
+				for (int i = 0; i < numCourses; i++)
+				{
+					if (inDegree[i] == 0)
+					{
+						index = i;
+						inDegree[i] = -1;
+						break;
+					}
+				}
+				if (index == -1)
+				{
+					return accumulate(inDegree.begin(), inDegree.end(), 0) == -numCourses;
+				}
+				else
+				{
+					for (size_t i = 0; i < len; i++)
+					{
+						if (prerequisites[i].second == index)
+						{
+							inDegree[prerequisites[i].first]--;
+						}
+					}
+				}
+			}
+		}
+		return true;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 class Solution206 {
 public:
 	ListNode* reverseList(ListNode* head) {
@@ -38,9 +373,9 @@ public:
 		int len = s.size();
 		for (size_t i = 0; i < len; i++)
 		{
-			if (ump1.find(s[i])!=ump1.end())
+			if (ump1.find(s[i]) != ump1.end())
 			{
-				if (ump1[s[i]]!=t[i])
+				if (ump1[s[i]] != t[i])
 				{
 					return false;
 				}
@@ -49,9 +384,9 @@ public:
 			{
 				ump1[s[i]] = t[i];
 			}
-			if (ump2.find(t[i])!=ump2.end())
+			if (ump2.find(t[i]) != ump2.end())
 			{
-				if (ump2[t[i]]!=s[i])
+				if (ump2[t[i]] != s[i])
 				{
 					return false;
 				}
@@ -68,19 +403,19 @@ public:
 class Solution204 {
 public:
 	int countPrimes(int n) {
-		vector<int> isPrime(n,1);
+		vector<int> isPrime(n, 1);
 		int cnt = 0;
-		if (n>0)
+		if (n > 0)
 		{
 			isPrime[0] = 0;
 			isPrime[1] = 0;
 			int m = sqrt(n);
 			int index = 2;
-			while (index<=m)
+			while (index <= m)
 			{
 				if (isPrime[index])
 				{
-					for (int i = index+index; i<n; i+=index)
+					for (int i = index + index; i < n; i += index)
 					{
 						isPrime[i] = 0;
 					}
@@ -124,11 +459,11 @@ public:
 		while (true)
 		{
 			int sqSum = GetSumSquare(n);
-			if (sqSum==1)
+			if (sqSum == 1)
 			{
 				return true;
 			}
-			if (ust.find(sqSum)!=ust.end())
+			if (ust.find(sqSum) != ust.end())
 			{
 				return false;
 			}
@@ -155,7 +490,7 @@ public:
 class Solution {
 public:
 	int rangeBitwiseAnd(int m, int n) {
-		while (n>m)
+		while (n > m)
 		{
 			n = n&(n - 1);
 		}
