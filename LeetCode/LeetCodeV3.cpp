@@ -12,16 +12,424 @@
 
 
 
-
-
+/*-------------------------------------------------------------------------------------*/
+class Solution206 {
+public:
+	ListNode* reverseList(ListNode* head) {
+		ListNode* fakeHead = new ListNode(-1);
+		ListNode* pCur = head;
+		ListNode* pNext = head;
+		while (pCur)
+		{
+			pNext = pCur->next;
+			pCur->next = fakeHead->next;
+			fakeHead->next = pCur;
+			pCur = pNext;
+		}
+		return fakeHead->next;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution205 {
+public:
+	bool isIsomorphic(string s, string t) {
+		unordered_map<char, char> ump1;
+		unordered_map<char, char> ump2;
+		int len = s.size();
+		for (size_t i = 0; i < len; i++)
+		{
+			if (ump1.find(s[i])!=ump1.end())
+			{
+				if (ump1[s[i]]!=t[i])
+				{
+					return false;
+				}
+			}
+			else
+			{
+				ump1[s[i]] = t[i];
+			}
+			if (ump2.find(t[i])!=ump2.end())
+			{
+				if (ump2[t[i]]!=s[i])
+				{
+					return false;
+				}
+			}
+			else
+			{
+				ump2[t[i]] = s[i];
+			}
+		}
+		return true;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution204 {
+public:
+	int countPrimes(int n) {
+		vector<int> isPrime(n,1);
+		int cnt = 0;
+		if (n>0)
+		{
+			isPrime[0] = 0;
+			isPrime[1] = 0;
+			int m = sqrt(n);
+			int index = 2;
+			while (index<=m)
+			{
+				if (isPrime[index])
+				{
+					for (int i = index+index; i<n; i+=index)
+					{
+						isPrime[i] = 0;
+					}
+				}
+				index++;
+			}
+		}
+		cnt = accumulate(isPrime.begin(), isPrime.end(), 0);
+		return cnt;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution203 {
+public:
+	ListNode* removeElements(ListNode* head, int val) {
+		ListNode* fakeNode = new ListNode(INT_MAX);
+		fakeNode->next = head;
+		ListNode* pCur = fakeNode;
+		ListNode* pPre = fakeNode;
+		while (pCur)
+		{
+			if (pCur->val == val)
+			{
+				pPre->next = pCur->next;
+				pCur = pCur->next;
+			}
+			else
+			{
+				pPre = pCur;
+				pCur = pCur->next;
+			}
+		}
+		return fakeNode->next;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution202 {
+public:
+	bool isHappy(int n) {
+		unordered_set<int> ust;
+		while (true)
+		{
+			int sqSum = GetSumSquare(n);
+			if (sqSum==1)
+			{
+				return true;
+			}
+			if (ust.find(sqSum)!=ust.end())
+			{
+				return false;
+			}
+			else
+			{
+				ust.insert(sqSum);
+			}
+			n = sqSum;
+		}
+	}
+	int GetSumSquare(int num)
+	{
+		int res = 0;
+		while (num)
+		{
+			int digit = num % 10;
+			num /= 10;
+			res += digit*digit;
+		}
+		return res;
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution {
+public:
+	int rangeBitwiseAnd(int m, int n) {
+		while (n>m)
+		{
+			n = n&(n - 1);
+		}
+		return m&n;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution200 {
+public:
+	int numIslands(vector<vector<char>>& grid) {
+		int cnt = 0;
+		int M = grid.size();
+		int N = 0;
+		if (M)
+		{
+			N = grid[0].size();
+		}
+		if (M&&N)
+		{
+			vector<vector<bool>> isVisited(M, vector<bool>(N, false));
+			for (size_t i = 0; i < M; i++)
+			{
+				for (size_t j = 0; j < N; j++)
+				{
+					if (DFS(grid, isVisited, M, N, i, j))
+					{
+						cnt++;
+					}
+				}
+			}
+		}
+		return cnt;
+	}
+	bool DFS(vector<vector<char>>& grid, vector<vector<bool>>& isVisited, int M, int N, int iIndex, int jIndex)
+	{
+		if (isVisited[iIndex][jIndex] || grid[iIndex][jIndex] == '0')
+		{
+			return false;
+		}
+		isVisited[iIndex][jIndex] = true;
+		if (iIndex - 1 >= 0 && !isVisited[iIndex - 1][jIndex])
+		{
+			DFS(grid, isVisited, M, N, iIndex - 1, jIndex);
+		}
+		if (jIndex - 1 >= 0 && !isVisited[iIndex][jIndex - 1])
+		{
+			DFS(grid, isVisited, M, N, iIndex, jIndex - 1);
+		}
+		if (iIndex + 1 < M && !isVisited[iIndex + 1][jIndex])
+		{
+			DFS(grid, isVisited, M, N, iIndex + 1, jIndex);
+		}
+		if (jIndex + 1 < N && !isVisited[iIndex][jIndex + 1])
+		{
+			DFS(grid, isVisited, M, N, iIndex, jIndex + 1);
+		}
+		return true;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution199 {
+public:
+	vector<int> rightSideView(TreeNode* root) {
+		queue<TreeNode*> qu;
+		vector<int> result;
+		if (root)
+		{
+			qu.push(root);
+			int curCnt = 1;
+			int nextCnt = 0;
+			while (!qu.empty())
+			{
+				TreeNode* cur = qu.front();
+				qu.pop();
+				curCnt--;
+				if (cur->left)
+				{
+					qu.push(cur->left);
+					nextCnt++;
+				}
+				if (cur->right)
+				{
+					qu.push(cur->right);
+					nextCnt++;
+				}
+				if (!curCnt)
+				{
+					curCnt = nextCnt;
+					nextCnt = 0;
+					result.push_back(cur->val);
+				}
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution198 {
+public:
+	int rob(vector<int>& nums) {
+		int len = nums.size();
+		vector<int> dp(len + 1, 0);
+		if (len == 0)
+		{
+			return 0;
+		}
+		dp[1] = nums[0];
+		for (size_t i = 2; i <= len; i++)
+		{
+			dp[i] = max(dp[i - 1], nums[i - 1] + dp[i - 2]);
+		}
+		return dp[len];
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution191 {
+public:
+	int hammingWeight(uint32_t n) {
+		int cnt = 0;
+		while (n)
+		{
+			n &= (n - 1);
+			cnt++;
+		}
+		return cnt;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution190 {
+public:
+	uint32_t reverseBits(uint32_t n) {
+		uint32_t res = 0;
+		for (size_t i = 0; i < 32; i++)
+		{
+			uint32_t bit = (n >> i) & 0x1;
+			res = (res << 1) | bit;
+		}
+		return res;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution189 {
+public:
+	void rotate(vector<int>& nums, int k) {
+		int len = nums.size();
+		k %= len;
+		if (k > 0 && len > 0)
+		{
+			Reverse(nums, 0, len - k - 1);
+			Reverse(nums, len - k, len - 1);
+			Reverse(nums, 0, len - 1);
+		}
+	}
+	void Reverse(vector<int>& nums, int L, int R)
+	{
+		while (L < R)
+		{
+			swap(nums[L], nums[R]);
+			L++;
+			R--;
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution187 {
+public:
+	vector<string> findRepeatedDnaSequences(string s) {
+		unordered_map<char, int> chMap{ { 'A', 0 }, { 'C', 1 }, { 'T', 2 }, { 'G', 3 } };
+		vector<string> res;
+		unordered_map<int, int> mp;
+		int len = s.size();
+		for (int i = 0; i + 9 < len; i++)
+		{
+			string str = s.substr(i, 10);
+			if (++mp[Str2Int(chMap, str)] == 2)
+			{
+				res.push_back(str);
+			}
+		}
+		return res;
+	}
+	int Str2Int(unordered_map<char, int>& chMap, string str)
+	{
+		int len = str.size();
+		int res = 0;
+		for (size_t i = 0; i < len; i++)
+		{
+			res = res * 4 + chMap[str[i]];
+		}
+		return res;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution179 {
+public:
+	string largestNumber(vector<int>& nums) {
+		vector<string> vec;
+		for (size_t i = 0; i < nums.size(); i++)
+		{
+			vec.push_back(to_string(nums[i]));
+		}
+		sort(vec.begin(), vec.end(), Cmp);
+		string res;
+		if (vec[0] == "0")
+		{
+			return vec[0];
+		}
+		for (size_t i = 0; i < vec.size(); i++)
+		{
+			res += vec[i];
+		}
+		return res;
+	}
+	static bool Cmp(string str1, string str2)
+	{
+		return str1 + str2 > str2 + str1;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class BSTIterator {
+public:
+	stack<TreeNode*> st;
+	BSTIterator(TreeNode *root) {
+		while (root)
+		{
+			st.push(root);
+			root = root->left;
+		}
+	}
+
+	/** @return whether we have a next smallest number */
+	bool hasNext() {
+		return !st.empty();
+	}
+
+	/** @return the next smallest number */
+	int next() {
+		TreeNode* curNode = st.top();
+		st.pop();
+		int res = curNode->val;
+		if (curNode->right)
+		{
+			curNode = curNode->right;
+			while (curNode)
+			{
+				st.push(curNode);
+				curNode = curNode->left;
+			}
+		}
+		return res;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution172 {
+public:
+	int trailingZeroes(int n) {
+		int cnt = 0;
+		long x = 5;
+		while (x > 0 && n >= x)
+		{
+			cnt += n / x;
+			x *= 5;
+		}
+		return cnt;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution171 {
 public:
 	int titleToNumber(string s) {
 		int res = 0;
 		for (int i = 0; i < s.size(); i++)
 		{
-			res = res*26+(s[i]-'A'+1);
+			res = res * 26 + (s[i] - 'A' + 1);
 		}
 		return res;
 	}
@@ -34,13 +442,13 @@ public:
 		int cnt = 1;
 		for (size_t i = 1; i < nums.size(); i++)
 		{
-			if (nums[i]==maj)
+			if (nums[i] == maj)
 			{
 				cnt++;
 			}
 			else
 			{
-				if (cnt==0)
+				if (cnt == 0)
 				{
 					maj = nums[i];
 					cnt++;
@@ -64,7 +472,7 @@ public:
 			res += ((n - 1) % 26 + 'A');
 			n = (n - 1) / 26;
 		}
-		reverse(res.begin(),res.end());
+		reverse(res.begin(), res.end());
 		return res;
 	}
 };
@@ -81,7 +489,7 @@ public:
 		vector<long long> remainList;
 		int loopIndex = -1;
 		bool isNeg = false;
-		if (numerator<0 ^ denominator<0)
+		if (numerator < 0 ^ denominator < 0)
 		{
 			isNeg = true;
 		}
@@ -89,7 +497,7 @@ public:
 		numerator1 = abs(numerator1);
 		long long denominator1 = denominator;
 		denominator1 = abs(denominator1);
-		if (numerator1>denominator1)
+		if (numerator1 > denominator1)
 		{
 			integerList.push_back(numerator1 / denominator1);
 			numerator1 = numerator1 % denominator1;
@@ -189,7 +597,7 @@ public:
 		int len1 = vList1.size();
 		int len2 = vList2.size();
 		int diff = abs(len1 - len2);
-		if (len1>len2)
+		if (len1 > len2)
 		{
 			while (diff--)
 			{
@@ -205,13 +613,13 @@ public:
 		}
 		int len = max(len1, len2);
 		int i = 0;
-		while (i<len)
+		while (i < len)
 		{
-			if (vList1[i]<vList2[i])
+			if (vList1[i] < vList2[i])
 			{
 				return -1;
 			}
-			else if (vList1[i]>vList2[i])
+			else if (vList1[i] > vList2[i])
 			{
 				return 1;
 			}
@@ -226,10 +634,10 @@ public:
 	int findPeakElement(vector<int>& nums) {
 		int L = 0;
 		int R = nums.size() - 1;
-		while (L<R)
+		while (L < R)
 		{
 			int M = L + ((R - L) >> 1);
-			if (nums[M]<nums[M + 1])
+			if (nums[M] < nums[M + 1])
 			{
 				L = M + 1;
 			}
@@ -245,7 +653,7 @@ public:
 class Solution160 {
 public:
 	ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
-		if (!headA||!headB)
+		if (!headA || !headB)
 		{
 			return NULL;
 		}
@@ -265,7 +673,7 @@ public:
 		}
 		ListNode* pL = NULL;
 		ListNode* pS = NULL;
-		if (lenA>lenB)
+		if (lenA > lenB)
 		{
 			pL = headA;
 			pS = headB;
@@ -275,14 +683,14 @@ public:
 			pL = headB;
 			pS = headA;
 		}
-		int dist = abs(lenA-lenB);
+		int dist = abs(lenA - lenB);
 		while (dist--)
 		{
 			pL = pL->next;
 		}
 		while (pL)
 		{
-			if (pL==pS)
+			if (pL == pS)
 			{
 				break;
 			}
@@ -300,7 +708,7 @@ public:
 
 	void push(int x) {
 		st.push(x);
-		if (stMin.empty()||x<=stMin.top())
+		if (stMin.empty() || x <= stMin.top())
 		{
 			stMin.push(x);
 		}
@@ -309,7 +717,7 @@ public:
 	void pop() {
 		if (!st.empty())
 		{
-			if (st.top()==stMin.top())
+			if (st.top() == stMin.top())
 			{
 				stMin.pop();
 			}

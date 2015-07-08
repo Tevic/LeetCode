@@ -7,8 +7,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Solution131 S;
-	S.partition("aab");
+	Solution204 S;
+	S.countPrimes(10);
 }
 
 
