@@ -11,45 +11,183 @@
 
 
 /*-------------------------------------------------------------------------------------*/
+class Solution233 {
+public:
+	int countDigitOne(int n) {
+		if (n<=0)
+		{
+			return 0;
+		}
+		long x = n;
+		long count = 0;
+		long high = 0;
+		long low = 0;
+		long cur = 0;
+		long i = 1;
+		while ((x/i)!=0)
+		{
+			cur = x / i % 10;
+			high = x / i / 10;
+			low = x - x / i*i;
+			if (cur==0)
+			{
+				count = count + high*i;
+			}
+			else if (cur>1)
+			{
+				count = count + (high + 1)*i;
+			}
+			else
+			{
+				count = count + high*i + low + 1;
+			}
+			i =i* 10;
+		}
+		return count;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Queue {
+public:
+	stack<int> ST1;
+	stack<int> ST2;
+	// Push element x to the back of queue.
+	void push(int x) {
+		ST1.push(x);
+	}
+
+	// Removes the element from in front of queue.
+	void pop(void) {
+		if (!ST2.empty())
+		{
+			ST2.pop();
+		}
+		else
+		{
+			while (!ST1.empty())
+			{
+				ST2.push(ST1.top());
+				ST1.pop();
+			}
+			if (!ST2.empty())
+			{
+				ST2.pop();
+			}
+		}
+	}
+
+	// Get the front element.
+	int peek(void) {
+		if (!ST2.empty())
+		{
+			return ST2.top();
+		}
+		else
+		{
+			while (!ST1.empty())
+			{
+				ST2.push(ST1.top());
+				ST1.pop();
+			}
+			if (!ST2.empty())
+			{
+				return ST2.top();
+			}
+		}
+	}
+
+	// Return whether the queue is empty.
+	bool empty(void) {
+		return ST1.empty() && ST2.empty();
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution231 {
+public:
+	bool isPowerOfTwo(int n) {
+		if (n<=0)
+		{
+			return false;
+		}
+		int cntOne = 0;
+		while (n)
+		{
+			cntOne++;
+			n &= (n - 1);
+		}
+		return cntOne == 1;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution230 {
+public:
+	int kthSmallest(TreeNode* root, int k) {
+		TreeNode* pCur = root;
+		stack<TreeNode*> st;
+		while (!st.empty()||pCur)
+		{
+			if (pCur)
+			{
+				st.push(pCur);
+				pCur = pCur->left;
+			}
+			else
+			{
+				TreeNode* cur = st.top();
+				if (--k==0)
+				{
+					return cur->val;
+				}
+				st.pop();
+				pCur = cur->right;
+			}
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 class Solution229 {
 public:
 	vector<int> majorityElement(vector<int>& nums) {
 		int len = nums.size();
+		vector<int> result;
 		int iCnt1 = 0;
 		int iCnt2 = 0;
-		int iNum1,iNum2;
-		iNum1 = nums[0];
-		iCnt1 = 1;
-		int index = 1;
-		while (index<len&&nums[index]==iNum1)
+		int iNum1, iNum2;
+		for (size_t i = 0; i < len; i++)
 		{
-			iCnt1++;
-		}
-		if (index<len)
-		{
-			iNum2 = nums[index];
-			iCnt2 = 1;
-		}
-		while (index<len)
-		{
-			if (nums[index]==iNum1)
+			if (nums[i]==iNum1)
 			{
 				iCnt1++;
 			}
-			else if (nums[index]==iNum2)
+			else if (nums[i]==iNum2)
 			{
+				iCnt2++;
+			}
+			else if (iCnt1==0)
+			{
+				iNum1 = nums[i];
+				iCnt1++;
+			}
+			else if(iCnt2 == 0)
+			{
+				iNum2 = nums[i];
 				iCnt2++;
 			}
 			else
 			{
 				iCnt1--;
 				iCnt2--;
-				if (iCnt1==0)
-				{
-					iNum1 = nums[index];
-				}
 			}
 		}
+		if (count(nums.begin(), nums.end(), iNum1) > len / 3)
+		{
+			result.push_back(iNum1);
+		}
+		if (count(nums.begin(), nums.end(), iNum2) > len / 3)
+		{
+			result.push_back(iNum2);
+		}
+		return result;
 	}
 };
 /*-------------------------------------------------------------------------------------*/
@@ -58,7 +196,7 @@ public:
 	vector<string> summaryRanges(vector<int>& nums) {
 		int len = nums.size();
 		vector<string> result;
-		if (len>0)
+		if (len > 0)
 		{
 			int start = 0;
 			int end = 0;
@@ -66,22 +204,22 @@ public:
 			nums.push_back(INT_MAX);
 			for (size_t i = 1; i <= len; i++)
 			{
-				if (nums[i]==last+1)
+				if (nums[i] == last + 1)
 				{
 					end = i;
 					last = nums[i];
 				}
 				else
 				{
-					if (start==end)
+					if (start == end)
 					{
 						result.push_back(to_string(nums[start]));
 					}
 					else
 					{
-						result.push_back(to_string(nums[start])+"->"+to_string(nums[end]));
+						result.push_back(to_string(nums[start]) + "->" + to_string(nums[end]));
 					}
-					start = end = i; 
+					start = end = i;
 					last = nums[i];
 				}
 			}
@@ -102,7 +240,7 @@ public:
 	TreeNode* invertTree(TreeNode* root) {
 		if (root)
 		{
-			swap(root->left,root->right);
+			swap(root->left, root->right);
 			invertTree(root->left);
 			invertTree(root->right);
 		}
@@ -130,7 +268,7 @@ public:
 	void pop() {
 		if (!Q1.empty())
 		{
-			while (Q1.size()!=1)
+			while (Q1.size() != 1)
 			{
 				Q2.push(Q1.front());
 				Q1.pop();

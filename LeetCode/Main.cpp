@@ -7,8 +7,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Solution228 S;
-	S.summaryRanges(vector < int > {0});
+	Solution233 S;
+	S.countDigitOne(1410065408);
 }
 
 
