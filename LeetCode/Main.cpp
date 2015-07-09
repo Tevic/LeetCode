@@ -7,8 +7,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Solution204 S;
-	S.countPrimes(10);
+	Solution228 S;
+	S.summaryRanges(vector < int > {0});
 }
 
 

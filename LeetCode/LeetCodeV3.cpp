@@ -10,8 +10,373 @@
 
 
 
+/*-------------------------------------------------------------------------------------*/
+class Solution229 {
+public:
+	vector<int> majorityElement(vector<int>& nums) {
+		int len = nums.size();
+		int iCnt1 = 0;
+		int iCnt2 = 0;
+		int iNum1,iNum2;
+		iNum1 = nums[0];
+		iCnt1 = 1;
+		int index = 1;
+		while (index<len&&nums[index]==iNum1)
+		{
+			iCnt1++;
+		}
+		if (index<len)
+		{
+			iNum2 = nums[index];
+			iCnt2 = 1;
+		}
+		while (index<len)
+		{
+			if (nums[index]==iNum1)
+			{
+				iCnt1++;
+			}
+			else if (nums[index]==iNum2)
+			{
+				iCnt2++;
+			}
+			else
+			{
+				iCnt1--;
+				iCnt2--;
+				if (iCnt1==0)
+				{
+					iNum1 = nums[index];
+				}
+			}
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution228 {
+public:
+	vector<string> summaryRanges(vector<int>& nums) {
+		int len = nums.size();
+		vector<string> result;
+		if (len>0)
+		{
+			int start = 0;
+			int end = 0;
+			int last = nums[start];
+			nums.push_back(INT_MAX);
+			for (size_t i = 1; i <= len; i++)
+			{
+				if (nums[i]==last+1)
+				{
+					end = i;
+					last = nums[i];
+				}
+				else
+				{
+					if (start==end)
+					{
+						result.push_back(to_string(nums[start]));
+					}
+					else
+					{
+						result.push_back(to_string(nums[start])+"->"+to_string(nums[end]));
+					}
+					start = end = i; 
+					last = nums[i];
+				}
+			}
+		}
+		return result;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution227 {
+public:
+	int calculate(string s) {
+		/*TODO*/
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution226 {
+public:
+	TreeNode* invertTree(TreeNode* root) {
+		if (root)
+		{
+			swap(root->left,root->right);
+			invertTree(root->left);
+			invertTree(root->right);
+		}
+		return root;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Stack {
+public:
+	queue<int> Q1;
+	queue<int> Q2;
+	// Push element x onto stack.
+	void push(int x) {
+		if (Q2.empty())
+		{
+			Q1.push(x);
+		}
+		else
+		{
+			Q2.push(x);
+		}
+	}
 
+	// Removes the element on top of the stack.
+	void pop() {
+		if (!Q1.empty())
+		{
+			while (Q1.size()!=1)
+			{
+				Q2.push(Q1.front());
+				Q1.pop();
+			}
+			Q1.pop();
+		}
+		else if (!Q2.empty())
+		{
+			while (Q2.size() != 1)
+			{
+				Q1.push(Q2.front());
+				Q2.pop();
+			}
+			Q2.pop();
+		}
+	}
 
+	// Get the top element.
+	int top() {
+		int val = -1;
+		if (!Q1.empty())
+		{
+			while (!Q1.empty())
+			{
+				val = Q1.front();
+				Q2.push(Q1.front());
+				Q1.pop();
+			}
+		}
+		else if (!Q2.empty())
+		{
+			while (!Q2.empty())
+			{
+				val = Q2.front();
+				Q1.push(Q2.front());
+				Q2.pop();
+			}
+		}
+		return val;
+	}
+
+	// Return whether the stack is empty.
+	bool empty() {
+		return Q1.empty() && Q2.empty();
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution224 {
+public:
+	int calculate(string s) {
+		/*TODO*/
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution223 {
+public:
+	int computeArea(int A, int B, int C, int D, int E, int F, int G, int H) {
+		int X1 = max(A, E);
+		int Y1 = max(B, F);
+		int X2 = min(C, G);
+		int Y2 = min(D, H);
+		int A1 = abs(A - C)*abs(B - D);
+		int A2 = abs(E - G)*abs(F - H);
+		int A3 = abs(X1 - X2)*abs(Y1 - Y2);
+		if (X1 < X2&&Y1 < Y2)
+		{
+			return A1 + A2 - A3;
+		}
+		else
+		{
+			return A1 + A2;
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution222 {
+public:
+	int countNodes(TreeNode* root) {
+		if (root)
+		{
+			int lDepth = GetLDepth(root->left);
+			int rDepth = GetRDepth(root->right);
+			if (lDepth == rDepth)
+			{
+				return (1 << (lDepth + 1)) - 1;
+			}
+			else
+			{
+				return countNodes(root->left) + countNodes(root->right) + 1;
+			}
+		}
+		else
+		{
+			return 0;
+		}
+	}
+	int GetLDepth(TreeNode* root)
+	{
+		int cnt = 0;
+		while (root)
+		{
+			cnt++;
+			root = root->left;
+		}
+		return cnt;
+	}
+	int GetRDepth(TreeNode* root)
+	{
+		int cnt = 0;
+		while (root)
+		{
+			cnt++;
+			root = root->right;
+		}
+		return cnt;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution221 {
+public:
+	int maximalSquare(vector<vector<char>>& matrix) {
+		int M = matrix.size();
+		int N = 0;
+		if (M)
+		{
+			N = matrix[0].size();
+		}
+		int maxLen = 0;
+		if (M&&N)
+		{
+			vector<vector<int>> dp(M, vector<int>(N, 0));
+			for (size_t i = 0; i < M; i++)
+			{
+				dp[i][0] = matrix[i][0] - '0';
+			}
+			for (size_t i = 0; i < N; i++)
+			{
+				dp[0][i] = matrix[0][i] - '0';
+			}
+			for (size_t i = 1; i < M; i++)
+			{
+				for (size_t j = 1; j < N; j++)
+				{
+					if (matrix[i][j] == '1')
+					{
+						dp[i][j] = min(dp[i - 1][j - 1], min(dp[i - 1][j], dp[i][j - 1])) + 1;
+					}
+				}
+			}
+			for (size_t i = 0; i < M; i++)
+			{
+				for (size_t j = 0; j < N; j++)
+				{
+					maxLen = max(maxLen, dp[i][j]);
+				}
+			}
+		}
+		return maxLen*maxLen;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution220 {
+public:
+	bool containsNearbyAlmostDuplicate(vector<int>& nums, int k, int t) {
+		map<long long, int> M;
+		int l = 0;
+		for (int r = 0; r<nums.size(); r++) {
+			if (r - l>k && M[nums[l]] == l)
+				M.erase(nums[l++]);
+			auto it = M.lower_bound(nums[r] - t);
+			if (it != M.end() && abs(it->first - nums[r]) <= t)
+				return true;
+			M[nums[r]] = r;
+		}
+		return false;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution219 {
+public:
+	bool containsNearbyDuplicate(vector<int>& nums, int k) {
+		int len = nums.size();
+		unordered_map<int, vector<int>> ump;
+		for (size_t i = 0; i < len; i++)
+		{
+			ump[nums[i]].push_back(i);
+		}
+		for (auto m : ump)
+		{
+			if (m.second.size() == 2 && abs(m.second[0] - m.second[1]) <= k)
+			{
+				return true;
+			}
+		}
+		return false;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution217 {
+public:
+	bool containsDuplicate(vector<int>& nums) {
+		int len = nums.size();
+		unordered_set<int> ust;
+		for (size_t i = 0; i < len; i++)
+		{
+			if (ust.find(nums[i]) != ust.end())
+			{
+				return true;
+			}
+			ust.insert(nums[i]);
+		}
+		return false;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution216 {
+public:
+	vector<vector<int>> combinationSum3(int k, int n) {
+		vector<vector<int>> result;
+		vector<int> vec;
+		GetComb(result, vec, 0, k, n, 0);
+		return result;
+	}
+	void GetComb(vector<vector<int>>& result, vector<int>& vec, int index, int cnt, int target, int sum)
+	{
+		if (vec.size() == cnt)
+		{
+			if (sum == target)
+			{
+				result.push_back(vec);
+			}
+		}
+		else
+		{
+			for (int i = index + 1; i <= 9; i++)
+			{
+				vec.push_back(i);
+				GetComb(result, vec, i, cnt, target, sum + i);
+			}
+		}
+		if (vec.size() > 0)
+		{
+			vec.pop_back();
+		}
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution215 {
 public:
@@ -39,18 +404,18 @@ public:
 	int rob(vector<int>& nums) {
 		int len = nums.size();
 		int maxProf = 0;
-		if (len>0)
+		if (len > 0)
 		{
-			vector<int> dp(len,0);
+			vector<int> dp(len, 0);
 			dp[0] = nums[0];
-			if (len==1)
+			if (len == 1)
 			{
 				return dp[0];
 			}
 			dp[1] = nums[0];
-			for (size_t i = 2; i < len-1; i++)
+			for (size_t i = 2; i < len - 1; i++)
 			{
-				dp[i] = max(dp[i-1],dp[i-2]+nums[i]);
+				dp[i] = max(dp[i - 1], dp[i - 2] + nums[i]);
 			}
 			maxProf = dp[len - 2];
 			dp[0] = 0;
@@ -59,7 +424,7 @@ public:
 			{
 				dp[i] = max(dp[i - 1], dp[i - 2] + nums[i]);
 			}
-			maxProf = max(maxProf,dp[len-1]);
+			maxProf = max(maxProf, dp[len - 1]);
 		}
 		return maxProf;
 	}
