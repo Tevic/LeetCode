@@ -14,7 +14,7 @@
 class Solution233 {
 public:
 	int countDigitOne(int n) {
-		if (n<=0)
+		if (n <= 0)
 		{
 			return 0;
 		}
@@ -24,16 +24,16 @@ public:
 		long low = 0;
 		long cur = 0;
 		long i = 1;
-		while ((x/i)!=0)
+		while ((x / i) != 0)
 		{
 			cur = x / i % 10;
 			high = x / i / 10;
 			low = x - x / i*i;
-			if (cur==0)
+			if (cur == 0)
 			{
 				count = count + high*i;
 			}
-			else if (cur>1)
+			else if (cur > 1)
 			{
 				count = count + (high + 1)*i;
 			}
@@ -41,7 +41,7 @@ public:
 			{
 				count = count + high*i + low + 1;
 			}
-			i =i* 10;
+			i = i * 10;
 		}
 		return count;
 	}
@@ -105,7 +105,7 @@ public:
 class Solution231 {
 public:
 	bool isPowerOfTwo(int n) {
-		if (n<=0)
+		if (n <= 0)
 		{
 			return false;
 		}
@@ -124,7 +124,7 @@ public:
 	int kthSmallest(TreeNode* root, int k) {
 		TreeNode* pCur = root;
 		stack<TreeNode*> st;
-		while (!st.empty()||pCur)
+		while (!st.empty() || pCur)
 		{
 			if (pCur)
 			{
@@ -134,7 +134,7 @@ public:
 			else
 			{
 				TreeNode* cur = st.top();
-				if (--k==0)
+				if (--k == 0)
 				{
 					return cur->val;
 				}
@@ -155,20 +155,20 @@ public:
 		int iNum1, iNum2;
 		for (size_t i = 0; i < len; i++)
 		{
-			if (nums[i]==iNum1)
+			if (nums[i] == iNum1)
 			{
 				iCnt1++;
 			}
-			else if (nums[i]==iNum2)
+			else if (nums[i] == iNum2)
 			{
 				iCnt2++;
 			}
-			else if (iCnt1==0)
+			else if (iCnt1 == 0)
 			{
 				iNum1 = nums[i];
 				iCnt1++;
 			}
-			else if(iCnt2 == 0)
+			else if (iCnt2 == 0)
 			{
 				iNum2 = nums[i];
 				iCnt2++;
@@ -231,7 +231,101 @@ public:
 class Solution227 {
 public:
 	int calculate(string s) {
-		/*TODO*/
+		vector<string> vec;
+		ConvertToRPN(s, vec);
+		return EvalRPN(vec);
+	}
+	void ConvertToRPN(string s, vector<string>& vec)
+	{
+		stack<char> S;
+		S.push('#');
+		unordered_map<char, int> prioMap{ { '#', -1 }, { '(', 0 }, { '+', 1 }, { '-', 1 }, { '*', 3 }, { '/', 3 } };
+		int len = s.size();
+		for (size_t i = 0; i < len; i++)
+		{
+			char ch = s[i];
+			if (isspace(ch))
+			{
+				continue;
+			}
+			if (ch == '(')
+			{
+				S.push(ch);
+			}
+			else if (ch == ')')
+			{
+				while (S.top() != '(')
+				{
+					vec.push_back(string(1, S.top()));
+					S.pop();
+				}
+				S.pop();
+			}
+			else if (isdigit(ch))
+			{
+				string num;
+				while (isdigit(s[i]))
+				{
+					num += s[i];
+					i++;
+				}
+				i--;
+				vec.push_back(num);
+			}
+			else
+			{
+				while (prioMap[S.top()] >= prioMap[ch])
+				{
+					vec.push_back(string(1, S.top()));
+					S.pop();
+				}
+				S.push(ch);
+			}
+		}
+		while (S.top() != '#')
+		{
+			vec.push_back(string(1, S.top()));
+			S.pop();
+		}
+	}
+
+	int EvalRPN(vector<string>& vec)
+	{
+		stack<long> S;
+		int len = vec.size();
+		for (size_t i = 0; i < len; i++)
+		{
+			long num;
+			if (vec[i] == "+")
+			{
+				num = S.top();
+				S.pop();
+				S.top() += num;
+			}
+			else  if (vec[i] == "-")
+			{
+				num = S.top();
+				S.pop();
+				S.top() -= num;
+			}
+			else if (vec[i] == "*")
+			{
+				num = S.top();
+				S.pop();
+				S.top() *= num;
+			}
+			else if (vec[i] == "/")
+			{
+				num = S.top();
+				S.pop();
+				S.top() /= num;
+			}
+			else
+			{
+				S.push(stol(vec[i]));
+			}
+		}
+		return S.top();
 	}
 };
 /*-------------------------------------------------------------------------------------*/
@@ -319,7 +413,101 @@ public:
 class Solution224 {
 public:
 	int calculate(string s) {
-		/*TODO*/
+		vector<string> vec;
+		ConvertToRPN(s, vec);
+		return EvalRPN(vec);
+	}
+	void ConvertToRPN(string s, vector<string>& vec)
+	{
+		stack<char> S;
+		S.push('#');
+		unordered_map<char, int> prioMap{ { '#', -1 }, { '(', 0 }, { '+', 1 }, { '-', 1 }, { '*', 3 }, { '/', 3 } };
+		int len = s.size();
+		for (size_t i = 0; i < len; i++)
+		{
+			char ch = s[i];
+			if (isspace(ch))
+			{
+				continue;
+			}
+			if (ch == '(')
+			{
+				S.push(ch);
+			}
+			else if (ch == ')')
+			{
+				while (S.top() != '(')
+				{
+					vec.push_back(string(1, S.top()));
+					S.pop();
+				}
+				S.pop();
+			}
+			else if (isdigit(ch))
+			{
+				string num;
+				while (isdigit(s[i]))
+				{
+					num += s[i];
+					i++;
+				}
+				i--;
+				vec.push_back(num);
+			}
+			else
+			{
+				while (prioMap[S.top()] >= prioMap[ch])
+				{
+					vec.push_back(string(1, S.top()));
+					S.pop();
+				}
+				S.push(ch);
+			}
+		}
+		while (S.top() != '#')
+		{
+			vec.push_back(string(1, S.top()));
+			S.pop();
+		}
+	}
+
+	int EvalRPN(vector<string>& vec)
+	{
+		stack<int> S;
+		int len = vec.size();
+		for (size_t i = 0; i < len; i++)
+		{
+			int num;
+			if (vec[i] == "+")
+			{
+				num = S.top();
+				S.pop();
+				S.top() += num;
+			}
+			else  if (vec[i] == "-")
+			{
+				num = S.top();
+				S.pop();
+				S.top() -= num;
+			}
+			else if (vec[i] == "*")
+			{
+				num = S.top();
+				S.pop();
+				S.top() *= num;
+			}
+			else if (vec[i] == "/")
+			{
+				num = S.top();
+				S.pop();
+				S.top() /= num;
+			}
+			else
+			{
+				S.push(stoi(vec[i]));
+			}
+		}
+		return S.top();
 	}
 };
 /*-------------------------------------------------------------------------------------*/
@@ -5452,13 +5640,13 @@ public:
 	int romanToInt(string s) {
 		int result = 0;
 		unordered_map<char, int> chMap{
-				{ 'I', 1 },
-				{ 'V', 5 },
-				{ 'X', 10 },
-				{ 'L', 50 },
-				{ 'C', 100 },
-				{ 'D', 500 },
-				{ 'M', 1000 },
+			{ 'I', 1 },
+			{ 'V', 5 },
+			{ 'X', 10 },
+			{ 'L', 50 },
+			{ 'C', 100 },
+			{ 'D', 500 },
+			{ 'M', 1000 },
 		};
 		for (int i = 0; i < s.size(); i++)
 		{

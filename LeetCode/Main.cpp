@@ -7,8 +7,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Solution233 S;
-	S.countDigitOne(1410065408);
+	Solution227 S;
+	S.calculate("0-2147483648");
 }
 
 
