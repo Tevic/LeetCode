@@ -10,6 +10,82 @@
 
 
 
+
+
+
+
+
+
+
+/*-------------------------------------------------------------------------------------*/
+class Solution236 {
+public:
+	TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution235 {
+public:
+	TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
+		if (!root)
+		{
+			return NULL;
+		}
+		TreeNode* p1 = root;
+		TreeNode* p2 = root;
+		TreeNode* pre = NULL;
+		while (p1==p2)
+		{
+			pre = p1;
+			if (p->val>p1->val)
+			{
+				p1 = p1->right;
+			}
+			else if (p->val<p1->val)
+			{
+				p1 = p1->left;
+			}
+			if (q->val>p2->val)
+			{
+				p2 = p2->right;
+			}
+			else if (q->val<p2->val)
+			{
+				p2 = p2->left;
+			}
+		}
+		return pre;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution234 {
+public:
+	bool isPalindrome(ListNode* slow, ListNode* fast)
+	{
+		if (fast == nullptr) {
+			half = slow;
+			return true;
+		}
+		if (fast->next == nullptr) {
+			half = slow->next;
+			return true;
+		}
+
+		if (isPalindrome(slow->next, fast->next->next) && slow->val == half->val) {
+			half = half->next;
+			return true;
+		}
+
+		return false;
+	}
+
+	bool isPalindrome(ListNode* head) {
+		return isPalindrome(head, head);
+	}
+
+	ListNode* half;
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution233 {
 public:
