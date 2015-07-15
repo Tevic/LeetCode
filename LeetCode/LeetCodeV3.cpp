@@ -16,7 +16,16 @@
 
 
 
-
+class Solution237 {
+public:
+	void deleteNode(ListNode* node) {
+		if (node&&node->next)
+		{
+			node->val = node->next->val;
+			node->next = node->next->next;
+		}
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution236 {
 public:
