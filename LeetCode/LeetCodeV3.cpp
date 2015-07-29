@@ -14,7 +14,55 @@
 
 
 
-
+class Solution240 {
+public:
+	bool searchMatrix(vector<vector<int>>& matrix, int target) {
+		int M = matrix.size();
+		int N = 0;
+		if (M)
+		{
+			N = matrix[0].size();
+		}
+		int bFind = false;
+		if (M&&N)
+		{
+			int iIndex = 0;
+			int jIndex = N - 1;
+			while (iIndex <M && jIndex>=0)
+			{
+				if (target>matrix[iIndex][jIndex])
+				{
+					iIndex++;
+				}
+				else if (target<matrix[iIndex][jIndex])
+				{
+					jIndex--;
+				}
+				else
+				{
+					bFind = true;
+					break;
+				}
+			}
+		}
+		return bFind;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution239 {
+public:
+	vector<int> maxSlidingWindow(vector<int>& nums, int k) {
+		vector<int> res;
+		deque<int> q;
+		for (int i = 0; i < nums.size(); ++i) {
+			if (!q.empty() && q.front() == i - k) q.pop_front();
+			while (!q.empty() && nums[q.back()] < nums[i]) q.pop_back();
+			q.push_back(i);
+			if (i >= k - 1) res.push_back(nums[q.front()]);
+		}
+		return res;
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution238 {
 public:

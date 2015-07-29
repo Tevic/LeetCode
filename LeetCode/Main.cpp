@@ -7,8 +7,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Solution227 S;
-	S.calculate("0-2147483648");
+	Solution239 SU239;
+	SU239.maxSlidingWindow(vector < int > {1, 3, -1, -3, 5, 3, 6, 7}, 3);
 }
 
 
