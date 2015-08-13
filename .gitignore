@@ -3,6 +3,7 @@ Release/
 LeetCode/Debug/
 LeetCode/Release/
 ipch/
+.vs/
 *.sdf
 *.opensdf
 *.suo

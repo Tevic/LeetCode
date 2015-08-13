@@ -13,7 +13,29 @@
 
 
 
-
+/*-------------------------------------------------------------------------------------*/
+class Solution241 {
+public:
+	vector<int> diffWaysToCompute(string input) {
+		vector<int> res;
+		for (int i = 0; i < input.size(); ++i) {
+			if (input[i] == '+' || input[i] == '-' || input[i] == '*') {
+				vector<int> left = diffWaysToCompute(input.substr(0, i));
+				vector<int> right = diffWaysToCompute(input.substr(i + 1));
+				for (int j = 0; j < left.size(); ++j) {
+					for (int k = 0; k < right.size(); ++k) {
+						if (input[i] == '+') res.push_back(left[j] + right[k]);
+						else if (input[i] == '-') res.push_back(left[j] - right[k]);
+						else res.push_back(left[j] * right[k]);
+					}
+				}
+			}
+		}
+		if (res.empty()) res.push_back(stoi(input));
+		return res;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 class Solution240 {
 public:
 	bool searchMatrix(vector<vector<int>>& matrix, int target) {
@@ -28,13 +50,13 @@ public:
 		{
 			int iIndex = 0;
 			int jIndex = N - 1;
-			while (iIndex <M && jIndex>=0)
+			while (iIndex < M && jIndex >= 0)
 			{
-				if (target>matrix[iIndex][jIndex])
+				if (target > matrix[iIndex][jIndex])
 				{
 					iIndex++;
 				}
-				else if (target<matrix[iIndex][jIndex])
+				else if (target < matrix[iIndex][jIndex])
 				{
 					jIndex--;
 				}
@@ -68,7 +90,7 @@ class Solution238 {
 public:
 	vector<int> productExceptSelf(vector<int>& nums) {
 		int len = nums.size();
-		vector<int> res(len,0);
+		vector<int> res(len, 0);
 		int left = 1;
 		for (int i = 0; i < len; i++)
 		{
@@ -76,7 +98,7 @@ public:
 			left *= nums[i];
 		}
 		int right = 1;
-		for (int i = len-1; i >=0; i--)
+		for (int i = len - 1; i >= 0; i--)
 		{
 			res[i] *= right;
 			right *= nums[i];
@@ -99,12 +121,12 @@ public:
 class Solution236 {
 public:
 	TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-		if(!root)return NULL;
-		if(root==p||root==q)return root;
-		TreeNode* leftNode=lowestCommonAncestor(root->left, p, q);
-		TreeNode* rightNode=lowestCommonAncestor(root->right, p, q);
-		if(leftNode&&rightNode)return root;
-		return leftNode?leftNode:rightNode;
+		if (!root)return NULL;
+		if (root == p || root == q)return root;
+		TreeNode* leftNode = lowestCommonAncestor(root->left, p, q);
+		TreeNode* rightNode = lowestCommonAncestor(root->right, p, q);
+		if (leftNode&&rightNode)return root;
+		return leftNode ? leftNode : rightNode;
 	}
 };
 /*-------------------------------------------------------------------------------------*/
@@ -118,10 +140,10 @@ public:
 		TreeNode* p1 = root;
 		TreeNode* p2 = root;
 		TreeNode* pre = NULL;
-		while (p1==p2)
+		while (p1 == p2)
 		{
 			pre = p1;
-			if (p->val>p1->val)
+			if (p->val > p1->val)
 			{
 				p1 = p1->right;
 			}
@@ -133,7 +155,7 @@ public:
 			{
 				p2 = p2->right;
 			}
-			else if (q->val<p2->val)
+			else if (q->val < p2->val)
 			{
 				p2 = p2->left;
 			}
@@ -5177,9 +5199,23 @@ public:
 class Solution034 {
 public:
 	vector<int> searchRange(vector<int>& nums, int target) {
+		//vector<int> result;
+		//result.push_back(FindFirst(nums, target));
+		//result.push_back(FindLast(nums, target));
+		//return result;
+
 		vector<int> result;
-		result.push_back(FindFirst(nums, target));
-		result.push_back(FindLast(nums, target));
+		auto par = equal_range(nums.begin(), nums.end(), target);
+		if (par.first != par.second)
+		{
+			result.push_back(par.first - nums.begin());
+			result.push_back(par.second - nums.begin() - 1);
+		}
+		else
+		{
+			result.push_back(-1);
+			result.push_back(-1);
+		}
 		return result;
 	}
 
@@ -5799,13 +5835,13 @@ public:
 	int romanToInt(string s) {
 		int result = 0;
 		unordered_map<char, int> chMap{
-			{ 'I', 1 },
-			{ 'V', 5 },
-			{ 'X', 10 },
-			{ 'L', 50 },
-			{ 'C', 100 },
-			{ 'D', 500 },
-			{ 'M', 1000 },
+				{ 'I', 1 },
+				{ 'V', 5 },
+				{ 'X', 10 },
+				{ 'L', 50 },
+				{ 'C', 100 },
+				{ 'D', 500 },
+				{ 'M', 1000 },
 		};
 		for (int i = 0; i < s.size(); i++)
 		{

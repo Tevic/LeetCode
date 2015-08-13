@@ -4,11 +4,33 @@
 //#include "LeetCodeV2.cpp"
 #include "LeetCodeV3.cpp"
 
+class A
+{
+public:
+	A() {};
+	virtual ~A() {};
+
+private:
+
+};
+
+class B:virtual public A
+{
+public:
+	B() {};
+	virtual ~B() {};
+
+private:
+
+};
+
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Solution239 SU239;
-	SU239.maxSlidingWindow(vector < int > {1, 3, -1, -3, 5, 3, 6, 7}, 3);
+	//Solution034 SU034;
+	//SU034.searchRange(vector < int > {1},0);
+	cout << sizeof(A) << endl;
+	cout << sizeof(B) << endl;
 }
 
 
