@@ -7,12 +7,146 @@
 
 
 
+/*-------------------------------------------------------------------------------------*/
+class Solution264 {
+public:
+	int nthUglyNumber(int n) {
+		int index = 0;
+		int index2 = 0;
+		int index3 = 0;
+		int index5 = 0;
+		vector<int> uglyVec(n,1);
+		while (index<n-1)
+		{
+			int uglyVal = min(min(uglyVec[index2] * 2, uglyVec[index3] * 3), uglyVec[index5] * 5);
+			if (uglyVal == uglyVec[index2] * 2)
+			{
+				index2++;
+			}
+			if (uglyVal == uglyVec[index3] * 3)
+			{
+				index3++;
+			}
+			if (uglyVal == uglyVec[index5] * 5)
+			{
+				index5++;
+			}
+			uglyVec[++index] = uglyVal;
+		}
+		return uglyVec[n - 1];
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution263 {
+public:
+	bool isUgly(int num) {
+		if (num<=0)
+		{
+			return false;
+		}
+		while (num%2==0)
+		{
+			num /= 2;
+		}
+		while (num%3==0)
+		{
+			num /= 3;
+		}
+		while (num%5==0)
+		{
+			num /= 5;
+		}
+		return num == 1;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution260 {
+public:
+	vector<int> singleNumber(vector<int>& nums) {
+		int len = nums.size();
+		int xorSum = 0;
+		for (int i = 0; i < len; i++)
+		{
+			xorSum ^= nums[i];
+		}
+		int index = -1;
+		for (int i = 0; i < 32; i++)
+		{
+			if ((xorSum>>i)&1==1)
+			{
+				index = i;
+				break;
+			}
+		}
+		int N1 = 0;
+		int N2 = 0;
+		for (size_t i = 0; i < len; i++)
+		{
+			if ((nums[i]>>index)&1==1)
+			{
+				N1 ^= nums[i];
+			}
+			else
+			{
+				N2 ^= nums[i];
+			}
+		}
+		return vector < int > {N1, N2};
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution258 {
+public:
+	int addDigits(int num) {
+		return 1 + (num - 1) % 9;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution257 {
+public:
+	vector<string> binaryTreePaths(TreeNode* root) {
+		vector<string> result;
+		DFS(root, result, "");
+		for (size_t i = 0; i < result.size(); i++)
+		{
+			result[i].pop_back();
+			result[i].pop_back();
+		}
+		return result;
+	}
 
-
-
-
-
-
+	void DFS(TreeNode* root, vector<string>& result,string path)
+	{
+		if (root)
+		{
+			path += (to_string(root->val)+"->");
+			if (!root->left&&!root->right)
+			{
+				result.push_back(path);
+			}
+			else
+			{
+				if (root->left)
+				{
+					DFS(root->left, result, path);
+				}
+				if (root->right)
+				{
+					DFS(root->right, result, path);
+				}
+			}
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution242 {
+public:
+	bool isAnagram(string s, string t) {
+		sort(s.begin(), s.end());
+		sort(t.begin(), t.end());
+		return s == t;
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution241 {
 public:
