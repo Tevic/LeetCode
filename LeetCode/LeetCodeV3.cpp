@@ -1779,28 +1779,25 @@ public:
 class Solution169 {
 public:
 	int majorityElement(vector<int>& nums) {
-		int maj = nums[0];
-		int cnt = 1;
-		for (size_t i = 1; i < nums.size(); i++)
+		int majNum;
+		int iCnt = 0;
+		for (size_t i = 0; i < nums.size(); i++)
 		{
-			if (nums[i] == maj)
+			if (nums[i] == majNum)
 			{
-				cnt++;
+				iCnt++;
+			}
+			else if(iCnt==0)
+			{
+				majNum = nums[i];
+				iCnt++;
 			}
 			else
 			{
-				if (cnt == 0)
-				{
-					maj = nums[i];
-					cnt++;
-				}
-				else
-				{
-					cnt--;
-				}
+				iCnt--;
 			}
 		}
-		return maj;
+		return majNum;
 	}
 };
 /*-------------------------------------------------------------------------------------*/
