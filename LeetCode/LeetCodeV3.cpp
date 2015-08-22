@@ -4921,24 +4921,20 @@ public:
 /*-------------------------------------------------------------------------------------*/
 class Solution049 {
 public:
-	vector<string> anagrams(vector<string>& strs) {
-		vector<string> result;
-		unordered_map<string, vector<int>> mp;
+	vector<vector<string>> groupAnagrams(vector<string>& strs)
+	{
+		vector<vector<string> > result;
+		unordered_map<string, vector<string>> mp;
 		for (size_t i = 0; i < strs.size(); i++)
 		{
 			string sortedStr = strs[i];
 			sort(sortedStr.begin(), sortedStr.end());
-			mp[sortedStr].push_back(i);
+			mp[sortedStr].push_back(strs[i]);
 		}
 		for (auto m : mp)
 		{
-			if (m.second.size() > 1)
-			{
-				for (size_t i = 0; i < m.second.size(); i++)
-				{
-					result.push_back(strs[m.second[i]]);
-				}
-			}
+			sort(m.second.begin(), m.second.end());
+			result.push_back(m.second);
 		}
 		return result;
 	}
