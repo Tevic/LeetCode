@@ -282,9 +282,17 @@ public:
 class Solution235 {
 public:
 	TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-		if (!root)
+		if (!root||!p||!q)
 		{
 			return NULL;
+		}
+		if (max(p->val,q->val)<root->val)
+		{
+			return lowestCommonAncestor(root->left,p,q);
+		}
+		else if (min(p->val, q->val) > root->val)
+		{
+			return lowestCommonAncestor(root->right, p, q);
 		}
 		TreeNode* p1 = root;
 		TreeNode* p2 = root;
