@@ -14,10 +14,10 @@ class Solution268 {
 public:
 	int missingNumber(vector<int>& nums) {
 		int len = nums.size();
-		int sum = len*(len + 1) / 2;
+		int sum = len;
 		for (int i = 0; i < len; i++)
 		{
-			sum -= nums[i];
+			sum += (i-nums[i]);
 		}
 		return sum;
 	}
@@ -294,30 +294,10 @@ public:
 		{
 			return lowestCommonAncestor(root->right, p, q);
 		}
-		TreeNode* p1 = root;
-		TreeNode* p2 = root;
-		TreeNode* pre = NULL;
-		while (p1 == p2)
+		else
 		{
-			pre = p1;
-			if (p->val > p1->val)
-			{
-				p1 = p1->right;
-			}
-			else if (p->val<p1->val)
-			{
-				p1 = p1->left;
-			}
-			if (q->val>p2->val)
-			{
-				p2 = p2->right;
-			}
-			else if (q->val < p2->val)
-			{
-				p2 = p2->left;
-			}
+			return root;
 		}
-		return pre;
 	}
 };
 /*-------------------------------------------------------------------------------------*/
