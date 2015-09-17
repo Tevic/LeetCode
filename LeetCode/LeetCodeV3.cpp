@@ -8,7 +8,69 @@
 
 
 
+/*-------------------------------------------------------------------------------------*/
+class Solution279 {
+public:
+	int numSquares(int n) {
+		int* DP = new int[n + 1]{0};
+		for (int i = 1; i <= n; i++)
+		{
+			int minVal = INT_MAX;
+			for (int j = 1; j * j <= i; j++)
+			{
+				minVal = min(minVal, DP[i - j * j] + 1);
+			}
+			DP[i] = minVal;
+		}
+		return DP[n];
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+bool isBadVersion(int version);
 
+class Solution278 {
+public:
+	int firstBadVersion(int n) {
+		int L = 1;
+		int R = n;
+		while (L<R)
+		{
+			int M = L + ((R - L) >> 1);
+			if (isBadVersion(M))
+			{
+				R = M;
+			}
+			else
+			{
+				L = M + 1;
+			}
+		}
+		return L;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution273 {
+public:
+	string numberToWords(int num) {
+		string res = convertHundred(num % 1000);
+		vector<string> v = { "Thousand", "Million", "Billion" };
+		for (int i = 0; i < 3; ++i) {
+			num /= 1000;
+			res = num % 1000 ? convertHundred(num % 1000) + " " + v[i] + " " + res : res;
+		}
+		while (res.back() == ' ') res.pop_back();
+		return res.empty() ? "Zero" : res;
+	}
+	string convertHundred(int num) {
+		vector<string> v1 = { "", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten", "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen" };
+		vector<string> v2 = { "", "", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety" };
+		string res;
+		int a = num / 100, b = num % 100, c = num % 10;
+		res = b < 20 ? v1[b] : v2[b / 10] + (c ? " " + v1[c] : "");
+		if (a > 0) res = v1[a] + " Hundred" + (b ? " " + res : "");
+		return res;
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 class Solution268 {
 public:
