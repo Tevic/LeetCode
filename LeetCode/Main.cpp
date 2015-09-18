@@ -28,15 +28,21 @@ public:
 		strcpy(this->data, str.data);
 	};
 
-	String& operator = (const String& str)
+	//String& operator = (const String& str)
+	//{
+	//	if (this!=&str)
+	//	{
+	//		int len = str.Size();
+	//		delete[] data;
+	//		data = new char[len + 1];
+	//		strcpy(data, str.data);
+	//	}
+	//	return *this;
+	//};
+
+	String& operator = (String str)
 	{
-		if (this!=&str)
-		{
-			int len = str.Size();
-			delete[] data;
-			data = new char[len + 1];
-			strcpy(data, str.data);
-		}
+		swap(data,str.data);
 		return *this;
 	};
 
@@ -111,12 +117,10 @@ int _tmain(int argc, _TCHAR* argv[])
 	//Solution264 SU264;
 	//SU264.nthUglyNumber(6);
 	//cout << sizeof(A) << endl;
-	String st11("111");
-	String ST2(st11);
-	//ST2 = st11;
-	String st3;
-	cin >> st3;
-	cout << st3 << endl;
+	String st11("11121211");
+	String ST2;
+	ST2 = st11;
+	cout << ST2 << endl;
 }
 
 
