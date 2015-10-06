@@ -2308,43 +2308,26 @@ public:
 class Solution149 {
 public:
 	int evalRPN(vector<string>& tokens) {
+		unordered_map<string, function<int(int, int)>> mpFunc=
+		{
+			{ "+",[](int a,int b) {return a + b;} },
+			{ "-",[](int a,int b) {return a - b;} },
+			{ "*",[](int a,int b) {return a * b;} },
+			{ "/",[](int a,int b) {return a / b;} }
+		};
 		stack<int> st;
 		int len = tokens.size();
 		if (len > 0)
 		{
 			for (size_t i = 0; i < len; i++)
 			{
-				if (tokens[i] == "+")
+				if (mpFunc.find(tokens[i]) !=mpFunc.end())
 				{
 					int Op2 = st.top();
 					st.pop();
 					int Op1 = st.top();
 					st.pop();
-					st.push(Op1 + Op2);
-				}
-				else if (tokens[i] == "-")
-				{
-					int Op2 = st.top();
-					st.pop();
-					int Op1 = st.top();
-					st.pop();
-					st.push(Op1 - Op2);
-				}
-				else if (tokens[i] == "*")
-				{
-					int Op2 = st.top();
-					st.pop();
-					int Op1 = st.top();
-					st.pop();
-					st.push(Op1 * Op2);
-				}
-				else if (tokens[i] == "/")
-				{
-					int Op2 = st.top();
-					st.pop();
-					int Op1 = st.top();
-					st.pop();
-					st.push(Op1 / Op2);
+					st.push(mpFunc[tokens[i]](Op1, Op2));
 				}
 				else
 				{
