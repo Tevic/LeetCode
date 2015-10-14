@@ -7,6 +7,149 @@
 
 
 /*-------------------------------------------------------------------------------------*/
+class Solution293 {
+public:
+	bool canWinNim(int n) {
+		return n % 4 > 0;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution290 {
+public:
+	bool wordPattern(string pattern, string str) {
+		vector<string> strList;
+		istringstream ss(str);
+		string strTemp;
+		int index = 0;
+		unordered_map<char, string> ump;
+		unordered_map<string,char> rump;
+		while (getline(ss, strTemp,' '))
+		{
+			strList.push_back(strTemp);
+		}
+		if (strList.size()!=pattern.size())
+		{
+			return false;
+		}
+		for (size_t i = 0; i < pattern.size(); i++)
+		{
+			if (ump.find(pattern[i])!=ump.end())
+			{
+				if (ump[pattern[i]]!=strList[i])
+				{
+					return false;
+				}
+			}
+			else
+			{
+				ump[pattern[i]] = strList[i];
+			}
+			if (rump.find(strList[i]) != rump.end())
+			{
+				if (rump[strList[i]] != pattern[i])
+				{
+					return false;
+				}
+			}
+			else
+			{
+				rump[strList[i]] = pattern[i];
+			}
+		}
+		return true;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution289 {
+public:
+	int getState(vector<vector<int> >& board, int i, int j) {
+		if (board[i][j] & 0xFFFF0000)
+			return board[i][j] ^ 0xFFFF0000;
+		else
+			return board[i][j];
+	}
+	int count(vector<vector<int> >& board, int i, int j) {
+		int m = board.size();
+		int n = m ? board[0].size() : 0;
+		int cnt = 0;
+		for (int x = i - 1; x <= i + 1; x++) {
+			for (int y = j - 1; y <= j + 1; y++) {
+				if (x >= 0 && x < m&&y >= 0 && y < n && (x != i || y != j)) {
+					if (getState(board, x, y))
+						cnt++;
+				}
+			}
+		}
+		return cnt;
+	}
+	void mark(vector<vector<int> >& board, int i, int j) {
+		int state = getState(board, i, j);
+		int live = count(board, i, j);
+		switch (state) {
+		case 0:
+			if (live == 3)
+				board[i][j] ^= 0xFFFF0000;
+			break;
+		case 1:
+			if (live < 2 || live>3)
+				board[i][j] ^= 0xFFFF0000;
+			break;
+		}
+	}
+	void mark(vector<vector<int> >& board) {
+		int m = board.size();
+		int n = m ? board[0].size() : 0;
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				mark(board, i, j);
+			}
+		}
+
+	}
+	void update(vector<vector<int> >& board) {
+		int m = board.size();
+		int n = m ? board[0].size() : 0;
+		for (int i = 0; i < m; i++) {
+			for (int j = 0; j < n; j++) {
+				if (board[i][j] & 0xFFFF0000) {
+					int state = getState(board, i, j);
+					if (state)
+						board[i][j] = 0;
+					else
+						board[i][j] = 1;
+				}
+			}
+		}
+
+	}
+	void gameOfLife(vector<vector<int>>& board) {
+		mark(board);
+		update(board);
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution287 {
+public:
+	int findDuplicate(vector<int>& nums) {
+		int len = nums.size();
+		for (size_t i = 0; i < len; i++)
+		{
+			if (nums[i] == i + 1)
+			{
+				continue;
+			}
+			while (nums[i] != i + 1)
+			{
+				if (nums[i] <= len&&nums[i] == nums[nums[i] - 1])
+				{
+					return nums[i];
+				}
+				swap(nums[i], nums[nums[i] - 1]);
+			}
+		}
+	}
+};
+/*-------------------------------------------------------------------------------------*/
 // Below is the interface for Iterator, which is already defined for you.
 // **DO NOT** modify the interface for Iterator.
 class Iterator {
@@ -72,7 +215,7 @@ public:
 		int iCnt = 0;
 		for (size_t i = 0; i < len; i++)
 		{
-			if (nums[i]==0)
+			if (nums[i] == 0)
 			{
 				iCnt++;
 			}
@@ -91,7 +234,7 @@ public:
 class Solution279 {
 public:
 	int numSquares(int n) {
-		int* DP = new int[n + 1]{0};
+		int* DP = new int[n + 1]{ 0 };
 		for (int i = 1; i <= n; i++)
 		{
 			int minVal = INT_MAX;
@@ -112,7 +255,7 @@ public:
 	int firstBadVersion(int n) {
 		int L = 1;
 		int R = n;
-		while (L<R)
+		while (L < R)
 		{
 			int M = L + ((R - L) >> 1);
 			if (isBadVersion(M))
@@ -158,7 +301,7 @@ public:
 		int sum = len;
 		for (int i = 0; i < len; i++)
 		{
-			sum += (i-nums[i]);
+			sum += (i - nums[i]);
 		}
 		return sum;
 	}
@@ -171,8 +314,8 @@ public:
 		int index2 = 0;
 		int index3 = 0;
 		int index5 = 0;
-		vector<int> uglyVec(n,1);
-		while (index<n-1)
+		vector<int> uglyVec(n, 1);
+		while (index < n - 1)
 		{
 			int uglyVal = min(min(uglyVec[index2] * 2, uglyVec[index3] * 3), uglyVec[index5] * 5);
 			if (uglyVal == uglyVec[index2] * 2)
@@ -196,19 +339,19 @@ public:
 class Solution263 {
 public:
 	bool isUgly(int num) {
-		if (num<=0)
+		if (num <= 0)
 		{
 			return false;
 		}
-		while (num%2==0)
+		while (num % 2 == 0)
 		{
 			num /= 2;
 		}
-		while (num%3==0)
+		while (num % 3 == 0)
 		{
 			num /= 3;
 		}
-		while (num%5==0)
+		while (num % 5 == 0)
 		{
 			num /= 5;
 		}
@@ -228,7 +371,7 @@ public:
 		int index = -1;
 		for (int i = 0; i < 32; i++)
 		{
-			if ((xorSum>>i)&1==1)
+			if ((xorSum >> i) & 1 == 1)
 			{
 				index = i;
 				break;
@@ -238,7 +381,7 @@ public:
 		int N2 = 0;
 		for (size_t i = 0; i < len; i++)
 		{
-			if ((nums[i]>>index)&1==1)
+			if ((nums[i] >> index) & 1 == 1)
 			{
 				N1 ^= nums[i];
 			}
@@ -271,11 +414,11 @@ public:
 		return result;
 	}
 
-	void DFS(TreeNode* root, vector<string>& result,string path)
+	void DFS(TreeNode* root, vector<string>& result, string path)
 	{
 		if (root)
 		{
-			path += (to_string(root->val)+"->");
+			path += (to_string(root->val) + "->");
 			if (!root->left&&!root->right)
 			{
 				result.push_back(path);
@@ -423,13 +566,13 @@ public:
 class Solution235 {
 public:
 	TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-		if (!root||!p||!q)
+		if (!root || !p || !q)
 		{
 			return NULL;
 		}
-		if (max(p->val,q->val)<root->val)
+		if (max(p->val, q->val) < root->val)
 		{
-			return lowestCommonAncestor(root->left,p,q);
+			return lowestCommonAncestor(root->left, p, q);
 		}
 		else if (min(p->val, q->val) > root->val)
 		{
@@ -1082,8 +1225,8 @@ public:
 	bool containsNearbyAlmostDuplicate(vector<int>& nums, int k, int t) {
 		map<long long, int> M;
 		int l = 0;
-		for (int r = 0; r<nums.size(); r++) {
-			if (r - l>k && M[nums[l]] == l)
+		for (int r = 0; r < nums.size(); r++) {
+			if (r - l > k && M[nums[l]] == l)
 				M.erase(nums[l++]);
 			auto it = M.lower_bound(nums[r] - t);
 			if (it != M.end() && abs(it->first - nums[r]) <= t)
@@ -1174,7 +1317,7 @@ public:
 		}
 		for (size_t i = k; i < len; i++)
 		{
-			if (nums[i]>heap.top())
+			if (nums[i] > heap.top())
 			{
 				heap.pop();
 				heap.push(nums[i]);
@@ -1364,14 +1507,14 @@ public:
 				sum += nums[R];
 				R++;
 			}
-			while (sum >= s&&L<len)
+			while (sum >= s&&L < len)
 			{
 				minLen = min(minLen, R - L);
 				sum -= nums[L];
 				L++;
 			}
 		}
-		return minLen>len ? 0 : minLen;
+		return minLen > len ? 0 : minLen;
 	}
 };
 /*-------------------------------------------------------------------------------------*/
@@ -1931,7 +2074,7 @@ public:
 			{
 				iCnt++;
 			}
-			else if(iCnt==0)
+			else if (iCnt == 0)
 			{
 				majNum = nums[i];
 				iCnt++;
@@ -2308,12 +2451,12 @@ public:
 class Solution149 {
 public:
 	int evalRPN(vector<string>& tokens) {
-		unordered_map<string, function<int(int, int)>> mpFunc=
+		unordered_map<string, function<int(int, int)>> mpFunc =
 		{
-			{ "+",[](int a,int b) {return a + b;} },
-			{ "-",[](int a,int b) {return a - b;} },
-			{ "*",[](int a,int b) {return a * b;} },
-			{ "/",[](int a,int b) {return a / b;} }
+			{ "+",[](int a,int b) {return a + b; } },
+			{ "-",[](int a,int b) {return a - b; } },
+			{ "*",[](int a,int b) {return a * b; } },
+			{ "/",[](int a,int b) {return a / b; } }
 		};
 		stack<int> st;
 		int len = tokens.size();
@@ -2321,7 +2464,7 @@ public:
 		{
 			for (size_t i = 0; i < len; i++)
 			{
-				if (mpFunc.find(tokens[i]) !=mpFunc.end())
+				if (mpFunc.find(tokens[i]) != mpFunc.end())
 				{
 					int Op2 = st.top();
 					st.pop();
@@ -2660,7 +2803,7 @@ public:
 		if (ratings[i - 1] < ratings[i - 2])
 			ReAdjustCandy(ratings, candy, ratings.size() - 1);
 		int total = 0;
-		std::for_each(candy.begin(), candy.end(), [&](int n){
+		std::for_each(candy.begin(), candy.end(), [&](int n) {
 			total += n;
 		});
 		return total;
@@ -2751,9 +2894,9 @@ public:
 		vector<vector<bool>> P(len, vector<bool>(len, false));
 		for (int i = 0; i <= len; i++)
 			D[i] = len - i;
-		for (int i = len - 1; i >= 0; i--){
-			for (int j = i; j < len; j++){
-				if (s[i] == s[j] && (j - i < 2 || P[i + 1][j - 1])){
+		for (int i = len - 1; i >= 0; i--) {
+			for (int j = i; j < len; j++) {
+				if (s[i] == s[j] && (j - i < 2 || P[i + 1][j - 1])) {
 					P[i][j] = true;
 					D[i] = min(D[i], D[j + 1] + 1);
 				}
@@ -4028,7 +4171,7 @@ public:
 	vector<int> grayCode(int n) {
 		vector<int> result;
 		result.push_back(0);
-		for (int i = 0; i< n; i++)
+		for (int i = 0; i < n; i++)
 		{
 			int highestBit = 1 << i;
 			int len = result.size();
@@ -4048,7 +4191,7 @@ public:
 		int i = m - 1, j = n - 1;
 		while (i >= 0 && j >= 0)
 		{
-			if (nums1[i]>nums2[j])
+			if (nums1[i] > nums2[j])
 			{
 				nums1[k--] = nums1[i--];
 			}
@@ -4185,9 +4328,9 @@ public:
 					L = M + 1;
 				}
 			}
-			else if (nums[M]<nums[L])
+			else if (nums[M] < nums[L])
 			{
-				if (target>nums[M] && target <= nums[R])
+				if (target > nums[M] && target <= nums[R])
 				{
 					L = M + 1;
 				}
@@ -4508,7 +4651,7 @@ public:
 		}
 		string ret = "/";
 		for (int i = 0; i < pathes.size(); ++i) {
-			if (i>0) ret += "/";
+			if (i > 0) ret += "/";
 			ret += pathes[i];
 		}
 		return ret;
@@ -4737,7 +4880,7 @@ public:
 class Solution062 {
 public:
 	int uniquePaths(int m, int n) {
-		if (m>0 && n>0)
+		if (m > 0 && n > 0)
 		{
 			vector<vector<int>> paths(m, vector<int>(n, 0));
 			for (size_t i = 0; i < m; i++)
@@ -5161,7 +5304,7 @@ public:
 				}
 			}
 		}
-		if (vec.size()>0)
+		if (vec.size() > 0)
 		{
 			vec.pop_back();
 		}
@@ -5237,7 +5380,7 @@ public:
 	vector<vector<int>> combinationSum2(vector<int>& candidates, int target) {
 		vector<vector<int>> result;
 		vector<int> vec;
-		if (candidates.size()>0)
+		if (candidates.size() > 0)
 		{
 			sort(candidates.begin(), candidates.end());
 			GetComb(result, candidates, vec, 0, target, -1);
@@ -5356,7 +5499,7 @@ public:
 			}
 			for (size_t j = 0; j < 9; j++)
 			{
-				if (cnt[j]>1)
+				if (cnt[j] > 1)
 				{
 					return false;
 				}
@@ -5382,7 +5525,7 @@ public:
 			}
 			for (size_t j = 0; j < 9; j++)
 			{
-				if (cnt[j]>1)
+				if (cnt[j] > 1)
 				{
 					return false;
 				}
@@ -5413,7 +5556,7 @@ public:
 				}
 				for (size_t j = 0; j < 9; j++)
 				{
-					if (cnt[j]>1)
+					if (cnt[j] > 1)
 					{
 						return false;
 					}
@@ -5529,7 +5672,7 @@ public:
 			}
 			if (nums[M] >= nums[L])
 			{
-				if (target >= nums[L] && target<nums[M])
+				if (target >= nums[L] && target < nums[M])
 				{
 					R = M - 1;
 				}
@@ -5540,7 +5683,7 @@ public:
 			}
 			else
 			{
-				if (target>nums[M] && target <= nums[R])
+				if (target > nums[M] && target <= nums[R])
 				{
 					L = M + 1;
 				}
@@ -5907,10 +6050,10 @@ public:
 				if (i > 0 && nums[i] == nums[i - 1])continue;
 				for (int j = i + 1; j < len - 2; j++)
 				{
-					if (j>i + 1 && nums[j] == nums[j - 1])continue;
+					if (j > i + 1 && nums[j] == nums[j - 1])continue;
 					for (int k = j + 1; k < len - 1; k++)
 					{
-						if (k>j + 1 && nums[k] == nums[k - 1])continue;
+						if (k > j + 1 && nums[k] == nums[k - 1])continue;
 						int searchTarget = target - nums[i] - nums[j] - nums[k];
 						if (searchTarget < nums[k + 1])continue;
 						int m = BinarySearch(nums, k + 1, len - 1, searchTarget);
@@ -6011,7 +6154,7 @@ public:
 	vector<vector<int>> threeSum(vector<int>& nums) {
 		int len = nums.size();
 		vector<vector<int>> result;
-		if (len>2)
+		if (len > 2)
 		{
 			sort(nums.begin(), nums.end());
 			for (int i = 0; i < len - 2; i++)
@@ -6101,7 +6244,7 @@ public:
 		{
 			int cur = chMap[s[i]];
 			int pre = chMap[s[i - 1]];
-			if (i>0 && cur > pre)
+			if (i > 0 && cur > pre)
 			{
 				result += (cur - 2 * pre);
 			}

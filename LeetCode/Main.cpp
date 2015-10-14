@@ -10,9 +10,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	//Solution264 SU264;
-	//SU264.nthUglyNumber(6);
-	//cout << sizeof(A) << endl;
+	Solution290 SU290;
+	SU290.wordPattern("abba", "dog dog dog dog");
 }
 
 
