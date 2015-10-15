@@ -22,20 +22,20 @@ public:
 		string strTemp;
 		int index = 0;
 		unordered_map<char, string> ump;
-		unordered_map<string,char> rump;
-		while (getline(ss, strTemp,' '))
+		unordered_map<string, char> rump;
+		while (getline(ss, strTemp, ' '))
 		{
 			strList.push_back(strTemp);
 		}
-		if (strList.size()!=pattern.size())
+		if (strList.size() != pattern.size())
 		{
 			return false;
 		}
 		for (size_t i = 0; i < pattern.size(); i++)
 		{
-			if (ump.find(pattern[i])!=ump.end())
+			if (ump.find(pattern[i]) != ump.end())
 			{
-				if (ump[pattern[i]]!=strList[i])
+				if (ump[pattern[i]] != strList[i])
 				{
 					return false;
 				}
@@ -3475,15 +3475,35 @@ public:
 class Solution110 {
 public:
 	bool isBalanced(TreeNode* root) {
+		//if (!root)
+		//{
+		//	return true;
+		//}
+		//if (abs(Depth(root->left) - Depth(root->right)) > 1)
+		//{
+		//	return false;
+		//}
+		//return isBalanced(root->left) && isBalanced(root->right);
+		return maxDepth(root) != -1;
+	}
+
+	int maxDepth(TreeNode* root)
+	{
 		if (!root)
 		{
-			return true;
+			return 0;
 		}
-		if (abs(Depth(root->left) - Depth(root->right)) > 1)
+		int L = maxDepth(root->left);
+		if (L == -1)
 		{
-			return false;
+			return -1;
 		}
-		return isBalanced(root->left) && isBalanced(root->right);
+		int R = maxDepth(root->right);
+		if (R == -1)
+		{
+			return -1;
+		}
+		return abs(R - L) <= 1 ? max(L, R) + 1 : -1;
 	}
 
 	int Depth(TreeNode* root)
