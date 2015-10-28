@@ -10,8 +10,9 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	Solution290 SU290;
-	SU290.wordPattern("abba", "dog dog dog dog");
+	MedianFinder MF;
+	MF.addNum(1);
+	MF.findMedian();
 }
 
 

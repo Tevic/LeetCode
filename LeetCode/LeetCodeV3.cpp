@@ -9,7 +9,61 @@
 
 
 
+/*-------------------------------------------------------------------------------------*/
+class MedianFinder {
+public:
 
+	// Adds a number into the data structure.
+	void addNum(int num) {
+		if (!leftPart.empty()&&num<=leftPart.top())
+		{
+			leftPart.push(num);
+		}
+		else if (!rightPart.empty()&&num >= rightPart.top())
+		{
+			rightPart.push(num);
+		}
+		else
+		{
+			leftPart.push(num);
+		}
+		if ((int)leftPart.size()-(int)rightPart.size()>=2)
+		{
+			rightPart.push(leftPart.top());
+			leftPart.pop();
+		}
+		else if ((int)rightPart.size() - (int)leftPart.size() >= 2)
+		{
+			leftPart.push(rightPart.top());
+			rightPart.pop();
+		}
+	}
+
+	// Returns the median of current data stream
+	double findMedian() {
+		if (rightPart.size()==leftPart.size()&&leftPart.size()>0)
+		{
+			return (leftPart.top() + rightPart.top()) / 2.0;
+		}
+		else if (rightPart.size() < leftPart.size())
+		{
+			return leftPart.top();
+		}
+		else
+		{
+			return rightPart.top();
+		}
+	}
+
+private:
+	priority_queue<int, vector<int>, less<int>> leftPart;
+	priority_queue<int, vector<int>, greater<int>> rightPart;
+};
+
+// Your MedianFinder object will be instantiated and called as such:
+// MedianFinder mf;
+// mf.addNum(1);
+// mf.findMedian();
 /*-------------------------------------------------------------------------------------*/
 class LRUCache {
 public:
