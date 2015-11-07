@@ -10,9 +10,8 @@
 
 int _tmain(int argc, _TCHAR* argv[])
 {
-	MedianFinder MF;
-	MF.addNum(1);
-	MF.findMedian();
+	Solution299 SU299;
+	SU299.getHint("1", "0");
 }
 
 

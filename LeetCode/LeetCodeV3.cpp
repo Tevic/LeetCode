@@ -7,8 +7,63 @@
 
 
 
-
-
+class Solution300 {
+public:
+	int lengthOfLIS(vector<int>& nums) {
+		int len = nums.size();
+		if (len==0)
+		{
+			return 0;
+		}
+		vector<int> dp(len, 1);
+		int maxLen = 1;
+		for (size_t i = 0; i < len; i++)
+		{
+			for (size_t j = 0; j < i; j++)
+			{
+				if (nums[i]>nums[j])
+				{
+					dp[i] = max(dp[j]+1,dp[i]);
+					maxLen = max(dp[i], maxLen);
+				}
+			}
+		}
+		return maxLen;
+	}
+};
+/*-------------------------------------------------------------------------------------*/
+class Solution299 {
+public:
+	string getHint(string secret, string guess) {
+		int bullCnt = 0;
+		int cowCnt = 0;
+		unordered_map<char, int> ump;
+		for (size_t i = 0; i < secret.size(); i++)
+		{
+			ump[secret[i]]++;
+		}
+		for (size_t i = 0; i < secret.size(); i++)
+		{
+			if (secret[i]==guess[i])
+			{
+				bullCnt++;
+				ump[secret[i]]--;
+			}
+		}
+		for (size_t i = 0; i < secret.size(); i++)
+		{
+			if (secret[i] != guess[i])
+			{
+				if (ump[guess[i]])
+				{
+					cowCnt++;
+					ump[guess[i]]--;
+				}
+			}
+		}
+		return to_string(bullCnt) + "A" + to_string(cowCnt) + "B";
+	}
+};
 /*-------------------------------------------------------------------------------------*/
 class MedianFinder {
 public:
