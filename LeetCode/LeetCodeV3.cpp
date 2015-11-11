@@ -5,8 +5,41 @@
 
 
 
+/*-------------------------------------------------------------------------------------*/
+class NumArray {
+public:
+	NumArray(vector<int> &nums) {
+		int len = nums.size();
+		if (len==0)
+		{
+			return;
+		}
+		sumToIndex.assign(len, 0);
+		sumToIndex[0] = nums[0];
+		for (size_t i = 1; i < len; i++)
+		{
+			sumToIndex[i] = nums[i] + sumToIndex[i - 1];
+		}
+	}
 
-
+	int sumRange(int i, int j) {
+		if (i<=j&&i>=0&&j<sumToIndex.size())
+		{
+			if (i==0)
+			{
+				return sumToIndex[j];
+			}
+			return sumToIndex[j] - sumToIndex[i-1];
+		}
+		else
+		{
+			return 0;
+		}
+	}
+private:
+	vector<int> sumToIndex;
+};
+/*-------------------------------------------------------------------------------------*/
 class Solution300 {
 public:
 	int lengthOfLIS(vector<int>& nums) {
