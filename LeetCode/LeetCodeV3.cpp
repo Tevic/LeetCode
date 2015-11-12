@@ -5,6 +5,42 @@
 
 
 
+
+
+
+
+/*-------------------------------------------------------------------------------------*/
+class NumMatrix {
+public:
+	NumMatrix(vector<vector<int>> &matrix) {
+		int M = matrix.size();
+		if (M)
+		{
+			int N = matrix[0].size();
+			matrixSum.assign(M+1, vector<int>(N+1, 0));
+			for (size_t i = 1; i <= M; i++)
+			{
+				for (size_t j = 1; j <= N; j++)
+				{
+					matrixSum[i][j] = matrixSum[i - 1][j] + matrixSum[i][j - 1] - matrixSum[i - 1][j - 1] + matrix[i-1][j-1];
+				}
+			}
+		}
+	}
+
+	int sumRegion(int row1, int col1, int row2, int col2) {
+		int totalSum = matrixSum[row2+1][col2+1];
+		return totalSum - matrixSum[row2+1][col1]-matrixSum[row1][col2+1]+matrixSum[row1][col1];
+	}
+private:
+	vector<vector<int>> matrixSum;
+};
+
+
+// Your NumMatrix object will be instantiated and called as such:
+// NumMatrix numMatrix(matrix);
+// numMatrix.sumRegion(0, 1, 2, 3);
+// numMatrix.sumRegion(1, 2, 3, 4);
 /*-------------------------------------------------------------------------------------*/
 class NumArray {
 public:
@@ -14,27 +50,15 @@ public:
 		{
 			return;
 		}
-		sumToIndex.assign(len, 0);
-		sumToIndex[0] = nums[0];
-		for (size_t i = 1; i < len; i++)
+		sumToIndex.assign(len+1, 0);
+		for (size_t i = 1; i <= len; i++)
 		{
-			sumToIndex[i] = nums[i] + sumToIndex[i - 1];
+			sumToIndex[i] = nums[i-1] + sumToIndex[i - 1];
 		}
 	}
 
 	int sumRange(int i, int j) {
-		if (i<=j&&i>=0&&j<sumToIndex.size())
-		{
-			if (i==0)
-			{
-				return sumToIndex[j];
-			}
-			return sumToIndex[j] - sumToIndex[i-1];
-		}
-		else
-		{
-			return 0;
-		}
+		return sumToIndex[j+1] - sumToIndex[i];
 	}
 private:
 	vector<int> sumToIndex;
