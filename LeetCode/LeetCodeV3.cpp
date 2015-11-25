@@ -6,7 +6,54 @@
 
 
 
-
+class NumArray {
+public:
+	NumArray() = default;
+	NumArray(vector<int> &nums) {
+		n = (int)nums.size();
+		if (!n) return;
+		arr = new int[n << 2];
+		built(1, 1, n, nums);
+	}
+	~NumArray() { delete[]arr; }
+	void update(int i, int val) {
+		update(1, 1, n, i + 1, val);
+	}
+	int sumRange(int i, int j) {
+		return sumRange(1, 1, n, i + 1, j + 1);
+	}
+private:
+	int n, *arr;
+	void built(int root, int l, int r, vector<int> &nums) {
+		if (l == r) {
+			arr[root] = nums[l - 1];
+			return;
+		}
+		int mid = (l + r) >> 1;
+		built(root << 1, l, mid, nums);
+		built(root << 1 | 1, mid + 1, r, nums);
+		arr[root] = arr[root << 1] + arr[root << 1 | 1];
+	}
+	void update(int root, int l, int r, int pos, int val) {
+		if (pos > r || pos < l) return;
+		if (pos <= l && pos >= r) {
+			arr[root] = val;
+			return;
+		}
+		int mid = (l + r) >> 1;
+		update(root << 1, l, mid, pos, val);
+		update(root << 1 | 1, mid + 1, r, pos, val);
+		arr[root] = arr[root << 1] + arr[root << 1 | 1];
+	}
+	int sumRange(int root, int l, int r, int x, int y) {
+		if (x > r || y < l) return 0;
+		if (x <= l && y >= r) return arr[root];
+		int mid = (l + r) >> 1, ret = 0;
+		ret += sumRange(root << 1, l, mid, x, y);
+		ret += sumRange(root << 1 | 1, mid + 1, r, x, y);
+		return ret;
+	}
+};
 
 
 /*-------------------------------------------------------------------------------------*/
